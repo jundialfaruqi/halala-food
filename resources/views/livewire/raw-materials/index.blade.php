@@ -149,7 +149,6 @@
                                     <span class="text-xs font-bold uppercase tracking-wider text-slate-500 shrink-0">Total Modal (HPP)</span>
                                     <span class="text-base font-extrabold font-mono text-slate-900 shrink-0 whitespace-nowrap text-right">
                                         Rp {{ number_format($totalMaterialCost, 0, ',', '.') }}
-                                        <span class="text-xs font-normal text-slate-400">/ {{ $product->unit }}</span>
                                     </span>
                                 </div>
 
@@ -161,6 +160,10 @@
                                         </span>
                                     </div>
                                 @endif
+
+                                <p class="text-[11px] text-slate-400 italic pt-0.5">
+                                    * Per 1 {{ $product->unit }}
+                                </p>
                             </div>
                         @endif
                     </div>
