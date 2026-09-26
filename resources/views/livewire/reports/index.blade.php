@@ -282,26 +282,24 @@
     </div>
 
     <!-- Financial Performance Summary (Pemasukan, Biaya, Laba Bersih) -->
-    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200/80">
-            <div>
-                <h2 class="text-xl font-bold text-slate-900">
-                    Ringkasan Keuangan Periode Ini
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                    Hasil kalkulasi seluruh pemasukan titip jual, pemasukan kas lain, serta beban operasional usaha.
-                </p>
-            </div>
+    <div class="space-y-4">
+        <div>
+            <h2 class="text-xl font-bold text-slate-900">
+                Ringkasan Keuangan Periode Ini
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                Hasil kalkulasi seluruh pemasukan titip jual, pemasukan kas lain, serta beban operasional usaha.
+            </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
             <!-- Total Pemasukan -->
-            <div class="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-1">
+            <div class="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/80 shadow-xs space-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-500">1. Total Pemasukan</p>
                     <x-icon name="arrow-up-right" class="text-emerald-600 text-base" />
                 </div>
-                <p class="text-2xl font-extrabold text-slate-900 font-mono">
+                <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
                     Rp {{ number_format($totalIncome, 0, ',', '.') }}
                 </p>
                 <p class="text-xs text-slate-500">Omset toko (Rp {{ number_format($totalSales, 0, ',', '.') }}) + kas
@@ -309,24 +307,24 @@
             </div>
 
             <!-- Total Pengeluaran Usaha -->
-            <div class="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-1">
+            <div class="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/80 shadow-xs space-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-500">2. Biaya Usaha & Bahan</p>
                     <x-icon name="arrow-down-right" class="text-rose-600 text-base" />
                 </div>
-                <p class="text-2xl font-extrabold text-slate-900 font-mono">
+                <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
                     Rp {{ number_format($totalExpenses, 0, ',', '.') }}
                 </p>
                 <p class="text-xs text-slate-500">Beli bahan, kemasan, bensin, dll.</p>
             </div>
 
             <!-- Laba Bersih Murni Usaha -->
-            <div class="p-5 bg-slate-900 text-white rounded-2xl space-y-1 shadow-sm">
+            <div class="p-5 sm:p-6 bg-slate-900 text-white rounded-3xl space-y-1 shadow-xs">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">3. LABA BERSIH MURNI</p>
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                 </div>
-                <p class="text-3xl font-extrabold font-mono text-white">
+                <p class="text-2xl sm:text-3xl font-extrabold font-mono text-white">
                     Rp {{ number_format($netProfit, 0, ',', '.') }}
                 </p>
                 <p class="text-xs text-slate-400">Pemasukan dikurangi seluruh biaya usaha</p>
@@ -335,7 +333,7 @@
 
         <!-- Info Tambahan Prive Pribadi -->
         <div
-            class="p-4 bg-slate-100/80 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-2">
+            class="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-2">
             <div class="flex items-center gap-2">
                 <x-icon name="user" class="text-slate-500 text-base" />
                 <span class="text-slate-700 font-medium">
