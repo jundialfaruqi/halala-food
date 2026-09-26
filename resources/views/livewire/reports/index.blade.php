@@ -349,7 +349,7 @@
     </div>
 
     <!-- Grid 2 Kolom: Penjualan per Produk & Kinerja Toko Mitra -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <!-- Rincian Penjualan per Produk -->
         <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200/80">
@@ -411,7 +411,7 @@
             </div>
 
             @if ($storePerformances->count() > 0)
-                <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                <div class="space-y-3">
                     @foreach ($storePerformances as $sp)
                         <div
                             class="p-4 bg-slate-50/80 hover:bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center justify-between transition-colors">
