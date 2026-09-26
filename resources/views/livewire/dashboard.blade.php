@@ -1,6 +1,6 @@
 <div class="space-y-8">
     <!-- Header Ringkasan & Tombol Aksi Cepat -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 Ringkasan Usaha Halala Food
@@ -14,7 +14,7 @@
                 <x-icon name="plus" class="text-xl" />
                 <span>Titip Barang Baru</span>
             </a>
-            <a href="{{ route('productions.index') }}" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-base rounded-xl px-4 gap-2">
+            <a href="{{ route('productions.index') }}" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold text-base rounded-xl px-4 gap-2 shadow-sm">
                 <x-icon name="tools-kitchen-2" class="text-xl" />
                 <span>Catat Produksi</span>
             </a>

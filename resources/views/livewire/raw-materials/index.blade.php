@@ -1,6 +1,6 @@
 <div class="space-y-8">
     <!-- Header Page & Tombol Tambah Bahan -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 Bahan Baku & Resep Makanan

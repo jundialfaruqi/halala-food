@@ -1,6 +1,6 @@
 <div class="space-y-6 max-w-4xl mx-auto">
     <!-- Header Page -->
-    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200">
+    <div class="flex items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
                 @if($isEdit)
@@ -17,7 +17,7 @@
                 @endif
             </p>
         </div>
-        <a href="{{ route('consignments.index') }}" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-300">
+        <a href="{{ route('consignments.index') }}" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
             Kembali
         </a>
     </div>

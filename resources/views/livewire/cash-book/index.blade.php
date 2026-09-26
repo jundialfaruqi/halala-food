@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <!-- Header Page -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200">
+    <div>
         <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
             Buku Kas & Keuangan
         </h1>

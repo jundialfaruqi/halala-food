@@ -1,6 +1,6 @@
 <div class="space-y-8">
     <!-- Header Page & Filter Periode -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 Laporan Laba Rugi & Kinerja Toko
@@ -12,11 +12,11 @@
         <div class="flex items-center gap-3">
             <div>
                 <label class="text-xs font-bold text-slate-500 uppercase block">Dari Tanggal</label>
-                <input type="date" wire:model.live="startDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900" />
+                <input type="date" wire:model.live="startDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900 bg-white" />
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-500 uppercase block">Sampai Tanggal</label>
-                <input type="date" wire:model.live="endDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900" />
+                <input type="date" wire:model.live="endDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900 bg-white" />
             </div>
         </div>
     </div>
