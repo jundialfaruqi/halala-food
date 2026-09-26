@@ -107,21 +107,62 @@
                                 <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
                                 <span class="text-xs text-slate-500">Takaran per 1 {{ $product->unit }}</span>
                             </div>
-                            <button wire:click="openRecipeModal({{ $product->id }})" class="text-xs font-bold text-slate-900 underline hover:text-black">
+                            <button wire:click="openRecipeModal({{ $product->id }})" class="btn btn-xs bg-slate-900 hover:bg-black text-white font-bold rounded-lg px-2.5">
                                 Atur Resep
                             </button>
                         </div>
 
-                        <div class="space-y-1 text-sm text-slate-600">
+                        <div class="space-y-1.5 text-sm text-slate-600 bg-white/70 p-3 rounded-lg border border-slate-200/60">
                             @forelse($product->recipes as $r)
-                                <div class="flex justify-between">
-                                    <span>{{ $r->rawMaterial->name }}:</span>
-                                    <span class="font-mono font-bold text-slate-900">{{ $r->quantity_needed }} {{ $r->rawMaterial->unit }}</span>
+                                @php
+                                    $itemCost = $r->quantity_needed * ($r->rawMaterial->cost_per_unit ?? 0);
+                                @endphp
+                                <div class="flex items-center justify-between gap-2 text-xs sm:text-sm py-0.5">
+                                    <span class="text-slate-700 truncate min-w-0" title="{{ $r->rawMaterial->name }}">
+                                        {{ $r->rawMaterial->name }}
+                                    </span>
+                                    <div class="shrink-0 flex items-center gap-1.5 whitespace-nowrap font-mono text-right">
+                                        <span class="font-bold text-slate-900 text-xs sm:text-sm">
+                                            {{ $r->quantity_needed }} {{ $r->rawMaterial->unit }}
+                                        </span>
+                                        @if(($r->rawMaterial->cost_per_unit ?? 0) > 0)
+                                            <span class="text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium">
+                                                Rp {{ number_format($itemCost, 0, ',', '.') }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             @empty
                                 <p class="text-xs text-slate-400 italic">Belum ada resep yang diatur.</p>
                             @endforelse
                         </div>
+
+                        <!-- Total Modal Bahan (HPP) & Margin -->
+                        @if($product->recipes->isNotEmpty())
+                            @php
+                                $totalMaterialCost = $product->material_cost;
+                                $grossProfit = $product->consignment_price - $totalMaterialCost;
+                                $marginPercent = $product->consignment_price > 0 ? round(($grossProfit / $product->consignment_price) * 100, 1) : 0;
+                            @endphp
+                            <div class="pt-2 border-t border-slate-200/80 space-y-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 shrink-0">Total Modal (HPP)</span>
+                                    <span class="text-base font-extrabold font-mono text-slate-900 shrink-0 whitespace-nowrap text-right">
+                                        Rp {{ number_format($totalMaterialCost, 0, ',', '.') }}
+                                        <span class="text-xs font-normal text-slate-400">/ {{ $product->unit }}</span>
+                                    </span>
+                                </div>
+
+                                @if($product->consignment_price > 0)
+                                    <div class="flex items-center justify-between gap-2 text-xs text-slate-500 pt-0.5">
+                                        <span class="shrink-0 whitespace-nowrap">Titip: <strong>Rp {{ number_format($product->consignment_price, 0, ',', '.') }}</strong></span>
+                                        <span class="font-bold shrink-0 whitespace-nowrap {{ $grossProfit >= 0 ? 'text-emerald-700' : 'text-rose-600' }}">
+                                            Margin: Rp {{ number_format($grossProfit, 0, ',', '.') }} ({{ $marginPercent }}%)
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 @empty
                     <div class="py-8 text-center space-y-3">
@@ -222,25 +263,39 @@
 
                     <div class="space-y-3 max-h-80 overflow-y-auto pr-1">
                         @foreach($recipeRows as $idx => $row)
-                            <div class="p-2 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                            @php
+                                $selectedMat = $materials->firstWhere('id', $row['raw_material_id'] ?? null);
+                                $rowCost = ($selectedMat && !empty($row['quantity_needed'])) ? ((float)$row['quantity_needed'] * (float)$selectedMat->cost_per_unit) : 0;
+                            @endphp
+                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1">
-                                        <select wire:model="recipeRows.{{ $idx }}.raw_material_id" class="select select-bordered select-sm w-full font-medium">
+                                        <select wire:model.live="recipeRows.{{ $idx }}.raw_material_id" class="select select-bordered select-sm w-full font-medium text-sm">
                                             <option value="">-- Pilih Bahan --</option>
                                             @foreach($materials as $m)
-                                                <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                <option value="{{ $m->id }}">
+                                                    {{ $m->name }} ({{ $m->unit }}) @if($m->cost_per_unit > 0) - Rp {{ number_format($m->cost_per_unit, 0, ',', '.') }}/{{ $m->unit }} @endif
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
 
                                     <div class="w-24">
-                                        <input type="number" step="0.0001" min="0.0001" placeholder="Qty" wire:model="recipeRows.{{ $idx }}.quantity_needed" class="input input-sm input-bordered w-full font-mono text-center font-bold" />
+                                        <input type="number" step="0.0001" min="0.0001" placeholder="Qty" wire:model.live.debounce.250ms="recipeRows.{{ $idx }}.quantity_needed" class="input input-sm input-bordered w-full font-mono text-center font-bold text-sm" />
                                     </div>
 
-                                    <button type="button" wire:click="removeRecipeRow({{ $idx }})" class="btn btn-sm btn-ghost btn-square text-red-500">
+                                    <button type="button" wire:click="removeRecipeRow({{ $idx }})" class="btn btn-sm btn-ghost btn-square text-red-500 hover:bg-red-50">
                                         &times;
                                     </button>
                                 </div>
+
+                                @if($rowCost > 0 && $selectedMat)
+                                    <div class="flex justify-between items-center text-[11px] text-slate-500 px-1">
+                                        <span>{{ (float)$row['quantity_needed'] }} {{ $selectedMat->unit }} × Rp {{ number_format($selectedMat->cost_per_unit, 0, ',', '.') }}</span>
+                                        <span class="font-mono font-bold text-slate-800">Rp {{ number_format($rowCost, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+
                                 @error('recipeRows.'.$idx.'.raw_material_id')
                                     <span class="text-xs text-red-600 font-semibold block">{{ $message }}</span>
                                 @enderror
@@ -254,6 +309,29 @@
                     <button type="button" wire:click="addRecipeRow" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold w-full rounded-xl border border-slate-300">
                         + Tambah Komposisi Bahan
                     </button>
+
+                    <!-- Realtime Total Modal Bahan in Modal -->
+                    <div class="bg-slate-900 text-white p-3.5 rounded-xl space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-300 uppercase tracking-wider">Total Modal Bahan (HPP)</span>
+                            <span class="text-lg font-bold font-mono text-emerald-400">
+                                Rp {{ number_format($this->modalMaterialCost, 0, ',', '.') }}
+                                <span class="text-xs font-normal text-slate-300">/ {{ $currentProduct?->unit }}</span>
+                            </span>
+                        </div>
+                        @if($currentProduct && $currentProduct->consignment_price > 0)
+                            @php
+                                $modalGrossProfit = $currentProduct->consignment_price - $this->modalMaterialCost;
+                                $modalMarginPct = round(($modalGrossProfit / $currentProduct->consignment_price) * 100, 1);
+                            @endphp
+                            <div class="flex items-center justify-between text-xs text-slate-300 pt-1 border-t border-slate-800">
+                                <span>Harga Titip: Rp {{ number_format($currentProduct->consignment_price, 0, ',', '.') }}</span>
+                                <span class="font-semibold {{ $modalGrossProfit >= 0 ? 'text-emerald-300' : 'text-rose-400' }}">
+                                    Margin: Rp {{ number_format($modalGrossProfit, 0, ',', '.') }} ({{ $modalMarginPct }}%)
+                                </span>
+                            </div>
+                        @endif
+                    </div>
 
                     <div class="flex justify-end gap-3 pt-3 border-t border-slate-200">
                         <button type="button" wire:click="$set('showRecipeModal', false)" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-5 border border-slate-300">

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductRecipe;
 use App\Models\RawMaterial;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -161,11 +162,27 @@ class Index extends Component
         $this->dispatch('toast', message: 'Resep produk berhasil diperbarui.');
     }
 
+    #[Computed]
+    public function modalMaterialCost(): float
+    {
+        $total = 0;
+        $materialsById = RawMaterial::all()->keyBy('id');
+        foreach ($this->recipeRows as $row) {
+            $matId = $row['raw_material_id'] ?? null;
+            $qty = (float) ($row['quantity_needed'] ?? 0);
+            if ($matId && isset($materialsById[$matId])) {
+                $total += $qty * (float) $materialsById[$matId]->cost_per_unit;
+            }
+        }
+
+        return $total;
+    }
+
     public function render(): View
     {
         $materials = RawMaterial::orderBy('name')->get();
         $products = Product::with('recipes.rawMaterial')->where('is_active', true)->get();
-        $currentProduct = $this->selectedProductId ? Product::find($this->selectedProductId) : null;
+        $currentProduct = $this->selectedProductId ? Product::with('recipes.rawMaterial')->find($this->selectedProductId) : null;
 
         return view('livewire.raw-materials.index', [
             'materials' => $materials,

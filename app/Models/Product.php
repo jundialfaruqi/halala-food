@@ -44,4 +44,13 @@ class Product extends Model
     {
         return $this->hasMany(ConsignmentItem::class);
     }
+
+    public function getMaterialCostAttribute(): float
+    {
+        return (float) $this->recipes->sum(function ($r) {
+            $costPerUnit = $r->rawMaterial?->cost_per_unit ?? 0;
+
+            return (float) $r->quantity_needed * (float) $costPerUnit;
+        });
+    }
 }
