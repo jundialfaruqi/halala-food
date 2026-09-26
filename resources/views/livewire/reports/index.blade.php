@@ -42,11 +42,14 @@
                         mode: 'range',
                         dateFormat: 'Y-m-d',
                         positionElement: this.$refs.calendarBtn,
-                        defaultDate: @js($dateRange ? explode(' - ', $dateRange) : null),
-                        onClose: (selectedDates, dateStr) => {
-                            if (dateStr) {
-                                $wire.set('dateRange', dateStr);
-                                $wire.set('periodPreset', 'custom');
+                        defaultDate: @js($dateRange ? explode(' - ', str_replace(' to ', ' - ', $dateRange)) : null),
+                        onClose: (selectedDates) => {
+                            if (selectedDates && selectedDates.length > 0) {
+                                const pad = (n) => String(n).padStart(2, '0');
+                                const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+                                const start = fmt(selectedDates[0]);
+                                const end = selectedDates[1] ? fmt(selectedDates[1]) : start;
+                                $wire.setCustomRange(`${start} - ${end}`);
                             }
                         }
                     });

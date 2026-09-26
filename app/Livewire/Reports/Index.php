@@ -51,6 +51,12 @@ class Index extends Component
         $this->groupBy = in_array($group, ['daily', 'weekly', 'monthly']) ? $group : 'daily';
     }
 
+    public function setCustomRange(string $range): void
+    {
+        $this->dateRange = $range;
+        $this->periodPreset = 'custom';
+    }
+
     public function updatedDateRange(): void
     {
         if ($this->dateRange) {
@@ -126,21 +132,24 @@ class Index extends Component
             return [$defaultStart, $defaultEnd];
         }
 
-        $parts = explode(' - ', $this->dateRange);
+        $clean = trim($this->dateRange);
+        // Normalize various range separators (' to ', ' s/d ', ' , ', ' - ')
+        $clean = str_replace([' to ', ' s/d ', ' , '], ' - ', $clean);
+        $parts = explode(' - ', $clean);
+
         try {
-            $startDate = isset($parts[0]) && trim($parts[0]) !== ''
-                ? Carbon::parse(trim($parts[0]))->startOfDay()
-                : $defaultStart;
-            $endDate = isset($parts[1]) && trim($parts[1]) !== ''
-                ? Carbon::parse(trim($parts[1]))->endOfDay()
-                : (isset($parts[0]) ? Carbon::parse(trim($parts[0]))->endOfDay() : $defaultEnd);
+            $startStr = trim($parts[0] ?? '');
+            $endStr = trim($parts[1] ?? $parts[0] ?? '');
+
+            $startDate = $startStr !== '' ? Carbon::parse($startStr)->startOfDay() : $defaultStart;
+            $endDate = $endStr !== '' ? Carbon::parse($endStr)->endOfDay() : $defaultEnd;
 
             if ($startDate->gt($endDate)) {
                 return [$endDate->copy()->startOfDay(), $startDate->copy()->endOfDay()];
             }
 
             return [$startDate, $endDate];
-        } catch (\Exception) {
+        } catch (\Throwable) {
             return [$defaultStart, $defaultEnd];
         }
     }
