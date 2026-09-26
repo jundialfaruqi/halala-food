@@ -316,10 +316,51 @@
                         @error('category') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
+                    <!-- Nominal Uang Transaksi (Live Thousands Formatting) -->
+                    <div x-data="{
+                        displayValue: '',
+                        rawAmount: @entangle('amount').live,
+                        formatCurrency(val) {
+                            if (!val && val !== 0) return '';
+                            let numStr = String(val).replace(/\D/g, '');
+                            if (!numStr) return '';
+                            return new Intl.NumberFormat('id-ID').format(numStr);
+                        },
+                        updateValue(e) {
+                            let digitsOnly = e.target.value.replace(/\D/g, '');
+                            let num = digitsOnly ? parseInt(digitsOnly, 10) : 0;
+                            this.rawAmount = num;
+                            this.displayValue = digitsOnly ? new Intl.NumberFormat('id-ID').format(digitsOnly) : '';
+                        },
+                        init() {
+                            if (this.rawAmount && this.rawAmount > 0) {
+                                this.displayValue = this.formatCurrency(this.rawAmount);
+                            }
+                            $watch('rawAmount', (val) => {
+                                if (!val || val == 0) {
+                                    if (this.displayValue !== '') this.displayValue = '';
+                                } else {
+                                    let formatted = this.formatCurrency(val);
+                                    if (this.displayValue !== formatted) {
+                                        this.displayValue = formatted;
+                                    }
+                                }
+                            });
+                        }
+                    }">
                         <label class="block text-sm font-bold text-slate-800 mb-1">Nominal Uang (Rp) <span class="text-red-500">*</span></label>
-                        <input type="number" wire:model="amount" min="1" placeholder="Nominal rupiah..." class="input input-bordered w-full font-mono font-bold text-xl rounded-xl focus:border-slate-900" />
-                        @error('amount') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
+                        <label class="input input-bordered flex items-center gap-2 w-full rounded-xl focus-within:border-slate-900 bg-white">
+                            <span class="font-mono font-bold text-slate-400 text-base select-none shrink-0">Rp</span>
+                            <input 
+                                type="text" 
+                                inputmode="numeric"
+                                x-model="displayValue" 
+                                @input="updateValue($event)"
+                                placeholder="0" 
+                                class="grow font-mono font-bold text-xl bg-transparent outline-none focus:outline-none border-none p-0 text-slate-900" 
+                            />
+                        </label>
+                        @error('amount') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
@@ -463,10 +504,51 @@
                         @error('account_type') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
+                    <!-- Saldo Awal (Live Thousands Formatting) -->
+                    <div x-data="{
+                        displayValue: '',
+                        rawAmount: @entangle('initial_balance').live,
+                        formatCurrency(val) {
+                            if (!val && val !== 0) return '';
+                            let numStr = String(val).replace(/\D/g, '');
+                            if (!numStr) return '';
+                            return new Intl.NumberFormat('id-ID').format(numStr);
+                        },
+                        updateValue(e) {
+                            let digitsOnly = e.target.value.replace(/\D/g, '');
+                            let num = digitsOnly ? parseInt(digitsOnly, 10) : 0;
+                            this.rawAmount = num;
+                            this.displayValue = digitsOnly ? new Intl.NumberFormat('id-ID').format(digitsOnly) : '';
+                        },
+                        init() {
+                            if (this.rawAmount && this.rawAmount > 0) {
+                                this.displayValue = this.formatCurrency(this.rawAmount);
+                            }
+                            $watch('rawAmount', (val) => {
+                                if (!val || val == 0) {
+                                    if (this.displayValue !== '') this.displayValue = '';
+                                } else {
+                                    let formatted = this.formatCurrency(val);
+                                    if (this.displayValue !== formatted) {
+                                        this.displayValue = formatted;
+                                    }
+                                }
+                            });
+                        }
+                    }">
                         <label class="block text-sm font-bold text-slate-800 mb-1">Saldo Awal (Rp)</label>
-                        <input type="number" wire:model="initial_balance" min="0" placeholder="0" class="input input-bordered w-full font-mono font-bold text-xl rounded-xl focus:border-slate-900" />
-                        @error('initial_balance') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
+                        <label class="input input-bordered flex items-center gap-2 w-full rounded-xl focus-within:border-slate-900 bg-white">
+                            <span class="font-mono font-bold text-slate-400 text-base select-none shrink-0">Rp</span>
+                            <input 
+                                type="text" 
+                                inputmode="numeric"
+                                x-model="displayValue" 
+                                @input="updateValue($event)"
+                                placeholder="0" 
+                                class="grow font-mono font-bold text-xl bg-transparent outline-none focus:outline-none border-none p-0 text-slate-900" 
+                            />
+                        </label>
+                        @error('initial_balance') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="flex justify-end gap-3 pt-3 border-t border-slate-200">
