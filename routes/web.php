@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConsignmentPrintController;
 use App\Livewire\CashBook\Index as CashBookIndex;
 use App\Livewire\Consignments\Form as ConsignmentForm;
 use App\Livewire\Consignments\Index as ConsignmentIndex;
@@ -15,6 +16,7 @@ Route::get('/', Dashboard::class)->name('dashboard');
 Route::get('/consignments', ConsignmentIndex::class)->name('consignments.index');
 Route::get('/consignments/create', ConsignmentForm::class)->name('consignments.create');
 Route::get('/consignments/{consignment}', ConsignmentForm::class)->name('consignments.edit');
+Route::get('/consignments/{consignment}/print', [ConsignmentPrintController::class, 'show'])->name('consignments.print');
 Route::get('/stores', StoreIndex::class)->name('stores.index');
 Route::get('/products', ProductIndex::class)->name('products.index');
 Route::get('/productions', ProductionIndex::class)->name('productions.index');

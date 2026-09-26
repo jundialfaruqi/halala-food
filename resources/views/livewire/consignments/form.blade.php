@@ -17,9 +17,17 @@
                 @endif
             </p>
         </div>
-        <a href="{{ route('consignments.index') }}" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
-            Kembali
-        </a>
+        <div class="flex items-center gap-2.5">
+            @if($isEdit)
+                <a href="{{ route('consignments.print', $consignment->id) }}" target="_blank" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 text-sm shadow-sm flex items-center gap-2">
+                    <x-icon name="printer" class="text-lg" />
+                    <span>Cetak Surat Titip</span>
+                </a>
+            @endif
+            <a href="{{ route('consignments.index') }}" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
+                Kembali
+            </a>
+        </div>
     </div>
 
     @if(!$isEdit)

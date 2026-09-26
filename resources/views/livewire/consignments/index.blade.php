@@ -15,6 +15,25 @@
         </a>
     </div>
 
+    <!-- Alert Sukses Simpan & Tombol Cetak Langsung -->
+    @if(session()->has('new_consignment_id'))
+        <div class="bg-emerald-50 border border-emerald-300/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-emerald-950">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <x-icon name="check" class="text-xl" />
+                </div>
+                <div>
+                    <p class="font-bold text-sm leading-tight">Titip Barang Berhasil Disimpan!</p>
+                    <p class="text-xs text-emerald-800 mt-0.5">Siapkan surat titip barang sebagai bukti serah terima untuk toko dan pengantar.</p>
+                </div>
+            </div>
+            <a href="{{ route('consignments.print', session('new_consignment_id')) }}" target="_blank" class="btn btn-sm bg-emerald-800 hover:bg-emerald-900 text-white font-bold rounded-xl px-4 gap-2 shadow-xs whitespace-nowrap">
+                <x-icon name="printer" class="text-base" />
+                <span>Cetak Surat Titip Sekarang</span>
+            </a>
+        </div>
+    @endif
+
     <!-- Filter & Pencarian (Besar & Mudah Dibaca) -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Pencarian Toko -->
@@ -124,15 +143,21 @@
 
                             <!-- Kolom Aksi -->
                             <td class="py-5 px-6 text-right">
-                                @if($consignment->status === 'active')
-                                    <a href="{{ route('consignments.edit', $consignment->id) }}" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-5 text-sm shadow-sm">
-                                        Cek Sisa & Tagih
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('consignments.print', $consignment->id) }}" target="_blank" class="btn btn-md bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl px-3 text-sm border border-slate-200 shadow-xs flex items-center gap-1.5" title="Cetak Surat Titip / Invoice">
+                                        <x-icon name="printer" class="text-lg" />
+                                        <span class="hidden xl:inline">Cetak</span>
                                     </a>
-                                @else
-                                    <a href="{{ route('consignments.edit', $consignment->id) }}" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-sm border border-slate-300">
-                                        Lihat Rincian
-                                    </a>
-                                @endif
+                                    @if($consignment->status === 'active')
+                                        <a href="{{ route('consignments.edit', $consignment->id) }}" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 sm:px-5 text-sm shadow-sm whitespace-nowrap">
+                                            Cek Sisa & Tagih
+                                        </a>
+                                    @else
+                                        <a href="{{ route('consignments.edit', $consignment->id) }}" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-sm border border-slate-300 whitespace-nowrap">
+                                            Lihat Rincian
+                                        </a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

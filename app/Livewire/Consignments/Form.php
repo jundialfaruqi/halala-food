@@ -153,7 +153,8 @@ class Form extends Component
             return;
         }
 
-        DB::transaction(function () {
+        $newConsignmentId = null;
+        DB::transaction(function () use (&$newConsignmentId) {
             $consignmentNumber = 'KNS-'.Carbon::parse($this->drop_date)->format('Ym').'-'.str_pad(Consignment::count() + 1, 3, '0', STR_PAD_LEFT);
 
             $consignment = Consignment::create([
@@ -164,6 +165,8 @@ class Form extends Component
                 'payment_status' => 'unpaid',
                 'notes' => $this->notes,
             ]);
+
+            $newConsignmentId = $consignment->id;
 
             foreach ($this->items as $itemData) {
                 if ((int) $itemData['quantity_dropped'] > 0) {
@@ -187,6 +190,9 @@ class Form extends Component
         });
 
         session()->flash('message', 'Catatan titip barang berhasil disimpan.');
+        if ($newConsignmentId) {
+            session()->flash('new_consignment_id', $newConsignmentId);
+        }
         $this->redirect(route('consignments.index'), navigate: true);
     }
 
