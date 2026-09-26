@@ -355,10 +355,9 @@
             </div>
 
             @if ($productSales->count() > 0)
-                <div class="space-y-3">
+                <div class="divide-y divide-slate-100">
                     @foreach ($productSales as $ps)
-                        <div
-                            class="p-4 bg-slate-50/80 hover:bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center justify-between transition-colors">
+                        <div class="py-3.5 flex items-center justify-between transition-colors">
                             <div>
                                 <p class="font-bold text-base text-slate-900">{{ $ps['name'] }}</p>
                                 <div class="flex items-center gap-2 text-xs text-slate-500 font-medium mt-0.5">
@@ -401,10 +400,9 @@
             </div>
 
             @if ($storePerformances->count() > 0)
-                <div class="space-y-3">
+                <div class="divide-y divide-slate-100">
                     @foreach ($storePerformances as $sp)
-                        <div
-                            class="p-4 bg-slate-50/80 hover:bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center justify-between transition-colors">
+                        <div class="py-3.5 flex items-center justify-between transition-colors">
                             <div>
                                 <p class="font-bold text-base text-slate-900">{{ $sp['name'] }}</p>
                                 <p class="text-xs text-slate-500 mt-0.5">
