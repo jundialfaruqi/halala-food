@@ -15,12 +15,6 @@
         </button>
     </div>
 
-    @if(session()->has('message'))
-        <div class="p-4 bg-slate-900 text-white rounded-xl font-medium text-base">
-            {{ session('message') }}
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Kolom Kiri: Tabel Stok Bahan Baku (2 Span) -->
         <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 overflow-hidden">

@@ -11,6 +11,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-slate-100/70 text-slate-900 min-h-screen text-base selection:bg-slate-900 selection:text-white">
+    <!-- Global DaisyUI Toast Notifications -->
+    <x-toast />
+
     <div class="drawer lg:drawer-open min-h-screen">
         <input id="app-drawer" type="checkbox" class="drawer-toggle" />
 

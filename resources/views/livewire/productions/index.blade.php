@@ -15,12 +15,6 @@
         </button>
     </div>
 
-    @if(session()->has('message'))
-        <div class="p-4 bg-slate-900 text-white rounded-xl font-medium text-base">
-            {{ session('message') }}
-        </div>
-    @endif
-
     <!-- Tabel Riwayat Produksi -->
     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">

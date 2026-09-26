@@ -15,12 +15,6 @@
         </button>
     </div>
 
-    @if(session()->has('message'))
-        <div class="p-4 bg-slate-900 text-white rounded-xl font-medium text-base">
-            {{ session('message') }}
-        </div>
-    @endif
-
     <!-- Grid Kartu Produk Jadi -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach($products as $product)

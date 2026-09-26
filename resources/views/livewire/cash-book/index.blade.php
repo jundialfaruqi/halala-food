@@ -25,12 +25,6 @@
         </div>
     </div>
 
-    @if(session()->has('message'))
-        <div class="p-4 bg-slate-900 text-white rounded-xl font-medium text-base">
-            {{ session('message') }}
-        </div>
-    @endif
-
     <!-- Kartu Saldo Kas (Usaha vs Pribadi) -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Saldo Kas Usaha -->

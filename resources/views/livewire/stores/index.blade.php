@@ -15,12 +15,6 @@
         </button>
     </div>
 
-    @if(session()->has('message'))
-        <div class="p-4 bg-slate-900 text-white rounded-xl font-medium text-base">
-            {{ session('message') }}
-        </div>
-    @endif
-
     <!-- Filter & Pencarian -->
     <div class="bg-white p-5 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
