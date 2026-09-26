@@ -93,7 +93,7 @@
         </div>
 
         <!-- Kolom Kanan: Pengaturan Resep Produk (1 Span) -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+        <div class="space-y-4">
             <div>
                 <h2 class="text-xl font-bold text-slate-900">Formulasi Resep Produk</h2>
                 <p class="text-sm text-slate-500">Kebutuhan takaran bahan baku per 1 satuan produk jadi</p>
@@ -101,7 +101,7 @@
 
             <div class="space-y-4">
                 @forelse($products as $product)
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                    <div class="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
@@ -112,7 +112,7 @@
                             </button>
                         </div>
 
-                        <div class="divide-y divide-slate-200/70 text-sm text-slate-600">
+                        <div class="divide-y divide-slate-100 text-sm text-slate-600">
                             @forelse($product->recipes as $r)
                                 @php
                                     $itemCost = $r->quantity_needed * ($r->rawMaterial->cost_per_unit ?? 0);
@@ -126,7 +126,7 @@
                                             {{ $r->quantity_needed }} {{ $r->rawMaterial->unit }}
                                         </span>
                                         @if(($r->rawMaterial->cost_per_unit ?? 0) > 0)
-                                            <span class="text-[11px] text-slate-500 bg-slate-200/70 px-1.5 py-0.5 rounded font-medium">
+                                            <span class="text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium">
                                                 Rp {{ number_format($itemCost, 0, ',', '.') }}
                                             </span>
                                         @endif
@@ -144,7 +144,7 @@
                                 $grossProfit = $product->consignment_price - $totalMaterialCost;
                                 $marginPercent = $product->consignment_price > 0 ? round(($grossProfit / $product->consignment_price) * 100, 1) : 0;
                             @endphp
-                            <div class="pt-2 border-t border-slate-200/80 space-y-1">
+                            <div class="pt-2 border-t border-slate-100 space-y-1">
                                 <div class="flex items-center justify-between gap-2">
                                     <span class="text-xs font-bold uppercase tracking-wider text-slate-500 shrink-0">Total Modal (HPP)</span>
                                     <span class="text-base font-extrabold font-mono text-slate-900 shrink-0 whitespace-nowrap text-right">
@@ -168,7 +168,7 @@
                         @endif
                     </div>
                 @empty
-                    <div class="py-8 text-center space-y-3">
+                    <div class="py-8 text-center space-y-3 bg-white rounded-2xl border border-slate-200/80 p-6">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                             <x-icon name="package" class="text-xl" />
                         </div>
