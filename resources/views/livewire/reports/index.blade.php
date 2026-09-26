@@ -109,8 +109,7 @@
         </div>
 
         <!-- Bottom Toolbar Row: Filter Dropdowns with Vertical Borders -->
-        <div
-            class="grid grid-cols-1 sm:grid-cols-3 {{ $selectedProductId !== 'all' || $selectedRoute !== 'all' || $selectedStoreId !== 'all' || $metric !== 'revenue' || $periodPreset !== '30d' ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-y-4 sm:gap-y-0 sm:divide-x sm:divide-slate-200">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-4 sm:gap-y-0 sm:divide-x sm:divide-slate-200">
             <!-- Filter Produk -->
             <div class="sm:pr-4">
                 <label class="block text-sm font-bold text-slate-700 mb-1">
@@ -140,10 +139,19 @@
             </div>
 
             <!-- Filter Spesifik Toko -->
-            <div class="sm:px-4">
-                <label class="block text-sm font-bold text-slate-700 mb-1">
-                    Toko Mitra
-                </label>
+            <div class="sm:pl-4">
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block text-sm font-bold text-slate-700">
+                        Toko Mitra
+                    </label>
+                    @if ($selectedProductId !== 'all' || $selectedRoute !== 'all' || $selectedStoreId !== 'all')
+                        <button type="button" wire:click="resetFilters"
+                            class="text-xs font-bold text-red-600 hover:text-red-800 underline flex items-center gap-1 cursor-pointer">
+                            <x-icon name="rotate-ccw" class="text-xs" />
+                            <span>Reset Filter</span>
+                        </button>
+                    @endif
+                </div>
                 <select wire:model.live="selectedStoreId"
                     class="select select-bordered w-full text-base rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Toko Mitra</option>
@@ -152,22 +160,6 @@
                     @endforeach
                 </select>
             </div>
-
-            <!-- Reset Filters (Only appears when active) -->
-            @if (
-                $selectedProductId !== 'all' ||
-                    $selectedRoute !== 'all' ||
-                    $selectedStoreId !== 'all' ||
-                    $metric !== 'revenue' ||
-                    $periodPreset !== '30d')
-                <div class="sm:pl-4 flex flex-col justify-end">
-                    <button type="button" wire:click="resetFilters"
-                        class="btn btn-ghost w-full h-[3rem] min-h-[3rem] text-sm font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl flex items-center justify-center gap-1.5 border border-slate-200 shadow-xs cursor-pointer">
-                        <x-icon name="rotate-ccw" class="text-sm" />
-                        <span>Reset Filter</span>
-                    </button>
-                </div>
-            @endif
         </div>
     </div>
 
