@@ -108,16 +108,16 @@
             </div>
         </div>
 
-        <!-- Bottom Toolbar Row: Filter Dropdowns -->
+        <!-- Bottom Toolbar Row: Filter Dropdowns with Vertical Borders -->
         <div
-            class="grid grid-cols-1 sm:grid-cols-3 {{ $selectedProductId !== 'all' || $selectedRoute !== 'all' || $selectedStoreId !== 'all' || $metric !== 'revenue' || $periodPreset !== '30d' ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-3 items-end">
+            class="grid grid-cols-1 sm:grid-cols-3 {{ $selectedProductId !== 'all' || $selectedRoute !== 'all' || $selectedStoreId !== 'all' || $metric !== 'revenue' || $periodPreset !== '30d' ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-y-4 sm:gap-y-0 sm:divide-x sm:divide-slate-200">
             <!-- Filter Produk -->
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <div class="sm:pr-4">
+                <label class="block text-sm font-bold text-slate-700 mb-1">
                     Produk
                 </label>
                 <select wire:model.live="selectedProductId"
-                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
+                    class="select select-bordered w-full text-base rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Produk Jadi</option>
                     @foreach ($products as $product)
                         <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -126,12 +126,12 @@
             </div>
 
             <!-- Filter Rute Toko -->
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <div class="sm:px-4">
+                <label class="block text-sm font-bold text-slate-700 mb-1">
                     Rute Pengantaran
                 </label>
                 <select wire:model.live="selectedRoute"
-                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
+                    class="select select-bordered w-full text-base rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Rute</option>
                     @foreach ($routes as $route)
                         <option value="{{ $route }}">{{ $route }}</option>
@@ -140,12 +140,12 @@
             </div>
 
             <!-- Filter Spesifik Toko -->
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <div class="sm:px-4">
+                <label class="block text-sm font-bold text-slate-700 mb-1">
                     Toko Mitra
                 </label>
                 <select wire:model.live="selectedStoreId"
-                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
+                    class="select select-bordered w-full text-base rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Toko Mitra</option>
                     @foreach ($stores as $store)
                         <option value="{{ $store->id }}">{{ $store->name }}</option>
@@ -160,9 +160,9 @@
                     $selectedStoreId !== 'all' ||
                     $metric !== 'revenue' ||
                     $periodPreset !== '30d')
-                <div>
+                <div class="sm:pl-4 flex flex-col justify-end">
                     <button type="button" wire:click="resetFilters"
-                        class="btn btn-ghost btn-sm text-xs font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl w-full flex items-center justify-center gap-1.5 border border-slate-200 shadow-xs cursor-pointer">
+                        class="btn btn-ghost w-full h-[3rem] min-h-[3rem] text-sm font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl flex items-center justify-center gap-1.5 border border-slate-200 shadow-xs cursor-pointer">
                         <x-icon name="rotate-ccw" class="text-sm" />
                         <span>Reset Filter</span>
                     </button>

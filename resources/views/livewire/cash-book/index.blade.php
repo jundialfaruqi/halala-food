@@ -80,9 +80,9 @@
 
     <!-- Filter Bar Transaksi Kas (Unboxed Apple UI Style) -->
     <div class="space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-4 lg:gap-y-0 lg:divide-x lg:divide-slate-200">
             <!-- 1. Pencarian Kategori / Keterangan -->
-            <div>
+            <div class="lg:pr-4">
                 <label class="block text-sm font-bold text-slate-700 mb-1">Cari Kategori / Keterangan</label>
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
@@ -91,7 +91,7 @@
             </div>
 
             <!-- 2. Filter Jenis Transaksi -->
-            <div>
+            <div class="lg:px-4">
                 <label class="block text-sm font-bold text-slate-700 mb-1">Jenis Transaksi</label>
                 <select wire:model.live="typeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white">
                     <option value="all">Semua Jenis Transaksi</option>
@@ -103,7 +103,7 @@
             </div>
 
             <!-- 3. Filter Akun Kas -->
-            <div>
+            <div class="lg:px-4">
                 <label class="block text-sm font-bold text-slate-700 mb-1">Akun / Rekening Kas</label>
                 <select wire:model.live="accountFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white">
                     <option value="">Semua Rekening & Kas</option>
@@ -114,7 +114,7 @@
             </div>
 
             <!-- 4. Rentang Tanggal (1 Input Tunggal) -->
-            <div wire:ignore
+            <div class="lg:pl-4" wire:ignore
                  x-data="{
                     fp: null,
                     init() {
