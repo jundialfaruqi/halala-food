@@ -9,6 +9,9 @@
 
     <!-- Vite Styles and Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Chart.js for Interactive Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body 
     class="font-sans antialiased bg-slate-100/70 text-slate-900 h-screen overflow-hidden text-base selection:bg-slate-900 selection:text-white"
@@ -151,7 +154,7 @@
                                     <a href="{{ route('reports.index') }}"
                                        class="{{ request()->routeIs('reports.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
                                         <x-icon name="chart-pie" class="text-xl" />
-                                        <span class="text-base">Laporan Laba Rugi</span>
+                                        <span class="text-base">Laporan & Trend Penjualan</span>
                                     </a>
                                 </li>
                             </ul>
