@@ -16,18 +16,18 @@
     </div>
 
     <!-- Filter & Pencarian -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Cari Toko / Pemilik / No. HP</label>
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Ketik nama toko atau no HP..."
-                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white" />
+                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white" />
         </div>
 
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Filter Rute Keliling</label>
-            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white">
+            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white">
                 <option value="">Semua Rute</option>
                 @foreach($routes as $r)
                     <option value="{{ $r }}">{{ $r }}</option>

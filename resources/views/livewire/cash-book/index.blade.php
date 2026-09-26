@@ -78,8 +78,8 @@
         </div>
     </div>
 
-    <!-- Filter Bar Transaksi Kas (Apple UI Style) -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-4">
+    <!-- Filter Bar Transaksi Kas (Unboxed Apple UI Style) -->
+    <div class="space-y-3">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- 1. Pencarian Kategori / Keterangan -->
             <div>
@@ -87,13 +87,13 @@
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
                        placeholder="Misal: wijen, bensin, toko..."
-                       class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white" />
+                       class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white" />
             </div>
 
             <!-- 2. Filter Jenis Transaksi -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-1">Jenis Transaksi</label>
-                <select wire:model.live="typeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white">
+                <select wire:model.live="typeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white">
                     <option value="all">Semua Jenis Transaksi</option>
                     <option value="income">Pemasukan Usaha (+)</option>
                     <option value="expense">Pengeluaran Usaha (-)</option>
@@ -105,7 +105,7 @@
             <!-- 3. Filter Akun Kas -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-1">Akun / Rekening Kas</label>
-                <select wire:model.live="accountFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white">
+                <select wire:model.live="accountFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white">
                     <option value="">Semua Rekening & Kas</option>
                     @foreach($accounts as $acc)
                         <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->type === 'business' ? 'Usaha' : 'Pribadi' }})</option>
@@ -123,7 +123,7 @@
                             dateFormat: 'Y-m-d',
                             altInput: true,
                             altFormat: 'j M Y',
-                            altInputClass: 'input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white',
+                            altInputClass: 'input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white',
                             defaultDate: @js($dateRange ? explode(' - ', $dateRange) : null),
                             onClose: (selectedDates, dateStr) => {
                                 $wire.set('dateRange', dateStr);
@@ -146,16 +146,16 @@
         </div>
 
         <!-- Tombol Cepat Periode & Reset Filter -->
-        <div class="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-slate-500 uppercase">Periode Cepat:</span>
-                <button type="button" wire:click="setQuickDate('today')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                <button type="button" wire:click="setQuickDate('today')" class="btn btn-xs bg-white hover:bg-slate-100 text-slate-800 font-semibold rounded-lg border border-slate-200 shadow-xs">
                     Hari Ini
                 </button>
-                <button type="button" wire:click="setQuickDate('this_month')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                <button type="button" wire:click="setQuickDate('this_month')" class="btn btn-xs bg-white hover:bg-slate-100 text-slate-800 font-semibold rounded-lg border border-slate-200 shadow-xs">
                     Bulan Ini
                 </button>
-                <button type="button" wire:click="setQuickDate('all')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                <button type="button" wire:click="setQuickDate('all')" class="btn btn-xs bg-white hover:bg-slate-100 text-slate-800 font-semibold rounded-lg border border-slate-200 shadow-xs">
                     Semua Waktu
                 </button>
             </div>
@@ -203,17 +203,17 @@
             <table class="table w-full text-base">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold text-sm uppercase">
-                        <th class="py-4 px-6">Tanggal</th>
+                        <th class="py-4 px-6 whitespace-nowrap">Tanggal</th>
                         <th class="py-4 px-4">Jenis & Kategori</th>
                         <th class="py-4 px-4">Akun Kas</th>
                         <th class="py-4 px-4">Keterangan</th>
-                        <th class="py-4 px-6 text-right">Nominal</th>
+                        <th class="py-4 px-6 text-right whitespace-nowrap">Nominal</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transactions as $trx)
                         <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="py-4 px-6 font-mono font-bold text-slate-900 text-sm">
+                            <td class="py-4 px-6 font-mono font-bold text-slate-900 text-sm whitespace-nowrap">
                                 {{ $trx->transaction_date->format('d/m/Y') }}
                             </td>
                             <td class="py-4 px-4">
@@ -236,7 +236,7 @@
                             <td class="py-4 px-4 text-sm text-slate-600">
                                 {{ $trx->description ?: '-' }}
                             </td>
-                            <td class="py-4 px-6 text-right font-mono font-extrabold text-lg {{ $trx->type === 'income' ? 'text-slate-900' : 'text-slate-600' }}">
+                            <td class="py-4 px-6 text-right font-mono font-extrabold text-lg whitespace-nowrap {{ $trx->type === 'income' ? 'text-slate-900' : 'text-slate-600' }}">
                                 {{ $trx->type === 'income' ? '+' : '-' }} Rp {{ number_format($trx->amount, 0, ',', '.') }}
                             </td>
                         </tr>

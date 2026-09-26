@@ -16,20 +16,20 @@
     </div>
 
     <!-- Filter & Pencarian (Besar & Mudah Dibaca) -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Pencarian Toko -->
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Cari Toko / No. Titipan</label>
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Ketik nama toko..."
-                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-slate-50 focus:bg-white" />
+                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white" />
         </div>
 
         <!-- Filter Rute Toko -->
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Pilih Rute / Wilayah</label>
-            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-slate-50 focus:bg-white">
+            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white">
                 <option value="">Semua Rute</option>
                 @foreach($routes as $route)
                     <option value="{{ $route }}">{{ $route }}</option>
@@ -40,7 +40,7 @@
         <!-- Filter Status -->
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Status Titipan</label>
-            <select wire:model.live="statusFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-slate-50 focus:bg-white">
+            <select wire:model.live="statusFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white">
                 <option value="active">Sedang Dititip (Aktif)</option>
                 <option value="completed">Selesai / Sudah Ditagih</option>
                 <option value="all">Semua Status</option>

@@ -58,13 +58,13 @@ class Index extends Component
 
         // 4. Pengambilan Pribadi / Keluarga (Prive)
         $totalPrive = CashTransaction::where('type', 'prive')
-            ->whereBetween('transaction_date', [$this->startDate, $this->endDate])
+            ->whereBetween('transaction_date', [$startDate, $endDate])
             ->sum('amount');
 
         // 5. Performa Penjualan per Toko
-        $storePerformances = Store::with(['consignments' => function ($q) {
+        $storePerformances = Store::with(['consignments' => function ($q) use ($startDate, $endDate) {
             $q->where('status', 'completed')
-                ->whereBetween('settlement_date', [$this->startDate, $this->endDate]);
+                ->whereBetween('settlement_date', [$startDate, $endDate]);
         }])
             ->get()
             ->map(function ($store) {
@@ -83,9 +83,9 @@ class Index extends Component
 
         // 6. Penjualan per Produk
         $productSales = ConsignmentItem::with('product')
-            ->whereHas('consignment', function ($q) {
+            ->whereHas('consignment', function ($q) use ($startDate, $endDate) {
                 $q->where('status', 'completed')
-                    ->whereBetween('settlement_date', [$this->startDate, $this->endDate]);
+                    ->whereBetween('settlement_date', [$startDate, $endDate]);
             })
             ->get()
             ->groupBy('product_id')
