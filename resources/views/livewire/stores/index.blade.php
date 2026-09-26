@@ -130,8 +130,38 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Rute / Jalur Keliling</label>
-                        <input type="text" wire:model="route" placeholder="Misal: Rute Pasar Besar, Rute Barat" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-sm font-bold text-slate-800">Rute / Jalur Keliling</label>
+                            @if($routes->count() > 0)
+                                <span class="text-xs text-slate-500">Pilih dari rute ada atau ketik baru</span>
+                            @endif
+                        </div>
+                        <input type="text" 
+                               wire:model="route" 
+                               list="existing-routes-list"
+                               placeholder="Misal: Panam, Hangtuah, Rute Pasar..." 
+                               class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-white" />
+                        <datalist id="existing-routes-list">
+                            @foreach($routes as $r)
+                                <option value="{{ $r }}">{{ $r }}</option>
+                            @endforeach
+                        </datalist>
+
+                        @if($routes->count() > 0)
+                            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                                <span class="text-xs font-semibold text-slate-500">Pilih Rute:</span>
+                                @foreach($routes as $r)
+                                    <button type="button" 
+                                            wire:click="$set('route', '{{ addslashes($r) }}')" 
+                                            class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg border transition-all cursor-pointer {{ $route === $r ? 'bg-slate-900 text-white font-bold border-slate-900 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium border-slate-200' }}">
+                                        @if($route === $r)
+                                            <span class="text-emerald-400 font-bold">✓</span>
+                                        @endif
+                                        <span>{{ $r }}</span>
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
                         @error('route') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                     </div>
 

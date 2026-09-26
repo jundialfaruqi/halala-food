@@ -124,7 +124,11 @@ class Index extends Component
             ->orderBy('name')
             ->paginate(15);
 
-        $routes = Store::whereNotNull('route')->distinct()->pluck('route');
+        $routes = Store::whereNotNull('route')
+            ->where('route', '!=', '')
+            ->distinct()
+            ->orderBy('route')
+            ->pluck('route');
 
         return view('livewire.stores.index', [
             'stores' => $stores,
