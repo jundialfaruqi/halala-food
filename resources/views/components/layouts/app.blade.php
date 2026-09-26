@@ -27,7 +27,7 @@
     <!-- Global DaisyUI Toast Notifications -->
     <x-toast />
 
-    <div class="min-h-screen flex bg-slate-100/70">
+    <div class="min-h-screen flex bg-slate-100/70 overflow-x-hidden">
         <!-- Backdrop for Mobile Drawer -->
         <div 
             x-show="sidebarOpen" 
@@ -46,11 +46,11 @@
         <aside 
             :class="{
                 'w-72 translate-x-0': sidebarOpen,
-                '-translate-x-full lg:translate-x-0 w-0 lg:w-0 border-r-0 overflow-hidden': !sidebarOpen
+                'w-0 -translate-x-full lg:translate-x-0 lg:w-0 border-r-0 pointer-events-none': !sidebarOpen
             }"
-            class="fixed inset-y-0 left-0 z-50 lg:sticky lg:top-0 lg:h-screen lg:max-h-screen lg:z-30 bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none overflow-hidden shadow-2xl lg:shadow-none"
+            class="fixed inset-y-0 left-0 z-50 lg:sticky lg:top-0 lg:h-screen lg:max-h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none overflow-hidden"
         >
-            <div class="w-72 flex flex-col justify-between h-full max-h-screen">
+            <div class="w-72 min-w-[18rem] flex flex-col justify-between h-full max-h-screen shrink-0">
                 <div class="flex flex-col flex-1 min-h-0">
                     <!-- Sidebar Header: Mac window controls, Brand & Mobile Close -->
                     <div class="h-18 px-6 flex items-center justify-between border-b border-slate-200/80 shrink-0">
