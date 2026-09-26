@@ -67,9 +67,16 @@
                                 {{ $store->consignments_count }} Titipan Aktif
                             </td>
                             <td class="py-4 px-6 text-right">
-                                <button wire:click="openEditModal({{ $store->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-4 border border-slate-300">
-                                    Edit Toko
-                                </button>
+                                <div class="flex items-center justify-end gap-2">
+                                    <button wire:click="openEditModal({{ $store->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
+                                        Edit
+                                    </button>
+                                    <button wire:click="deleteStore({{ $store->id }})"
+                                            wire:confirm="Apakah Anda yakin ingin menghapus toko '{{ $store->name }}'?"
+                                            class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                                        Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty

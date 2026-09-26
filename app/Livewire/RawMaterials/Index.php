@@ -75,6 +75,16 @@ class Index extends Component
         session()->flash('message', 'Data bahan baku berhasil disimpan.');
     }
 
+    public function deleteMaterial(int $id): void
+    {
+        $material = RawMaterial::find($id);
+        if ($material) {
+            $name = $material->name;
+            $material->delete();
+            session()->flash('message', "Bahan baku '{$name}' berhasil dihapus.");
+        }
+    }
+
     public function openRecipeModal(int $productId): void
     {
         $this->selectedProductId = $productId;

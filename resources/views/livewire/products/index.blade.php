@@ -50,9 +50,16 @@
                         </p>
                     </div>
 
-                    <button wire:click="openEditModal({{ $product->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-4 border border-slate-300">
-                        Edit
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="openEditModal({{ $product->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
+                            Edit
+                        </button>
+                        <button wire:click="deleteProduct({{ $product->id }})"
+                                wire:confirm="Apakah Anda yakin ingin menghapus produk '{{ $product->name }}'?"
+                                class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                            Hapus
+                        </button>
+                    </div>
                 </div>
             </div>
         @endforeach

@@ -90,6 +90,16 @@ class Index extends Component
         session()->flash('message', 'Data toko berhasil disimpan.');
     }
 
+    public function deleteStore(int $id): void
+    {
+        $store = Store::find($id);
+        if ($store) {
+            $name = $store->name;
+            $store->delete();
+            session()->flash('message', "Toko '{$name}' berhasil dihapus.");
+        }
+    }
+
     public function render(): View
     {
         $stores = Store::withCount(['consignments' => function ($q) {

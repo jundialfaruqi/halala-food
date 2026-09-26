@@ -72,6 +72,16 @@ class Index extends Component
         session()->flash('message', 'Data produk berhasil disimpan.');
     }
 
+    public function deleteProduct(int $id): void
+    {
+        $product = Product::find($id);
+        if ($product) {
+            $name = $product->name;
+            $product->delete();
+            session()->flash('message', "Produk '{$name}' berhasil dihapus.");
+        }
+    }
+
     public function render(): View
     {
         $products = Product::withCount('recipes')->where('is_active', true)->get();

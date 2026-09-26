@@ -52,9 +52,16 @@
                                     Rp {{ number_format($mat->cost_per_unit, 0, ',', '.') }}
                                 </td>
                                 <td class="py-4 px-6 text-right">
-                                    <button wire:click="openMaterialModal({{ $mat->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-4 border border-slate-300">
-                                        Update
-                                    </button>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button wire:click="openMaterialModal({{ $mat->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
+                                            Edit
+                                        </button>
+                                        <button wire:click="deleteMaterial({{ $mat->id }})"
+                                                wire:confirm="Apakah Anda yakin ingin menghapus bahan baku '{{ $mat->name }}'?"
+                                                class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                                            Hapus
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
