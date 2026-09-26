@@ -96,14 +96,17 @@
         <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
             <div>
                 <h2 class="text-xl font-bold text-slate-900">Formulasi Resep Produk</h2>
-                <p class="text-sm text-slate-500">Komposisi bahan per 1 pcs produk</p>
+                <p class="text-sm text-slate-500">Kebutuhan takaran bahan baku per 1 satuan produk jadi</p>
             </div>
 
             <div class="space-y-4">
                 @forelse($products as $product)
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
                         <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
+                                <span class="text-xs text-slate-500">Takaran per 1 {{ $product->unit }}</span>
+                            </div>
                             <button wire:click="openRecipeModal({{ $product->id }})" class="text-xs font-bold text-slate-900 underline hover:text-black">
                                 Atur Resep
                             </button>
@@ -201,7 +204,9 @@
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                     <div>
                         <h3 class="text-xl font-bold text-slate-900">Atur Resep Makanan</h3>
-                        <p class="text-xs text-slate-500">Produk: {{ $currentProduct?->name }} (per 1 pcs)</p>
+                        <p class="text-xs text-slate-500">
+                            Takaran bahan untuk membuat <strong>1 {{ $currentProduct?->unit ?: 'satuan' }} {{ $currentProduct?->name }}</strong>
+                        </p>
                     </div>
                     <button wire:click="$set('showRecipeModal', false)" class="text-slate-400 hover:text-slate-700 font-bold text-xl">
                         &times;
