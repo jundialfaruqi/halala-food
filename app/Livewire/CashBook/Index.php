@@ -60,6 +60,15 @@ class Index extends Component
             'account_name' => 'required|string|max:255',
             'account_type' => 'required|in:business,personal',
             'initial_balance' => 'required|numeric|min:0',
+        ], [
+            'account_name.required' => 'Nama akun kas / rekening wajib diisi.',
+            'account_name.string' => 'Nama akun kas harus berupa teks.',
+            'account_name.max' => 'Nama akun kas maksimal 255 karakter.',
+            'account_type.required' => 'Jenis akun kas wajib dipilih.',
+            'account_type.in' => 'Pilihan jenis akun kas tidak valid.',
+            'initial_balance.required' => 'Saldo awal wajib diisi (bisa diisi 0 jika baru).',
+            'initial_balance.numeric' => 'Saldo awal harus berupa angka.',
+            'initial_balance.min' => 'Saldo awal tidak boleh kurang dari 0.',
         ]);
 
         Account::create([
@@ -106,6 +115,19 @@ class Index extends Component
             'type' => 'required|in:income,expense,prive,personal_expense',
             'category' => 'required|string|max:100',
             'amount' => 'required|numeric|min:1',
+        ], [
+            'transaction_date.required' => 'Tanggal transaksi kas wajib diisi.',
+            'transaction_date.date' => 'Format tanggal transaksi tidak valid.',
+            'account_id.required' => 'Silakan pilih rekening atau kas yang digunakan.',
+            'account_id.exists' => 'Rekening atau kas yang dipilih tidak ditemukan.',
+            'type.required' => 'Jenis transaksi kas wajib dipilih.',
+            'type.in' => 'Jenis transaksi tidak valid.',
+            'category.required' => 'Kategori atau pos transaksi wajib diisi.',
+            'category.string' => 'Kategori transaksi harus berupa teks.',
+            'category.max' => 'Kategori transaksi maksimal 100 karakter.',
+            'amount.required' => 'Nominal uang transaksi wajib diisi.',
+            'amount.numeric' => 'Nominal uang harus berupa angka.',
+            'amount.min' => 'Nominal uang transaksi minimal Rp 1.',
         ]);
 
         DB::transaction(function () {

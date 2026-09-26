@@ -125,12 +125,14 @@
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">No. HP / WhatsApp</label>
                             <input type="text" wire:model="phone" placeholder="0812xxxx" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
+                            @error('phone') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-slate-800 mb-1">Rute / Jalur Keliling</label>
                         <input type="text" wire:model="route" placeholder="Misal: Rute Pasar Besar, Rute Barat" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
+                        @error('route') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <div>

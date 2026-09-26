@@ -71,6 +71,14 @@ class Index extends Component
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
             'route' => 'nullable|string|max:100',
+        ], [
+            'name.required' => 'Nama toko wajib diisi.',
+            'name.string' => 'Nama toko harus berupa teks.',
+            'name.max' => 'Nama toko maksimal 255 karakter.',
+            'phone.string' => 'Nomor telepon/HP harus berupa teks.',
+            'phone.max' => 'Nomor telepon/HP maksimal 50 karakter.',
+            'route.string' => 'Rute wilayah harus berupa teks.',
+            'route.max' => 'Rute wilayah maksimal 100 karakter.',
         ]);
 
         Store::updateOrCreate(

@@ -53,6 +53,22 @@ class Index extends Component
             'consignment_price' => 'required|numeric|min:0',
             'retail_price' => 'required|numeric|min:0',
             'stock_ready' => 'required|integer|min:0',
+        ], [
+            'name.required' => 'Nama produk makanan wajib diisi.',
+            'name.string' => 'Nama produk harus berupa teks.',
+            'name.max' => 'Nama produk maksimal 255 karakter.',
+            'unit.required' => 'Satuan produk wajib diisi (contoh: bungkus/toples/pcs).',
+            'unit.string' => 'Satuan produk harus berupa teks.',
+            'unit.max' => 'Satuan produk maksimal 50 karakter.',
+            'consignment_price.required' => 'Harga titip toko wajib diisi.',
+            'consignment_price.numeric' => 'Harga titip toko harus berupa angka.',
+            'consignment_price.min' => 'Harga titip toko tidak boleh kurang dari 0.',
+            'retail_price.required' => 'Harga jual rekomendasi wajib diisi.',
+            'retail_price.numeric' => 'Harga jual rekomendasi harus berupa angka.',
+            'retail_price.min' => 'Harga jual rekomendasi tidak boleh kurang dari 0.',
+            'stock_ready.required' => 'Jumlah stok siap antar wajib diisi.',
+            'stock_ready.integer' => 'Jumlah stok siap antar harus berupa bilangan bulat.',
+            'stock_ready.min' => 'Jumlah stok siap antar tidak boleh kurang dari 0.',
         ]);
 
         Product::updateOrCreate(

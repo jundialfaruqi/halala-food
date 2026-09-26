@@ -127,10 +127,12 @@
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Satuan <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="unit" placeholder="kg / gram / pcs / liter" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
+                            @error('unit') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Stok Saat Ini <span class="text-red-500">*</span></label>
                             <input type="number" step="0.01" wire:model="stock" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
+                            @error('stock') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -138,10 +140,12 @@
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Batas Minimal Stok</label>
                             <input type="number" step="0.01" wire:model="min_stock" placeholder="Peringatan jika < batas" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
+                            @error('min_stock') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Estimasi Harga Beli / Satuan (Rp)</label>
                             <input type="number" wire:model="cost_per_unit" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
+                            @error('cost_per_unit') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -173,25 +177,39 @@
                 </div>
 
                 <form wire:submit="saveRecipe" class="space-y-4">
+                    @error('recipeRows')
+                        <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-semibold">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
                     <div class="space-y-3 max-h-80 overflow-y-auto pr-1">
                         @foreach($recipeRows as $idx => $row)
-                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border border-slate-200">
-                                <div class="flex-1">
-                                    <select wire:model="recipeRows.{{ $idx }}.raw_material_id" class="select select-bordered select-sm w-full font-medium">
-                                        <option value="">-- Pilih Bahan --</option>
-                                        @foreach($materials as $m)
-                                            <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                            <div class="p-2 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <select wire:model="recipeRows.{{ $idx }}.raw_material_id" class="select select-bordered select-sm w-full font-medium">
+                                            <option value="">-- Pilih Bahan --</option>
+                                            @foreach($materials as $m)
+                                                <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                <div class="w-24">
-                                    <input type="number" step="0.0001" min="0.0001" placeholder="Qty" wire:model="recipeRows.{{ $idx }}.quantity_needed" class="input input-sm input-bordered w-full font-mono text-center font-bold" />
-                                </div>
+                                    <div class="w-24">
+                                        <input type="number" step="0.0001" min="0.0001" placeholder="Qty" wire:model="recipeRows.{{ $idx }}.quantity_needed" class="input input-sm input-bordered w-full font-mono text-center font-bold" />
+                                    </div>
 
-                                <button type="button" wire:click="removeRecipeRow({{ $idx }})" class="btn btn-sm btn-ghost btn-square text-red-500">
-                                    &times;
-                                </button>
+                                    <button type="button" wire:click="removeRecipeRow({{ $idx }})" class="btn btn-sm btn-ghost btn-square text-red-500">
+                                        &times;
+                                    </button>
+                                </div>
+                                @error('recipeRows.'.$idx.'.raw_material_id')
+                                    <span class="text-xs text-red-600 font-semibold block">{{ $message }}</span>
+                                @enderror
+                                @error('recipeRows.'.$idx.'.quantity_needed')
+                                    <span class="text-xs text-red-600 font-semibold block">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endforeach
                     </div>

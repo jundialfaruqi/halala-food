@@ -162,6 +162,7 @@
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Tanggal Transaksi <span class="text-red-500">*</span></label>
                             <input type="date" wire:model="transaction_date" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
+                            @error('transaction_date') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Jenis Transaksi <span class="text-red-500">*</span></label>
@@ -171,6 +172,7 @@
                                 <option value="prive">Tarik Uang untuk Keluarga (Prive)</option>
                                 <option value="personal_expense">Pengeluaran Pribadi</option>
                             </select>
+                            @error('type') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 

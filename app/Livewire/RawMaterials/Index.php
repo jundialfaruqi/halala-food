@@ -58,6 +58,21 @@ class Index extends Component
             'stock' => 'required|numeric|min:0',
             'min_stock' => 'required|numeric|min:0',
             'cost_per_unit' => 'nullable|numeric|min:0',
+        ], [
+            'name.required' => 'Nama bahan baku wajib diisi.',
+            'name.string' => 'Nama bahan baku harus berupa teks.',
+            'name.max' => 'Nama bahan baku maksimal 255 karakter.',
+            'unit.required' => 'Satuan bahan baku wajib diisi (contoh: kg/gram/pcs/liter).',
+            'unit.string' => 'Satuan bahan baku harus berupa teks.',
+            'unit.max' => 'Satuan bahan baku maksimal 50 karakter.',
+            'stock.required' => 'Jumlah stok saat ini wajib diisi.',
+            'stock.numeric' => 'Jumlah stok harus berupa angka.',
+            'stock.min' => 'Jumlah stok tidak boleh kurang dari 0.',
+            'min_stock.required' => 'Batas minimal stok wajib diisi.',
+            'min_stock.numeric' => 'Batas minimal stok harus berupa angka.',
+            'min_stock.min' => 'Batas minimal stok tidak boleh kurang dari 0.',
+            'cost_per_unit.numeric' => 'Harga beli per satuan harus berupa angka.',
+            'cost_per_unit.min' => 'Harga beli per satuan tidak boleh kurang dari 0.',
         ]);
 
         RawMaterial::updateOrCreate(
@@ -119,8 +134,17 @@ class Index extends Component
     public function saveRecipe(): void
     {
         $this->validate([
+            'recipeRows' => 'required|array|min:1',
             'recipeRows.*.raw_material_id' => 'required|exists:raw_materials,id',
             'recipeRows.*.quantity_needed' => 'required|numeric|min:0.0001',
+        ], [
+            'recipeRows.required' => 'Resep harus memiliki minimal 1 bahan baku.',
+            'recipeRows.min' => 'Resep harus memiliki minimal 1 bahan baku.',
+            'recipeRows.*.raw_material_id.required' => 'Silakan pilih bahan baku pada daftar resep.',
+            'recipeRows.*.raw_material_id.exists' => 'Bahan baku yang dipilih tidak valid atau sudah dihapus.',
+            'recipeRows.*.quantity_needed.required' => 'Takaran bahan baku wajib diisi.',
+            'recipeRows.*.quantity_needed.numeric' => 'Takaran bahan baku harus berupa angka.',
+            'recipeRows.*.quantity_needed.min' => 'Takaran bahan baku minimal 0.0001.',
         ]);
 
         ProductRecipe::where('product_id', $this->selectedProductId)->delete();

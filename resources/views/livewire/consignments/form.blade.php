@@ -73,15 +73,20 @@
                                 <p class="text-sm text-slate-500">Harga Titip: Rp {{ number_format($item['price_per_item'], 0, ',', '.') }} / pcs</p>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <label class="text-sm font-bold text-slate-700">Jumlah Titip:</label>
-                                <div class="w-32">
-                                    <input type="number"
-                                           wire:model="items.{{ $index }}.quantity_dropped"
-                                           min="0"
-                                           class="input input-bordered w-full text-center font-bold text-lg rounded-xl h-12 bg-white focus:border-slate-900" />
+                            <div class="flex flex-col items-end">
+                                <div class="flex items-center gap-3">
+                                    <label class="text-sm font-bold text-slate-700">Jumlah Titip:</label>
+                                    <div class="w-32">
+                                        <input type="number"
+                                               wire:model="items.{{ $index }}.quantity_dropped"
+                                               min="0"
+                                               class="input input-bordered w-full text-center font-bold text-lg rounded-xl h-12 bg-white focus:border-slate-900" />
+                                    </div>
+                                    <span class="text-sm font-bold text-slate-600">pcs</span>
                                 </div>
-                                <span class="text-sm font-bold text-slate-600">pcs</span>
+                                @error('items.'.$index.'.quantity_dropped')
+                                    <span class="text-xs text-red-600 font-semibold mt-1">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     @empty
@@ -123,6 +128,7 @@
                     <div>
                         <label class="text-xs font-bold text-slate-500 uppercase block">Tanggal Jemput/Cek</label>
                         <input type="date" wire:model="settlement_date" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900" />
+                        @error('settlement_date') <span class="text-xs font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
 

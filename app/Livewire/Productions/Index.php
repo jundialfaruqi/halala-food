@@ -47,6 +47,14 @@ class Index extends Component
             'production_date' => 'required|date',
             'product_id' => 'required|exists:products,id',
             'quantity_produced' => 'required|integer|min:1',
+        ], [
+            'production_date.required' => 'Tanggal masak / produksi wajib diisi.',
+            'production_date.date' => 'Format tanggal produksi tidak valid.',
+            'product_id.required' => 'Silakan pilih produk makanan yang dibuat.',
+            'product_id.exists' => 'Produk makanan yang dipilih tidak ditemukan.',
+            'quantity_produced.required' => 'Jumlah produk yang dibuat wajib diisi.',
+            'quantity_produced.integer' => 'Jumlah produk yang dibuat harus berupa bilangan bulat.',
+            'quantity_produced.min' => 'Jumlah produk yang dibuat minimal 1 pcs.',
         ]);
 
         $product = Product::with('recipes.rawMaterial')->findOrFail($this->product_id);

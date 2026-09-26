@@ -131,12 +131,24 @@ class Form extends Component
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity_dropped' => 'required|integer|min:0',
+        ], [
+            'store_id.required' => 'Silakan pilih toko mitra tujuan titip barang.',
+            'store_id.exists' => 'Toko mitra yang dipilih tidak ditemukan.',
+            'drop_date.required' => 'Tanggal titip barang wajib diisi.',
+            'drop_date.date' => 'Format tanggal titip tidak valid.',
+            'items.required' => 'Daftar produk titipan tidak boleh kosong.',
+            'items.min' => 'Daftar produk titipan minimal harus berisi 1 produk.',
+            'items.*.product_id.required' => 'Produk makanan wajib dipilih.',
+            'items.*.product_id.exists' => 'Produk makanan tidak valid.',
+            'items.*.quantity_dropped.required' => 'Jumlah barang titip wajib diisi.',
+            'items.*.quantity_dropped.integer' => 'Jumlah barang titip harus berupa bilangan bulat.',
+            'items.*.quantity_dropped.min' => 'Jumlah barang titip tidak boleh negatif.',
         ]);
 
         // Pastikan minimal ada 1 produk dengan quantity > 0
         $totalItems = collect($this->items)->sum('quantity_dropped');
         if ($totalItems <= 0) {
-            $this->addError('items', 'Harap isi jumlah barang yang dititipkan minimal 1 pcs.');
+            $this->addError('items', 'Harap isi jumlah barang yang dititipkan minimal 1 pcs pada salah satu produk.');
 
             return;
         }
@@ -184,6 +196,14 @@ class Form extends Component
             'settlement_date' => 'required|date',
             'account_id' => 'required|exists:accounts,id',
             'amount_paid' => 'required|numeric|min:0',
+        ], [
+            'settlement_date.required' => 'Tanggal jemput / penagihan toko wajib diisi.',
+            'settlement_date.date' => 'Format tanggal jemput tidak valid.',
+            'account_id.required' => 'Silakan pilih kas penerima uang tagihan toko.',
+            'account_id.exists' => 'Akun kas yang dipilih tidak ditemukan.',
+            'amount_paid.required' => 'Jumlah uang yang disetor toko wajib diisi.',
+            'amount_paid.numeric' => 'Jumlah uang yang disetor harus berupa angka.',
+            'amount_paid.min' => 'Jumlah uang yang disetor tidak boleh kurang dari 0.',
         ]);
 
         $this->recalculateAudit();
