@@ -68,22 +68,22 @@
         </div>
     </div>
 
-    <!-- Unified Apple Control Toolbar (All in 1 Clean Card) -->
-    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+    <!-- Unified Filter & Metric Controls (Unboxed Surface) -->
+    <div class="space-y-4">
         <!-- Top Toolbar Row: Metric Tabs & Time Granularity -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <!-- Metric Pills -->
-            <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/70 self-start md:self-auto">
+            <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs self-start md:self-auto overflow-x-auto max-w-full">
                 <button type="button" wire:click="setMetric('revenue')"
-                    class="px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer {{ $metric === 'revenue' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150 whitespace-nowrap cursor-pointer {{ $metric === 'revenue' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     Omset Penjualan (Rp)
                 </button>
                 <button type="button" wire:click="setMetric('quantity')"
-                    class="px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer {{ $metric === 'quantity' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150 whitespace-nowrap cursor-pointer {{ $metric === 'quantity' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     Volume Terjual (Pcs)
                 </button>
                 <button type="button" wire:click="setMetric('profit')"
-                    class="px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer {{ $metric === 'profit' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150 whitespace-nowrap cursor-pointer {{ $metric === 'profit' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     Laba Kotor (Rp)
                 </button>
             </div>
@@ -91,17 +91,17 @@
             <!-- Granularity Pills -->
             <div class="flex items-center gap-2 self-start md:self-auto">
                 <span class="text-xs font-semibold text-slate-400">Grup:</span>
-                <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/70">
+                <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
                     <button type="button" wire:click="setGroupBy('daily')"
-                        class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer {{ $groupBy === 'daily' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900' }}">
+                        class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 cursor-pointer {{ $groupBy === 'daily' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                         Harian
                     </button>
                     <button type="button" wire:click="setGroupBy('weekly')"
-                        class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer {{ $groupBy === 'weekly' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900' }}">
+                        class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 cursor-pointer {{ $groupBy === 'weekly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                         Mingguan
                     </button>
                     <button type="button" wire:click="setGroupBy('monthly')"
-                        class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer {{ $groupBy === 'monthly' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900' }}">
+                        class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 cursor-pointer {{ $groupBy === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                         Bulanan
                     </button>
                 </div>
@@ -117,7 +117,7 @@
                     Produk
                 </label>
                 <select wire:model.live="selectedProductId"
-                    class="select select-bordered select-sm w-full rounded-xl bg-slate-50 border-slate-200 font-medium text-slate-800 focus:border-slate-900 focus:bg-white">
+                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Produk Jadi</option>
                     @foreach ($products as $product)
                         <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -131,7 +131,7 @@
                     Rute Pengantaran
                 </label>
                 <select wire:model.live="selectedRoute"
-                    class="select select-bordered select-sm w-full rounded-xl bg-slate-50 border-slate-200 font-medium text-slate-800 focus:border-slate-900 focus:bg-white">
+                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Rute</option>
                     @foreach ($routes as $route)
                         <option value="{{ $route }}">{{ $route }}</option>
@@ -145,7 +145,7 @@
                     Toko Mitra
                 </label>
                 <select wire:model.live="selectedStoreId"
-                    class="select select-bordered select-sm w-full rounded-xl bg-slate-50 border-slate-200 font-medium text-slate-800 focus:border-slate-900 focus:bg-white">
+                    class="select select-bordered select-sm w-full rounded-xl bg-white border-slate-200 font-medium text-slate-800 focus:border-slate-900 shadow-xs">
                     <option value="all">Semua Toko Mitra</option>
                     @foreach ($stores as $store)
                         <option value="{{ $store->id }}">{{ $store->name }}</option>
@@ -162,7 +162,7 @@
                     $periodPreset !== '30d')
                 <div>
                     <button type="button" wire:click="resetFilters"
-                        class="btn btn-ghost btn-sm text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl w-full flex items-center justify-center gap-1.5 border border-slate-200">
+                        class="btn btn-ghost btn-sm text-xs font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl w-full flex items-center justify-center gap-1.5 border border-slate-200 shadow-xs cursor-pointer">
                         <x-icon name="rotate-ccw" class="text-sm" />
                         <span>Reset Filter</span>
                     </button>

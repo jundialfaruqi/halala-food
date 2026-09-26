@@ -18,47 +18,52 @@
     <!-- Grid Kartu Produk Jadi -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @forelse($products as $product)
-            <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-5 hover:border-slate-400 transition-all">
-                <div class="space-y-3">
-                    <div class="flex items-start justify-between">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between hover:border-slate-400 transition-all">
+                <!-- Top: Judul & Deskripsi -->
+                <div class="space-y-2 mb-6">
+                    <div class="flex items-start justify-between gap-2">
                         <h2 class="text-xl font-bold text-slate-900 leading-tight">{{ $product->name }}</h2>
-                        <span class="text-xs font-bold uppercase text-slate-400 font-mono">{{ $product->unit }}</span>
+                        <span class="text-xs font-bold uppercase text-slate-400 font-mono shrink-0">{{ $product->unit }}</span>
                     </div>
 
                     <p class="text-sm text-slate-500 leading-relaxed">
                         {{ $product->description ?: 'Makanan khas keluarga Halala Food' }}
                     </p>
-
-                    <!-- Info Harga -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-bold text-slate-600">Harga Titip Toko:</span>
-                            <span class="text-base font-bold font-mono text-slate-900">Rp {{ number_format($product->consignment_price, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-slate-500">Harga Jual Rekomendasi:</span>
-                            <span class="text-sm font-mono text-slate-700">Rp {{ number_format($product->retail_price, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-slate-400 font-bold uppercase">Stok Siap Antar</p>
-                        <p class="text-2xl font-extrabold text-slate-900 font-mono">
-                            {{ $product->stock_ready }} <span class="text-xs font-normal text-slate-500">{{ $product->unit }}</span>
-                        </p>
+                <!-- Bottom: Info Harga & Footer Stok (Seragam di Bottom) -->
+                <div class="space-y-4">
+                    <!-- Info Harga (Tepat di atas border footer) -->
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-slate-600">Harga Titip Toko:</span>
+                            <span class="font-bold font-mono text-slate-900">Rp {{ number_format($product->consignment_price, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500">Harga Jual Rekomendasi:</span>
+                            <span class="font-mono text-slate-700 font-medium">Rp {{ number_format($product->retail_price, 0, ',', '.') }}</span>
+                        </div>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <button wire:click="openEditModal({{ $product->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
-                            Edit
-                        </button>
-                        <button wire:click="deleteProduct({{ $product->id }})"
-                                wire:confirm="Apakah Anda yakin ingin menghapus produk '{{ $product->name }}'?"
-                                class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
-                            Hapus
-                        </button>
+                    <!-- Footer Card: Stok & Tombol Aksi -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-slate-400 font-bold uppercase">Stok Siap Antar</p>
+                            <p class="text-2xl font-extrabold text-slate-900 font-mono">
+                                {{ $product->stock_ready }} <span class="text-xs font-normal text-slate-500">{{ $product->unit }}</span>
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button wire:click="openEditModal({{ $product->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
+                                Edit
+                            </button>
+                            <button wire:click="deleteProduct({{ $product->id }})"
+                                    wire:confirm="Apakah Anda yakin ingin menghapus produk '{{ $product->name }}'?"
+                                    class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                                Hapus
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
