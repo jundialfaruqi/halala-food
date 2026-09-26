@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <!-- Clean Header & Top Period Selector (Unified 1-Level Header) -->
-    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 pb-6 border-b border-slate-200/80">
         <div>
             <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
                 Laporan & Trend Penjualan

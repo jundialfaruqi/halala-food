@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <!-- Header Page & Tombol Tambah Toko -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200/80">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 Daftar Toko Mitra

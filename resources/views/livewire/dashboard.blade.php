@@ -1,6 +1,6 @@
 <div class="space-y-8">
     <!-- Header Ringkasan & Tombol Aksi Cepat -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-slate-200/80">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                 Ringkasan Usaha Halala Food

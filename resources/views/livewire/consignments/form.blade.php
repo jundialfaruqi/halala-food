@@ -1,6 +1,6 @@
 <div class="space-y-6 max-w-4xl mx-auto">
     <!-- Header Page -->
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center justify-between gap-4 pb-6 border-b border-slate-200/80">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
                 @if($isEdit)
