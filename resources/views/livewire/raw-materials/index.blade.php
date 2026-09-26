@@ -107,7 +107,7 @@
                                 <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
                                 <span class="text-xs text-slate-500">Takaran per 1 {{ $product->unit }}</span>
                             </div>
-                            <button wire:click="openRecipeModal({{ $product->id }})" class="btn btn-xs bg-slate-900 hover:bg-black text-white font-bold rounded-lg px-2.5">
+                            <button wire:click="openRecipeModal({{ $product->id }})" class="text-xs font-bold text-slate-800 hover:text-black border-b border-slate-400 hover:border-slate-900 pb-0.5 transition-colors cursor-pointer">
                                 Atur Resep
                             </button>
                         </div>
