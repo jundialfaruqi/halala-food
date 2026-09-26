@@ -112,12 +112,12 @@
                             </button>
                         </div>
 
-                        <div class="space-y-1.5 text-sm text-slate-600 bg-white/70 p-3 rounded-lg border border-slate-200/60">
+                        <div class="divide-y divide-slate-200/70 text-sm text-slate-600">
                             @forelse($product->recipes as $r)
                                 @php
                                     $itemCost = $r->quantity_needed * ($r->rawMaterial->cost_per_unit ?? 0);
                                 @endphp
-                                <div class="flex items-center justify-between gap-2 text-xs sm:text-sm py-0.5">
+                                <div class="flex items-center justify-between gap-2 text-xs sm:text-sm py-1.5 first:pt-0 last:pb-0">
                                     <span class="text-slate-700 truncate min-w-0" title="{{ $r->rawMaterial->name }}">
                                         {{ $r->rawMaterial->name }}
                                     </span>
@@ -126,14 +126,14 @@
                                             {{ $r->quantity_needed }} {{ $r->rawMaterial->unit }}
                                         </span>
                                         @if(($r->rawMaterial->cost_per_unit ?? 0) > 0)
-                                            <span class="text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium">
+                                            <span class="text-[11px] text-slate-500 bg-slate-200/70 px-1.5 py-0.5 rounded font-medium">
                                                 Rp {{ number_format($itemCost, 0, ',', '.') }}
                                             </span>
                                         @endif
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-xs text-slate-400 italic">Belum ada resep yang diatur.</p>
+                                <p class="text-xs text-slate-400 italic py-1">Belum ada resep yang diatur.</p>
                             @endforelse
                         </div>
 

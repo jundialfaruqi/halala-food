@@ -275,7 +275,7 @@
 
     <!-- Financial Performance Summary (Pemasukan, Biaya, Laba Bersih) -->
     <div class="space-y-4">
-        <div>
+        <div class="pb-4 border-b border-slate-200/80">
             <h2 class="text-xl font-bold text-slate-900">
                 Ringkasan Keuangan Periode Ini
             </h2>
