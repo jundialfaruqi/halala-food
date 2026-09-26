@@ -127,7 +127,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    @foreach($products as $product)
+                    @forelse($products as $product)
                         <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
                             <div>
                                 <p class="font-bold text-slate-900 text-base">{{ $product->name }}</p>
@@ -138,7 +138,11 @@
                                 <span class="text-xs text-slate-500 block">{{ $product->unit }}</span>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <p class="text-sm text-slate-500 py-2">
+                            Belum ada data produk. <a href="{{ route('products.index') }}" class="text-slate-900 font-bold underline">Tambah Produk</a>
+                        </p>
+                    @endforelse
                 </div>
             </div>
 

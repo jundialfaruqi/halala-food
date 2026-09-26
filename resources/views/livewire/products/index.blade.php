@@ -17,7 +17,7 @@
 
     <!-- Grid Kartu Produk Jadi -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @foreach($products as $product)
+        @forelse($products as $product)
             <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-5 hover:border-slate-400 transition-all">
                 <div class="space-y-3">
                     <div class="flex items-start justify-between">
@@ -62,7 +62,27 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-12 text-center">
+                <div class="max-w-md mx-auto space-y-4">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                        <x-icon name="package" class="text-3xl" />
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-slate-900">Belum Ada Katalog Produk</h3>
+                        <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+                            Daftarkan makanan hasil produksi (misal: Merry Wijen, Brownies, Kue Kering) agar siap diproduksi dan dititipkan ke toko.
+                        </p>
+                    </div>
+                    <div class="pt-2">
+                        <button wire:click="openCreateModal" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6 text-sm shadow-sm gap-2">
+                            <x-icon name="plus" class="text-lg" />
+                            <span>Tambah Produk Pertama</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endforelse
     </div>
 
     <!-- Modal Form Tambah/Edit Produk -->

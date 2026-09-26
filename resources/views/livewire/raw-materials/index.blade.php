@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach($materials as $mat)
+                        @forelse($materials as $mat)
                             <tr class="hover:bg-slate-50/80 transition-colors">
                                 <td class="py-4 px-6 font-bold text-lg text-slate-900">
                                     {{ $mat->name }}
@@ -64,7 +64,29 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="py-16 text-center">
+                                    <div class="max-w-md mx-auto space-y-4">
+                                        <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                                            <x-icon name="archive" class="text-3xl" />
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-xl text-slate-900">Belum Ada Bahan Baku</h3>
+                                            <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+                                                Tambahkan bahan mentah seperti tepung, wijen, minyak, atau telur untuk mulai mengontrol stok gudang dan resep produksi.
+                                            </p>
+                                        </div>
+                                        <div class="pt-2">
+                                            <button wire:click="openMaterialModal" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6 text-sm shadow-sm gap-2">
+                                                <x-icon name="plus" class="text-lg" />
+                                                <span>Tambah Bahan Baku Pertama</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -78,7 +100,7 @@
             </div>
 
             <div class="space-y-4">
-                @foreach($products as $product)
+                @forelse($products as $product)
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
                         <div class="flex items-center justify-between">
                             <h3 class="font-bold text-base text-slate-900">{{ $product->name }}</h3>
@@ -98,7 +120,17 @@
                             @endforelse
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="py-8 text-center space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                            <x-icon name="package" class="text-xl" />
+                        </div>
+                        <p class="text-sm text-slate-500">Belum ada produk untuk diatur resepnya.</p>
+                        <a href="{{ route('products.index') }}" class="btn btn-sm bg-slate-900 text-white font-bold rounded-lg px-4">
+                            + Tambah Produk Dulu
+                        </a>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
