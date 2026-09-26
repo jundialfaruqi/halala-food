@@ -15,7 +15,7 @@
         </button>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <!-- Kolom Kiri: Tabel Stok Bahan Baku (2 Span) -->
         <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 overflow-hidden">
             <div class="p-6 border-b border-slate-200 flex items-center justify-between">

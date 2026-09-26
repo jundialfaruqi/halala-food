@@ -61,7 +61,7 @@
     </div>
 
     <!-- Grid 2 Kolom: Kunjungan Toko & Stok Produk/Bahan -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <!-- Kolom Kiri (2 Span): Toko Yang Sudah Waktunya Dikunjungi / Ditagih -->
         <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200">
             <div class="flex items-center justify-between pb-4 border-b border-slate-200">
