@@ -19,7 +19,7 @@ class ProductRecipe extends Model
     protected function casts(): array
     {
         return [
-            'quantity_needed' => 'decimal:4',
+            'quantity_needed' => 'float',
         ];
     }
 

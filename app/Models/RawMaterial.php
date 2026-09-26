@@ -21,8 +21,8 @@ class RawMaterial extends Model
     protected function casts(): array
     {
         return [
-            'stock' => 'decimal:2',
-            'min_stock' => 'decimal:2',
+            'stock' => 'float',
+            'min_stock' => 'float',
             'cost_per_unit' => 'decimal:2',
         ];
     }
