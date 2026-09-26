@@ -1,28 +1,28 @@
-<div class="space-y-8">
-    <!-- Header Page & Tombol Aksi Kas -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                Buku Kas & Keuangan
-            </h1>
-            <p class="text-base text-slate-600 mt-1">
-                Pemisahan tegas antara uang hasil usaha makanan dan kebutuhan belanja pribadi keluarga.
-            </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <button wire:click="openAccountModal" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-sm border border-slate-300">
-                + Tambah Akun Kas
-            </button>
-            <button wire:click="openTransactionModal('income')" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 text-sm">
-                + Pemasukan
-            </button>
-            <button wire:click="openTransactionModal('expense')" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-sm border border-slate-300">
-                - Biaya Usaha
-            </button>
-            <button wire:click="openTransactionModal('prive')" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-sm border border-slate-300">
-                ⇄ Tarik Prive Keluarga
-            </button>
-        </div>
+<div class="space-y-6">
+    <!-- Header Page -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200">
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Buku Kas & Keuangan
+        </h1>
+        <p class="text-base text-slate-600 mt-1">
+            Pemisahan tegas antara uang hasil usaha makanan dan kebutuhan belanja pribadi keluarga.
+        </p>
+    </div>
+
+    <!-- Tombol Aksi Kas -->
+    <div class="flex flex-wrap items-center gap-3">
+        <button wire:click="openAccountModal" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-5 text-base border border-slate-200 shadow-sm">
+            + Tambah Akun Kas
+        </button>
+        <button wire:click="openTransactionModal('income')" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-5 text-base shadow-sm">
+            + Pemasukan
+        </button>
+        <button wire:click="openTransactionModal('expense')" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-5 text-base border border-slate-200 shadow-sm">
+            - Biaya Usaha
+        </button>
+        <button wire:click="openTransactionModal('prive')" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-5 text-base border border-slate-200 shadow-sm">
+            ⇄ Tarik Prive Keluarga
+        </button>
     </div>
 
     <!-- Kartu Saldo Kas (Usaha vs Pribadi) -->
