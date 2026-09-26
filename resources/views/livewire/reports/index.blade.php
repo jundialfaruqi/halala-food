@@ -36,9 +36,9 @@
 
             <!-- Custom Flatpickr Button -->
             <div class="relative" wire:ignore x-data="{
-                fp: null,
+                _fp: null,
                 init() {
-                    this.fp = flatpickr(this.$refs.customPicker, {
+                    this._fp = flatpickr(this.$refs.customPicker, {
                         mode: 'range',
                         dateFormat: 'Y-m-d',
                         positionElement: this.$refs.calendarBtn,
@@ -53,9 +53,12 @@
                             }
                         }
                     });
+                },
+                openCalendar() {
+                    if (this._fp) this._fp.open();
                 }
             }">
-                <button x-ref="calendarBtn" type="button" @click="fp.open()"
+                <button x-ref="calendarBtn" type="button" @click="openCalendar()"
                     class="px-3.5 py-1.5 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap cursor-pointer {{ $periodPreset === 'custom' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     <x-icon name="calendar" class="text-sm" />
                     <span>Kalender</span>
@@ -443,216 +446,216 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('appleSalesChart', (initialConfig) => ({
-            chart: null,
-            metric: initialConfig ? initialConfig.metric : 'revenue',
+        Alpine.data('appleSalesChart', (initialConfig) => {
+            let chartInstance = null;
 
-            init() {
-                this.$nextTick(() => {
-                    if (initialConfig) {
-                        this.createChart(initialConfig.labels || [], initialConfig.values ||
-                            [], initialConfig.tooltips || [], this.metric);
+            return {
+                metric: initialConfig ? initialConfig.metric : 'revenue',
+
+                init() {
+                    this.$nextTick(() => {
+                        if (initialConfig) {
+                            this.createChart(
+                                initialConfig.labels || [],
+                                initialConfig.values || [],
+                                initialConfig.tooltips || [],
+                                this.metric
+                            );
+                        }
+                    });
+                },
+
+                updateData(detail) {
+                    if (!detail) return;
+                    const payload = Array.isArray(detail) ? (detail[0] || {}) : detail;
+                    const labels = payload.labels || [];
+                    const values = payload.values || [];
+                    const tooltips = payload.tooltips || [];
+                    this.metric = payload.metric || this.metric;
+
+                    const canvas = this.$refs.canvas;
+                    if (!canvas || typeof Chart === 'undefined') return;
+
+                    const activeChart = Chart.getChart(canvas) || chartInstance;
+                    if (activeChart) {
+                        chartInstance = activeChart;
+                        activeChart.data.labels = labels;
+                        activeChart.data.datasets[0].data = values;
+                        activeChart.data.datasets[0].tooltipsMeta = tooltips;
+                        activeChart.data.datasets[0].metricType = this.metric;
+                        activeChart.data.datasets[0].label = this.metric === 'revenue' ? 'Omset' : (this.metric === 'quantity' ? 'Volume Terjual' : 'Laba Kotor');
+                        activeChart.update('active');
+                        return;
                     }
-                });
-            },
 
-            updateData(detail) {
-                if (!detail) return;
-                const labels = detail.labels || [];
-                const values = detail.values || [];
-                const tooltips = detail.tooltips || [];
-                this.metric = detail.metric || this.metric;
+                    this.createChart(labels, values, tooltips, this.metric);
+                },
 
-                const canvas = this.$refs.canvas;
-                const activeChart = (canvas && typeof Chart !== 'undefined') ? Chart.getChart(
-                    canvas) : this.chart;
+                formatCurrency(num) {
+                    return 'Rp ' + Number(num).toLocaleString('id-ID');
+                },
 
-                if (activeChart) {
-                    this.chart = activeChart;
-                    this.chart.data.labels = labels;
-                    this.chart.data.datasets[0].data = values;
-                    this.chart.data.datasets[0].tooltipsMeta = tooltips;
-                    this.chart.data.datasets[0].metricType = this.metric;
-                    this.chart.data.datasets[0].label = this.metric === 'revenue' ? 'Omset' : (this
-                        .metric === 'quantity' ? 'Volume Terjual' : 'Laba Kotor');
-                    this.chart.update('active');
-                    return;
-                }
+                createChart(labels, values, tooltips, metric) {
+                    const canvas = this.$refs.canvas;
+                    if (!canvas || typeof Chart === 'undefined') return;
 
-                this.createChart(labels, values, tooltips, this.metric);
-            },
+                    const existingChart = Chart.getChart(canvas);
+                    if (existingChart) {
+                        existingChart.destroy();
+                    }
+                    if (chartInstance) {
+                        chartInstance.destroy();
+                        chartInstance = null;
+                    }
 
-            formatCurrency(num) {
-                return 'Rp ' + Number(num).toLocaleString('id-ID');
-            },
+                    const ctx = canvas.getContext('2d');
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradient.addColorStop(0, 'rgba(15, 23, 42, 0.16)');
+                    gradient.addColorStop(0.7, 'rgba(15, 23, 42, 0.03)');
+                    gradient.addColorStop(1, 'rgba(15, 23, 42, 0.00)');
 
-            createChart(labels, values, tooltips, metric) {
-                const canvas = this.$refs.canvas;
-                if (!canvas || typeof Chart === 'undefined') return;
-
-                const existingChart = Chart.getChart(canvas);
-                if (existingChart) {
-                    existingChart.destroy();
-                }
-                if (this.chart) {
-                    this.chart.destroy();
-                    this.chart = null;
-                }
-
-                const ctx = canvas.getContext('2d');
-                const gradient = ctx.createLinearGradient(0, 0, 0, 320);
-                gradient.addColorStop(0, 'rgba(15, 23, 42, 0.16)');
-                gradient.addColorStop(0.7, 'rgba(15, 23, 42, 0.03)');
-                gradient.addColorStop(1, 'rgba(15, 23, 42, 0.00)');
-
-                const self = this;
-                this.chart = new Chart(canvas, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: metric === 'revenue' ? 'Omset' : (metric ===
-                                'quantity' ? 'Volume Terjual' : 'Laba Kotor'),
-                            data: values,
-                            tooltipsMeta: tooltips,
-                            metricType: metric,
-                            borderColor: '#0f172a',
-                            borderWidth: 2.5,
-                            backgroundColor: gradient,
-                            fill: true,
-                            tension: 0.35,
-                            cubicInterpolationMode: 'monotone',
-                            pointRadius: function(context) {
-                                return (context.raw && context.raw > 0) ? 3.5 :
-                                    0;
+                    const self = this;
+                    chartInstance = new Chart(canvas, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: metric === 'revenue' ? 'Omset' : (metric === 'quantity' ? 'Volume Terjual' : 'Laba Kotor'),
+                                data: values,
+                                tooltipsMeta: tooltips,
+                                metricType: metric,
+                                borderColor: '#0f172a',
+                                borderWidth: 2.5,
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.35,
+                                cubicInterpolationMode: 'monotone',
+                                pointRadius: function(context) {
+                                    return (context.raw && context.raw > 0) ? 3.5 : 0;
+                                },
+                                pointHoverRadius: 6.5,
+                                pointBackgroundColor: '#0f172a',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2.5,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 400,
+                                easing: 'easeOutQuart'
                             },
-                            pointHoverRadius: 6.5,
-                            pointBackgroundColor: '#0f172a',
-                            pointBorderColor: '#ffffff',
-                            pointBorderWidth: 2.5,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 400,
-                            easing: 'easeOutQuart'
-                        },
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
+                            interaction: {
+                                mode: 'index',
+                                intersect: false,
                             },
-                            tooltip: {
-                                enabled: true,
-                                backgroundColor: '#ffffff',
-                                titleColor: '#64748b',
-                                titleFont: {
-                                    size: 12,
-                                    weight: '600',
-                                    family: 'ui-sans-serif, system-ui, -apple-system, sans-serif'
+                            plugins: {
+                                legend: {
+                                    display: false
                                 },
-                                bodyColor: '#0f172a',
-                                bodyFont: {
-                                    size: 15,
-                                    weight: '800',
-                                    family: 'ui-monospace, SFMono-Regular, monospace'
-                                },
-                                borderColor: '#e2e8f0',
-                                borderWidth: 1,
-                                padding: {
-                                    top: 10,
-                                    bottom: 10,
-                                    left: 14,
-                                    right: 14
-                                },
-                                cornerRadius: 12,
-                                boxPadding: 4,
-                                usePointStyle: true,
-                                callbacks: {
-                                    title: function(context) {
-                                        const index = context[0].dataIndex;
-                                        const meta = context[0].dataset.tooltipsMeta;
-                                        return meta && meta[index] ? meta[index] :
-                                            context[0].label;
-                                    },
-                                    label: function(context) {
-                                        const val = context.parsed.y;
-                                        const mType = context.dataset.metricType;
-                                        if (mType === 'quantity') {
-                                            return ' ' + Number(val).toLocaleString(
-                                                'id-ID') + ' pcs / toples';
-                                        }
-                                        return ' ' + self.formatCurrency(val);
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false,
-                                    drawBorder: false,
-                                },
-                                ticks: {
-                                    color: '#94a3b8',
-                                    font: {
-                                        size: 11,
-                                        weight: '500',
+                                tooltip: {
+                                    enabled: true,
+                                    backgroundColor: '#ffffff',
+                                    titleColor: '#64748b',
+                                    titleFont: {
+                                        size: 12,
+                                        weight: '600',
                                         family: 'ui-sans-serif, system-ui, -apple-system, sans-serif'
                                     },
-                                    maxRotation: 0,
-                                    autoSkip: true,
-                                    maxTicksLimit: 10,
-                                    padding: 8
-                                },
-                                border: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: '#f1f5f9',
-                                    borderDash: [4, 4],
-                                    drawBorder: false,
-                                },
-                                ticks: {
-                                    color: '#94a3b8',
-                                    font: {
-                                        size: 11,
-                                        weight: '500',
+                                    bodyColor: '#0f172a',
+                                    bodyFont: {
+                                        size: 15,
+                                        weight: '800',
                                         family: 'ui-monospace, SFMono-Regular, monospace'
                                     },
-                                    padding: 10,
-                                    callback: function(value) {
-                                        if (self.metric === 'quantity') {
-                                            return Number(value).toLocaleString(
-                                            'id-ID');
+                                    borderColor: '#e2e8f0',
+                                    borderWidth: 1,
+                                    padding: {
+                                        top: 10,
+                                        bottom: 10,
+                                        left: 14,
+                                        right: 14
+                                    },
+                                    cornerRadius: 12,
+                                    boxPadding: 4,
+                                    usePointStyle: true,
+                                    callbacks: {
+                                        title: function(context) {
+                                            const index = context[0].dataIndex;
+                                            const meta = context[0].dataset.tooltipsMeta;
+                                            return meta && meta[index] ? meta[index] : context[0].label;
+                                        },
+                                        label: function(context) {
+                                            const val = context.parsed.y;
+                                            const mType = context.dataset.metricType;
+                                            if (mType === 'quantity') {
+                                                return ' ' + Number(val).toLocaleString('id-ID') + ' pcs / toples';
+                                            }
+                                            return ' ' + self.formatCurrency(val);
                                         }
-                                        if (value >= 1000000) {
-                                            return 'Rp ' + (value / 1000000).toFixed(1)
-                                                .replace('.0', '') + 'jt';
-                                        }
-                                        if (value >= 1000) {
-                                            return 'Rp ' + (value / 1000).toFixed(0) +
-                                                'rb';
-                                        }
-                                        return 'Rp ' + value;
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false,
+                                        drawBorder: false,
+                                    },
+                                    ticks: {
+                                        color: '#94a3b8',
+                                        font: {
+                                            size: 11,
+                                            weight: '500',
+                                            family: 'ui-sans-serif, system-ui, -apple-system, sans-serif'
+                                        },
+                                        maxRotation: 0,
+                                        autoSkip: true,
+                                        maxTicksLimit: 10,
+                                        padding: 8
+                                    },
+                                    border: {
+                                        display: false
                                     }
                                 },
-                                border: {
-                                    display: false
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: '#f1f5f9',
+                                        borderDash: [4, 4],
+                                        drawBorder: false,
+                                    },
+                                    ticks: {
+                                        color: '#94a3b8',
+                                        font: {
+                                            size: 11,
+                                            weight: '500',
+                                            family: 'ui-monospace, SFMono-Regular, monospace'
+                                        },
+                                        padding: 10,
+                                        callback: function(value) {
+                                            if (self.metric === 'quantity') {
+                                                return Number(value).toLocaleString('id-ID');
+                                            }
+                                            if (value >= 1000000) {
+                                                return 'Rp ' + (value / 1000000).toFixed(1).replace('.0', '') + 'jt';
+                                            }
+                                            if (value >= 1000) {
+                                                return 'Rp ' + (value / 1000).toFixed(0) + 'rb';
+                                            }
+                                            return 'Rp ' + value;
+                                        }
+                                    },
+                                    border: {
+                                        display: false
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            }
-        }));
+                    });
+                }
+            };
+        });
     });
 </script>
