@@ -14,34 +14,41 @@ use Livewire\Component;
 #[Title('Laporan Laba Rugi & Performa Toko')]
 class Index extends Component
 {
-    public string $startDate = '';
-
-    public string $endDate = '';
+    public string $dateRange = '';
 
     public function mount(): void
     {
-        $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
-        $this->endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $start = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $end = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $this->dateRange = $start.' - '.$end;
     }
 
     public function render(): View
     {
+        $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+        if ($this->dateRange) {
+            $dates = explode(' - ', $this->dateRange);
+            $startDate = trim($dates[0] ?? $startDate);
+            $endDate = trim($dates[1] ?? $startDate);
+        }
+
         // 1. Total Penjualan Toko
         $totalSales = Consignment::where('status', 'completed')
-            ->whereBetween('settlement_date', [$this->startDate, $this->endDate])
+            ->whereBetween('settlement_date', [$startDate, $endDate])
             ->sum('total_net_received');
 
         // Pemasukan kas usaha lain
         $otherIncome = CashTransaction::where('type', 'income')
             ->whereNull('consignment_id')
-            ->whereBetween('transaction_date', [$this->startDate, $this->endDate])
+            ->whereBetween('transaction_date', [$startDate, $endDate])
             ->sum('amount');
 
         $totalIncome = $totalSales + $otherIncome;
 
         // 2. Biaya Operasional & Bahan Usaha
         $businessExpenses = CashTransaction::where('type', 'expense')
-            ->whereBetween('transaction_date', [$this->startDate, $this->endDate])
+            ->whereBetween('transaction_date', [$startDate, $endDate])
             ->get();
 
         $totalExpenses = $businessExpenses->sum('amount');

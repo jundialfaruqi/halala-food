@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,6 +16,19 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
+
+    // Filters
+    #[Url]
+    public string $search = '';
+
+    #[Url]
+    public string $typeFilter = 'all'; // 'all', 'income', 'expense', 'prive', 'personal_expense'
+
+    #[Url]
+    public string $accountFilter = '';
+
+    #[Url]
+    public string $dateRange = '';
 
     public bool $showTransactionModal = false;
 
@@ -39,6 +53,47 @@ class Index extends Component
     public string $account_type = 'business';
 
     public float $initial_balance = 0;
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTypeFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingAccountFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateRange(): void
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilters(): void
+    {
+        $this->reset(['search', 'typeFilter', 'accountFilter', 'dateRange']);
+        $this->resetPage();
+    }
+
+    public function setQuickDate(string $period): void
+    {
+        if ($period === 'today') {
+            $today = Carbon::today()->format('Y-m-d');
+            $this->dateRange = $today.' - '.$today;
+        } elseif ($period === 'this_month') {
+            $start = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $end = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $this->dateRange = $start.' - '.$end;
+        } elseif ($period === 'all') {
+            $this->dateRange = '';
+        }
+        $this->resetPage();
+    }
 
     public function mount(): void
     {
@@ -166,19 +221,58 @@ class Index extends Component
     public function render(): View
     {
         $accounts = Account::orderBy('type')->orderBy('name')->get();
-        $transactions = CashTransaction::with('account')
-            ->orderBy('transaction_date', 'desc')
+
+        $startDate = '';
+        $endDate = '';
+        if ($this->dateRange) {
+            $dates = explode(' - ', $this->dateRange);
+            $startDate = trim($dates[0] ?? '');
+            $endDate = trim($dates[1] ?? $startDate);
+        }
+
+        $query = CashTransaction::with('account')
+            ->when($this->search, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->where('category', 'like', '%'.$this->search.'%')
+                        ->orWhere('description', 'like', '%'.$this->search.'%');
+                });
+            })
+            ->when($this->typeFilter && $this->typeFilter !== 'all', function ($q) {
+                $q->where('type', $this->typeFilter);
+            })
+            ->when($this->accountFilter, function ($q) {
+                $q->where('account_id', $this->accountFilter);
+            })
+            ->when($startDate, function ($q) use ($startDate) {
+                $q->whereDate('transaction_date', '>=', $startDate);
+            })
+            ->when($endDate, function ($q) use ($endDate) {
+                $q->whereDate('transaction_date', '<=', $endDate);
+            });
+
+        // Filtered summary calculations
+        $filteredIncome = (clone $query)->where('type', 'income')->sum('amount');
+        $filteredExpense = (clone $query)->whereIn('type', ['expense', 'personal_expense'])->sum('amount');
+        $filteredPrive = (clone $query)->where('type', 'prive')->sum('amount');
+
+        $transactions = $query->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(20);
 
         $totalBusinessBalance = $accounts->where('type', 'business')->sum('balance');
         $totalPersonalBalance = $accounts->where('type', 'personal')->sum('balance');
 
+        $hasActiveFilters = $this->search !== '' || $this->typeFilter !== 'all' || $this->accountFilter !== '' || $this->dateRange !== '';
+
         return view('livewire.cash-book.index', [
             'accounts' => $accounts,
             'transactions' => $transactions,
             'totalBusinessBalance' => $totalBusinessBalance,
             'totalPersonalBalance' => $totalPersonalBalance,
+            'filteredIncome' => $filteredIncome,
+            'filteredExpense' => $filteredExpense,
+            'filteredPrive' => $filteredPrive,
+            'hasActiveFilters' => $hasActiveFilters,
         ]);
     }
 }

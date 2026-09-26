@@ -9,15 +9,29 @@
                 Perhitungan laba bersih murni usaha dan evaluasi omset penjualan per toko mitra.
             </p>
         </div>
-        <div class="flex items-center gap-3">
-            <div>
-                <label class="text-xs font-bold text-slate-500 uppercase block">Dari Tanggal</label>
-                <input type="date" wire:model.live="startDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900 bg-white" />
-            </div>
-            <div>
-                <label class="text-xs font-bold text-slate-500 uppercase block">Sampai Tanggal</label>
-                <input type="date" wire:model.live="endDate" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900 bg-white" />
-            </div>
+        <div class="w-full sm:w-72"
+             wire:ignore
+             x-data="{
+                fp: null,
+                init() {
+                    this.fp = flatpickr(this.$refs.picker, {
+                        mode: 'range',
+                        dateFormat: 'Y-m-d',
+                        altInput: true,
+                        altFormat: 'j M Y',
+                        altInputClass: 'input input-bordered w-full text-base font-semibold rounded-xl focus:border-slate-900 bg-white shadow-sm',
+                        defaultDate: @js($dateRange ? explode(' - ', $dateRange) : null),
+                        onClose: (selectedDates, dateStr) => {
+                            $wire.set('dateRange', dateStr);
+                        }
+                    });
+                }
+             }">
+            <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Periode Laporan</label>
+            <input x-ref="picker"
+                   type="text"
+                   placeholder="Pilih periode laporan..."
+                   class="hidden" />
         </div>
     </div>
 

@@ -78,6 +78,120 @@
         </div>
     </div>
 
+    <!-- Filter Bar Transaksi Kas (Apple UI Style) -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 1. Pencarian Kategori / Keterangan -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-1">Cari Kategori / Keterangan</label>
+                <input type="text"
+                       wire:model.live.debounce.300ms="search"
+                       placeholder="Misal: wijen, bensin, toko..."
+                       class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white" />
+            </div>
+
+            <!-- 2. Filter Jenis Transaksi -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-1">Jenis Transaksi</label>
+                <select wire:model.live="typeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white">
+                    <option value="all">Semua Jenis Transaksi</option>
+                    <option value="income">Pemasukan Usaha (+)</option>
+                    <option value="expense">Pengeluaran Usaha (-)</option>
+                    <option value="prive">Tarik Prive Keluarga (⇄)</option>
+                    <option value="personal_expense">Pengeluaran Pribadi (-)</option>
+                </select>
+            </div>
+
+            <!-- 3. Filter Akun Kas -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-1">Akun / Rekening Kas</label>
+                <select wire:model.live="accountFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white">
+                    <option value="">Semua Rekening & Kas</option>
+                    @foreach($accounts as $acc)
+                        <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->type === 'business' ? 'Usaha' : 'Pribadi' }})</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- 4. Rentang Tanggal (1 Input Tunggal) -->
+            <div wire:ignore
+                 x-data="{
+                    fp: null,
+                    init() {
+                        this.fp = flatpickr(this.$refs.picker, {
+                            mode: 'range',
+                            dateFormat: 'Y-m-d',
+                            altInput: true,
+                            altFormat: 'j M Y',
+                            altInputClass: 'input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white',
+                            defaultDate: @js($dateRange ? explode(' - ', $dateRange) : null),
+                            onClose: (selectedDates, dateStr) => {
+                                $wire.set('dateRange', dateStr);
+                            }
+                        });
+                        Livewire.hook('commit', () => {
+                            let currentVal = @this.get('dateRange');
+                            if (this.fp && currentVal !== this.fp.input.value) {
+                                this.fp.setDate(currentVal ? currentVal.split(' - ') : null, false);
+                            }
+                        });
+                    }
+                 }">
+                <label class="block text-sm font-bold text-slate-700 mb-1">Rentang Tanggal</label>
+                <input x-ref="picker"
+                       type="text"
+                       placeholder="Pilih rentang tanggal..."
+                       class="hidden" />
+            </div>
+        </div>
+
+        <!-- Tombol Cepat Periode & Reset Filter -->
+        <div class="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-500 uppercase">Periode Cepat:</span>
+                <button type="button" wire:click="setQuickDate('today')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                    Hari Ini
+                </button>
+                <button type="button" wire:click="setQuickDate('this_month')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                    Bulan Ini
+                </button>
+                <button type="button" wire:click="setQuickDate('all')" class="btn btn-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg">
+                    Semua Waktu
+                </button>
+            </div>
+
+            @if($hasActiveFilters)
+                <button type="button" wire:click="resetFilters" class="text-xs font-bold text-red-600 hover:text-red-800 underline">
+                    ✕ Reset Semua Filter
+                </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- Ringkasan Nominal Hasil Filter (Jika Filter Aktif) -->
+    @if($hasActiveFilters)
+        <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-4 text-sm font-medium">
+            <div class="flex items-center gap-2 text-slate-600">
+                <span class="font-bold text-slate-900">Hasil Filter:</span>
+                <span>{{ $transactions->total() }} transaksi ditemukan</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-6">
+                <div>
+                    <span class="text-slate-500">Pemasukan: </span>
+                    <span class="font-mono font-bold text-slate-900">+ Rp {{ number_format($filteredIncome, 0, ',', '.') }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-500">Pengeluaran Usaha/Pribadi: </span>
+                    <span class="font-mono font-bold text-slate-900">- Rp {{ number_format($filteredExpense, 0, ',', '.') }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-500">Prive Keluarga: </span>
+                    <span class="font-mono font-bold text-slate-900">⇄ Rp {{ number_format($filteredPrive, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Tabel Riwayat Mutasi Kas -->
     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         <div class="p-6 border-b border-slate-200">
@@ -129,7 +243,15 @@
                     @empty
                         <tr>
                             <td colspan="5" class="py-12 text-center text-slate-500 text-base">
-                                Belum ada transaksi kas yang dicatat.
+                                @if($hasActiveFilters)
+                                    Tidak ada transaksi kas yang sesuai dengan filter yang dipilih.
+                                    <br>
+                                    <button wire:click="resetFilters" class="btn btn-sm bg-slate-900 text-white font-bold rounded-lg mt-3">
+                                        Reset Filter
+                                    </button>
+                                @else
+                                    Belum ada transaksi kas yang dicatat.
+                                @endif
                             </td>
                         </tr>
                     @endforelse
