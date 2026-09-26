@@ -69,7 +69,7 @@ class Index extends Component
         );
 
         $this->showModal = false;
-        session()->flash('message', 'Data produk berhasil disimpan.');
+        $this->dispatch('toast', message: 'Data produk berhasil disimpan.');
     }
 
     public function deleteProduct(int $id): void
@@ -78,7 +78,7 @@ class Index extends Component
         if ($product) {
             $name = $product->name;
             $product->delete();
-            session()->flash('message', "Produk '{$name}' berhasil dihapus.");
+            $this->dispatch('toast', message: "Produk '{$name}' berhasil dihapus.");
         }
     }
 

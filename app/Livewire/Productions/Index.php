@@ -86,7 +86,7 @@ class Index extends Component
         });
 
         $this->showModal = false;
-        session()->flash('message', "Berhasil mencatat produksi {$this->quantity_produced} {$product->unit} {$product->name}. Stok produk jadi bertambah & bahan baku terpotong otomatis.");
+        $this->dispatch('toast', message: "Berhasil mencatat produksi {$this->quantity_produced} {$product->unit} {$product->name}. Stok produk jadi bertambah & bahan baku terpotong.");
     }
 
     public function render(): View

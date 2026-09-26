@@ -72,7 +72,7 @@ class Index extends Component
         );
 
         $this->showMaterialModal = false;
-        session()->flash('message', 'Data bahan baku berhasil disimpan.');
+        $this->dispatch('toast', message: 'Data bahan baku berhasil disimpan.');
     }
 
     public function deleteMaterial(int $id): void
@@ -81,7 +81,7 @@ class Index extends Component
         if ($material) {
             $name = $material->name;
             $material->delete();
-            session()->flash('message', "Bahan baku '{$name}' berhasil dihapus.");
+            $this->dispatch('toast', message: "Bahan baku '{$name}' berhasil dihapus.");
         }
     }
 
@@ -134,7 +134,7 @@ class Index extends Component
         }
 
         $this->showRecipeModal = false;
-        session()->flash('message', 'Resep produk berhasil diperbarui.');
+        $this->dispatch('toast', message: 'Resep produk berhasil diperbarui.');
     }
 
     public function render(): View

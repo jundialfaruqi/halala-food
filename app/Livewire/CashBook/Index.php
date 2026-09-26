@@ -69,7 +69,7 @@ class Index extends Component
         ]);
 
         $this->showAccountModal = false;
-        session()->flash('message', 'Akun kas baru berhasil ditambahkan.');
+        $this->dispatch('toast', message: 'Akun kas baru berhasil ditambahkan.');
     }
 
     public function openTransactionModal(string $type = 'expense'): void
@@ -138,7 +138,7 @@ class Index extends Component
         });
 
         $this->showTransactionModal = false;
-        session()->flash('message', 'Transaksi berhasil dicatat ke buku kas.');
+        $this->dispatch('toast', message: 'Transaksi berhasil dicatat ke buku kas.');
     }
 
     public function render(): View

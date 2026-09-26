@@ -87,7 +87,7 @@ class Index extends Component
         );
 
         $this->showModal = false;
-        session()->flash('message', 'Data toko berhasil disimpan.');
+        $this->dispatch('toast', message: 'Data toko berhasil disimpan.');
     }
 
     public function deleteStore(int $id): void
@@ -96,7 +96,7 @@ class Index extends Component
         if ($store) {
             $name = $store->name;
             $store->delete();
-            session()->flash('message', "Toko '{$name}' berhasil dihapus.");
+            $this->dispatch('toast', message: "Toko '{$name}' berhasil dihapus.");
         }
     }
 
