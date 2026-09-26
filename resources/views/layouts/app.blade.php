@@ -11,7 +11,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body 
-    class="font-sans antialiased bg-slate-100/70 text-slate-900 min-h-screen text-base selection:bg-slate-900 selection:text-white"
+    class="font-sans antialiased bg-slate-100/70 text-slate-900 h-screen overflow-hidden text-base selection:bg-slate-900 selection:text-white"
     x-data="{
         sidebarOpen: window.innerWidth >= 1024 ? (localStorage.getItem('hf_sidebar_open') !== 'false') : false,
         toggleSidebar() {
@@ -27,7 +27,7 @@
     <!-- Global DaisyUI Toast Notifications -->
     <x-toast />
 
-    <div class="min-h-screen flex bg-slate-100/70 overflow-x-hidden">
+    <div class="h-screen flex bg-slate-100/70 overflow-hidden">
         <!-- Backdrop for Mobile Drawer -->
         <div 
             x-show="sidebarOpen" 
@@ -42,15 +42,15 @@
             style="display: none;"
         ></div>
 
-        <!-- Apple-style Clean Sidebar (Collapsible & Sticky) -->
+        <!-- Apple-style Clean Sidebar (Collapsible & Fixed/Static on Desktop) -->
         <aside 
             :class="{
                 'w-72 translate-x-0': sidebarOpen,
                 'w-0 -translate-x-full lg:translate-x-0 lg:w-0 border-r-0 pointer-events-none': !sidebarOpen
             }"
-            class="fixed inset-y-0 left-0 z-50 lg:sticky lg:top-0 lg:h-screen lg:max-h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none overflow-hidden"
+            class="fixed inset-y-0 left-0 z-50 lg:static lg:h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none overflow-hidden"
         >
-            <div class="w-72 min-w-[18rem] flex flex-col justify-between h-full max-h-screen shrink-0">
+            <div class="w-72 min-w-[18rem] flex flex-col justify-between h-full shrink-0">
                 <div class="flex flex-col flex-1 min-h-0">
                     <!-- Sidebar Header: Mac window controls, Brand & Mobile Close -->
                     <div class="h-18 px-6 flex items-center justify-between border-b border-slate-200/80 shrink-0">
@@ -169,10 +169,10 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-h-screen min-w-0">
+        <!-- Main Content Area (Isolated Scroll Container) -->
+        <div class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0">
             <!-- Apple-style Clean Topbar -->
-            <header class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 transition-all">
+            <header class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 shrink-0 transition-all">
                 <!-- Left: Toggle Sidebar Button & Title -->
                 <div class="navbar-start gap-3 flex items-center">
                     <button 
@@ -212,7 +212,7 @@
             </main>
 
             <!-- Minimal Footer -->
-            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80">
+            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80 shrink-0">
                 &copy; {{ date('Y') }} {{ config('app.name', 'Halala Food') }} — Sistem Pembukuan & Inventori Konsinyasi
             </footer>
         </div>
