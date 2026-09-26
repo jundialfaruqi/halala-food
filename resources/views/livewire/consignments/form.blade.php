@@ -1,0 +1,227 @@
+<div class="space-y-6 max-w-4xl mx-auto">
+    <!-- Header Page -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+                @if($isEdit)
+                    Cek Sisa & Penagihan Toko
+                @else
+                    Catat Titip Barang Baru
+                @endif
+            </h1>
+            <p class="text-base text-slate-600 mt-1">
+                @if($isEdit)
+                    Toko: <span class="font-bold text-slate-900">{{ $consignment->store->name }}</span> ({{ $consignment->consignment_number }})
+                @else
+                    Pilih toko dan masukkan jumlah produk yang dititipkan hari ini.
+                @endif
+            </p>
+        </div>
+        <a href="{{ route('consignments.index') }}" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-300">
+            Kembali
+        </a>
+    </div>
+
+    @if(!$isEdit)
+        <!-- Form: Titip Barang Baru -->
+        <form wire:submit="saveDrop" class="space-y-6">
+            <!-- Informasi Toko & Tanggal -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5">
+                <h2 class="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
+                    1. Informasi Toko & Tanggal
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Pilih Toko -->
+                    <div>
+                        <label class="block text-base font-bold text-slate-800 mb-1">
+                            Pilih Toko Mitra <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="store_id" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12">
+                            <option value="">-- Pilih Salah Satu Toko --</option>
+                            @foreach($stores as $s)
+                                <option value="{{ $s->id }}">
+                                    {{ $s->name }} ({{ $s->route ?? 'Tanpa Rute' }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('store_id') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Tanggal Titip -->
+                    <div>
+                        <label class="block text-base font-bold text-slate-800 mb-1">
+                            Tanggal Titip Barang <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" wire:model="drop_date" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12" />
+                        @error('drop_date') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jumlah Barang yang Dititipkan -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5">
+                <h2 class="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
+                    2. Jumlah Makanan yang Dititipkan
+                </h2>
+
+                <div class="space-y-4">
+                    @forelse($items as $index => $item)
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 gap-4">
+                            <div class="flex-1">
+                                <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
+                                <p class="text-sm text-slate-500">Harga Titip: Rp {{ number_format($item['price_per_item'], 0, ',', '.') }} / pcs</p>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <label class="text-sm font-bold text-slate-700">Jumlah Titip:</label>
+                                <div class="w-32">
+                                    <input type="number"
+                                           wire:model="items.{{ $index }}.quantity_dropped"
+                                           min="0"
+                                           class="input input-bordered w-full text-center font-bold text-lg rounded-xl h-12 bg-white focus:border-slate-900" />
+                                </div>
+                                <span class="text-sm font-bold text-slate-600">pcs</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-6 bg-slate-50 rounded-xl text-center">
+                            <p class="text-base text-slate-600 font-medium">Belum ada data produk makanan.</p>
+                            <a href="{{ route('products.index') }}" class="btn btn-sm bg-slate-900 text-white font-bold rounded-lg mt-2">
+                                + Buat Produk Dulu
+                            </a>
+                        </div>
+                    @endforelse
+                </div>
+                @error('items') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Catatan Tambahan -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                <label class="block text-base font-bold text-slate-800 mb-1">Catatan Tambahan (Opsional)</label>
+                <textarea wire:model="notes" rows="2" placeholder="Misal: Ditaruh di rak dekat kasir..." class="textarea textarea-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white"></textarea>
+            </div>
+
+            <!-- Tombol Simpan -->
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="submit" class="btn btn-lg bg-slate-900 hover:bg-black text-white font-bold text-lg rounded-xl px-8 shadow-sm">
+                    Simpan & Catat Titipan
+                </button>
+            </div>
+        </form>
+
+    @else
+        <!-- Form: Audit / Cek Sisa & Penagihan Uang Toko -->
+        <form wire:submit="saveSettlement" class="space-y-6">
+            <!-- Rincian Cek Sisa Barang di Toko -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Hitung Sisa di Rak Toko</h2>
+                        <p class="text-sm text-slate-500">Masukkan sisa fisik barang di toko, sistem akan menghitung yang laku.</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase block">Tanggal Jemput/Cek</label>
+                        <input type="date" wire:model="settlement_date" class="input input-sm input-bordered font-mono font-bold rounded-lg text-slate-900" />
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="table w-full text-base">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 font-bold text-sm uppercase">
+                                <th class="py-3 px-3">Nama Menu</th>
+                                <th class="py-3 px-3 text-center">Titip Awal</th>
+                                <th class="py-3 px-3 text-center">Sisa di Toko</th>
+                                <th class="py-3 px-3 text-center">Retur/Rusak</th>
+                                <th class="py-3 px-3 text-center">Laku Terjual</th>
+                                <th class="py-3 px-3 text-right">Subtotal Uang</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            @foreach($items as $index => $item)
+                                <tr>
+                                    <td class="py-4 px-3 font-bold text-slate-900 text-lg">
+                                        {{ $item['product_name'] }}
+                                        <span class="block text-xs font-normal text-slate-500">@ Rp {{ number_format($item['price_per_item'], 0, ',', '.') }}</span>
+                                    </td>
+                                    <td class="py-4 px-3 text-center font-mono font-bold text-lg text-slate-600">
+                                        {{ $item['quantity_dropped'] }} pcs
+                                    </td>
+                                    <td class="py-4 px-3 text-center">
+                                        <input type="number"
+                                               wire:model.live="items.{{ $index }}.quantity_remaining"
+                                               min="0"
+                                               max="{{ $item['quantity_dropped'] }}"
+                                               class="input input-bordered w-24 text-center font-mono font-bold text-lg rounded-xl h-11 border-slate-300 focus:border-slate-900" />
+                                    </td>
+                                    <td class="py-4 px-3 text-center">
+                                        <input type="number"
+                                               wire:model.live="items.{{ $index }}.quantity_returned"
+                                               min="0"
+                                               max="{{ $item['quantity_dropped'] }}"
+                                               class="input input-bordered w-20 text-center font-mono font-bold text-lg rounded-xl h-11 border-slate-300 focus:border-slate-900" />
+                                    </td>
+                                    <td class="py-4 px-3 text-center font-mono font-bold text-xl text-slate-900">
+                                        {{ $item['quantity_sold'] }} pcs
+                                    </td>
+                                    <td class="py-4 px-3 text-right font-mono font-bold text-lg text-slate-900">
+                                        Rp {{ number_format($item['subtotal'], 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-slate-50 font-bold text-lg border-t-2 border-slate-300">
+                                <td colspan="5" class="py-4 px-3 text-right text-slate-800">TOTAL HASIL PENJUALAN:</td>
+                                <td class="py-4 px-3 text-right font-mono text-2xl text-slate-900">
+                                    Rp {{ number_format($totalSoldAmount, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pembayaran & Akun Kas Masuk -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5">
+                <h2 class="text-xl font-bold text-slate-900 pb-2 border-b border-slate-200">
+                    Penerimaan Pembayaran dari Toko
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Akun Kas Masuk -->
+                    <div>
+                        <label class="block text-base font-bold text-slate-800 mb-1">
+                            Masukkan ke Akun Kas <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="account_id" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12">
+                            @foreach($accounts as $acc)
+                                <option value="{{ $acc->id }}">{{ $acc->name }} (Saldo: Rp {{ number_format($acc->balance, 0, ',', '.') }})</option>
+                            @endforeach
+                        </select>
+                        @error('account_id') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Jumlah Uang Yang Diterima -->
+                    <div>
+                        <label class="block text-base font-bold text-slate-800 mb-1">
+                            Jumlah Uang Yang Disetor Toko (Rp) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number"
+                               wire:model="amount_paid"
+                               class="input input-bordered w-full font-mono font-bold text-xl rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12" />
+                        @error('amount_paid') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Selesaikan -->
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="submit" class="btn btn-lg bg-slate-900 hover:bg-black text-white font-bold text-lg rounded-xl px-8 shadow-sm">
+                    Selesaikan Tagihan & Catat ke Kas
+                </button>
+            </div>
+        </form>
+    @endif
+</div>

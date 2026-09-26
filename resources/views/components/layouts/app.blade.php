@@ -10,90 +10,37 @@
     <!-- Vite Styles and Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-base-200/50 text-base-content min-h-screen">
+<body class="font-sans antialiased bg-slate-100/70 text-slate-900 min-h-screen text-base selection:bg-slate-900 selection:text-white">
     <div class="drawer lg:drawer-open min-h-screen">
         <input id="app-drawer" type="checkbox" class="drawer-toggle" />
 
         <!-- Main Content Area -->
         <div class="drawer-content flex flex-col min-h-screen">
-            <!-- Apple-style Glass Header -->
-            <header class="navbar sticky top-0 z-30 bg-base-100/80 backdrop-blur-xl border-b border-base-300/70 px-4 lg:px-6 h-16 transition-all">
+            <!-- Apple-style Clean Topbar -->
+            <header class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 transition-all">
                 <!-- Left: Mobile Drawer Toggle & Breadcrumb/Title -->
-                <div class="navbar-start gap-2 flex items-center">
-                    <label for="app-drawer" class="btn btn-ghost btn-square btn-sm lg:hidden text-base-content" aria-label="Toggle Sidebar">
-                        <x-icon name="layout-sidebar" class="text-xl" />
+                <div class="navbar-start gap-3 flex items-center">
+                    <label for="app-drawer" class="btn btn-ghost btn-square btn-md lg:hidden text-slate-700" aria-label="Buka Menu">
+                        <x-icon name="menu-2" class="text-2xl" />
                     </label>
 
-                    <div class="hidden sm:flex items-center gap-2 text-sm">
-                        <span class="text-base-content/50">{{ config('app.name', 'Halala Food') }}</span>
-                        <x-icon name="chevron-right" class="text-xs text-base-content/30" />
-                        <span class="font-semibold text-base-content">{{ $title ?? 'Dashboard' }}</span>
+                    <div class="flex items-center gap-2 text-base">
+                        <span class="text-slate-400 hidden sm:inline-block">{{ config('app.name', 'Halala Food') }}</span>
+                        <span class="text-slate-300 hidden sm:inline-block">/</span>
+                        <span class="font-bold text-slate-900 text-lg">{{ $title ?? 'Dashboard' }}</span>
                     </div>
                 </div>
 
-                <!-- Center: Apple-style Search Bar -->
-                <div class="navbar-center hidden md:flex w-full max-w-sm">
-                    <div class="relative w-full">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/40">
-                            <x-icon name="search" class="text-base" />
+                <!-- Right: Status / User Info -->
+                <div class="navbar-end gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-bold text-slate-900 leading-tight">Admin Pembukuan</p>
+                            <p class="text-xs text-slate-500">Usaha Keluarga</p>
                         </div>
-                        <input type="text"
-                               placeholder="Cari menu, pesanan, atau fitur... (⌘K)"
-                               class="input input-sm w-full pl-9 pr-12 bg-base-200/60 hover:bg-base-200 focus:bg-base-100 border border-base-300/60 focus:border-primary rounded-xl text-sm transition-all focus:outline-none" />
-                        <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-                            <kbd class="kbd kbd-xs bg-base-100 border border-base-300/80 text-[10px] text-base-content/50">⌘K</kbd>
+                        <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm select-none">
+                            HF
                         </div>
-                    </div>
-                </div>
-
-                <!-- Right: Action Icons & Profile -->
-                <div class="navbar-end gap-1 sm:gap-2">
-                    <!-- Notification Button (No background on icon, no badge) -->
-                    <button class="btn btn-ghost btn-square btn-sm text-base-content/70 hover:text-base-content" aria-label="Notifikasi">
-                        <x-icon name="bell" class="text-lg" />
-                    </button>
-
-                    <!-- Settings / Help Button -->
-                    <button class="btn btn-ghost btn-square btn-sm text-base-content/70 hover:text-base-content" aria-label="Bantuan">
-                        <x-icon name="help-circle" class="text-lg" />
-                    </button>
-
-                    <!-- Divider -->
-                    <div class="divider divider-horizontal mx-0.5 h-6 self-center"></div>
-
-                    <!-- User Profile Dropdown -->
-                    <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="flex items-center gap-2 pl-1 pr-2 py-1 cursor-pointer select-none focus:outline-none">
-                            <div class="avatar placeholder">
-                                <div class="bg-primary/10 text-primary rounded-lg w-7 h-7 flex items-center justify-center font-bold text-xs leading-none">
-                                    <span>HF</span>
-                                </div>
-                            </div>
-                            <span class="text-xs font-semibold hidden sm:inline-block">Admin</span>
-                            <x-icon name="chevron-down" class="text-xs text-base-content/50" />
-                        </div>
-                        <ul tabindex="0" class="dropdown-content menu menu-sm z-50 p-2 shadow-xl bg-base-100 border border-base-300 rounded-2xl w-56 mt-2">
-                            <li class="menu-title px-3 py-2 text-xs font-bold text-base-content/40">Akun Saya</li>
-                            <li>
-                                <a href="#" class="rounded-lg gap-2.5 py-2">
-                                    <x-icon name="user" class="text-base text-base-content/70" />
-                                    <span>Profil Pengguna</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="rounded-lg gap-2.5 py-2">
-                                    <x-icon name="adjustments" class="text-base text-base-content/70" />
-                                    <span>Preferensi</span>
-                                </a>
-                            </li>
-                            <div class="divider my-1"></div>
-                            <li>
-                                <a href="#" class="rounded-lg gap-2.5 py-2 text-error hover:bg-error/10">
-                                    <x-icon name="logout" class="text-base" />
-                                    <span>Keluar</span>
-                                </a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </header>
@@ -104,105 +51,111 @@
             </main>
 
             <!-- Minimal Footer -->
-            <footer class="p-4 text-center text-xs text-base-content/40 border-t border-base-300/40">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Halala Food') }}. All rights reserved.
+            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200">
+                &copy; {{ date('Y') }} {{ config('app.name', 'Halala Food') }} — Sistem Pembukuan & Inventori Konsinyasi
             </footer>
         </div>
 
-        <!-- Apple-style Sidebar Drawer -->
+        <!-- Apple-style Clean Sidebar Drawer -->
         <div class="drawer-side z-40">
-            <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-            <aside class="w-64 min-h-full bg-base-100 lg:bg-base-100/90 lg:backdrop-blur-xl border-r border-base-300/70 flex flex-col justify-between">
+            <label for="app-drawer" aria-label="Tutup Menu" class="drawer-overlay"></label>
+            <aside class="w-72 min-h-full bg-white border-r border-slate-200 flex flex-col justify-between select-none">
                 <div>
-                    <!-- Sidebar Header with Apple window dots & Logo -->
-                    <div class="h-16 px-5 flex items-center justify-between border-b border-base-300/50">
+                    <!-- Sidebar Header: Mac window controls & Brand -->
+                    <div class="h-18 px-6 flex items-center justify-between border-b border-slate-200/80">
                         <div class="flex items-center gap-3">
-                            <!-- Apple Window Controls Aesthetic -->
                             <div class="hidden lg:flex items-center gap-1.5">
-                                <span class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/40 inline-block"></span>
-                                <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/40 inline-block"></span>
-                                <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/40 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span>
                             </div>
 
-                            <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-base tracking-tight text-base-content ml-1">
-                                <x-icon name="tools-kitchen-2" class="text-xl text-primary" />
+                            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 font-bold text-lg tracking-tight text-slate-900">
                                 <span>{{ config('app.name', 'Halala Food') }}</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Sidebar Navigation Menu -->
+                    <!-- Sidebar Navigation Menu (Large Text, High Contrast, Full Width) -->
                     <nav class="py-4 space-y-6">
-                        <!-- Menu Group: Utama -->
+                        <!-- Group 1: Menu Utama -->
                         <div>
-                            <div class="px-5 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-base-content/40">
-                                Menu Utama
+                            <div class="px-6 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Utama & Penjualan
                             </div>
-                            <ul class="menu menu-sm p-0 w-full font-medium">
+                            <ul class="menu p-0 w-full text-base font-semibold">
                                 <li class="w-full">
-                                    <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active bg-primary/10 text-primary font-semibold border-r-2 border-primary' : 'text-base-content/80 hover:bg-base-200/70 hover:text-base-content' }} w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="layout-dashboard" class="text-lg" />
-                                        <span>Dashboard</span>
+                                    <a href="{{ route('dashboard') }}"
+                                       class="{{ request()->routeIs('dashboard') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="layout-dashboard" class="text-xl" />
+                                        <span class="text-base">Dashboard</span>
                                     </a>
                                 </li>
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="clipboard-list" class="text-lg" />
-                                        <span>Daftar Pesanan</span>
+                                    <a href="{{ route('consignments.index') }}"
+                                       class="{{ request()->routeIs('consignments.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="truck-delivery" class="text-xl" />
+                                        <span class="text-base">Titip Jual / Konsinyasi</span>
                                     </a>
                                 </li>
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="salad" class="text-lg" />
-                                        <span>Katalog Menu</span>
+                                    <a href="{{ route('stores.index') }}"
+                                       class="{{ request()->routeIs('stores.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="building-store" class="text-xl" />
+                                        <span class="text-base">Daftar Toko Mitra</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- Menu Group: Manajemen Resto -->
+                        <!-- Group 2: Produk & Stok -->
                         <div>
-                            <div class="px-5 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-base-content/40">
-                                Manajemen
+                            <div class="px-6 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Produk & Bahan
                             </div>
-                            <ul class="menu menu-sm p-0 w-full font-medium">
+                            <ul class="menu p-0 w-full text-base font-semibold">
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="category" class="text-lg" />
-                                        <span>Kategori</span>
+                                    <a href="{{ route('products.index') }}"
+                                       class="{{ request()->routeIs('products.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="package" class="text-xl" />
+                                        <span class="text-base">Produk Jadi</span>
                                     </a>
                                 </li>
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="users" class="text-lg" />
-                                        <span>Pelanggan</span>
+                                    <a href="{{ route('productions.index') }}"
+                                       class="{{ request()->routeIs('productions.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="tools-kitchen-2" class="text-xl" />
+                                        <span class="text-base">Catat Produksi</span>
                                     </a>
                                 </li>
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="chart-bar" class="text-lg" />
-                                        <span>Laporan Penjualan</span>
+                                    <a href="{{ route('raw-materials.index') }}"
+                                       class="{{ request()->routeIs('raw-materials.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="archive" class="text-xl" />
+                                        <span class="text-base">Bahan Baku & Resep</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- Menu Group: Preferensi -->
+                        <!-- Group 3: Keuangan -->
                         <div>
-                            <div class="px-5 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-base-content/40">
-                                Pengaturan
+                            <div class="px-6 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Pembukuan & Kas
                             </div>
-                            <ul class="menu menu-sm p-0 w-full font-medium">
+                            <ul class="menu p-0 w-full text-base font-semibold">
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="settings" class="text-lg" />
-                                        <span>Pengaturan Toko</span>
+                                    <a href="{{ route('cash-book.index') }}"
+                                       class="{{ request()->routeIs('cash-book.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="wallet" class="text-xl" />
+                                        <span class="text-base">Buku Kas (Usaha & Pribadi)</span>
                                     </a>
                                 </li>
                                 <li class="w-full">
-                                    <a href="#" class="text-base-content/80 hover:bg-base-200/70 hover:text-base-content w-full rounded-none py-2.5 px-5 gap-3 flex items-center transition-colors">
-                                        <x-icon name="shield-check" class="text-lg" />
-                                        <span>Keamanan & Akses</span>
+                                    <a href="{{ route('reports.index') }}"
+                                       class="{{ request()->routeIs('reports.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="chart-pie" class="text-xl" />
+                                        <span class="text-base">Laporan Laba Rugi</span>
                                     </a>
                                 </li>
                             </ul>
@@ -210,21 +163,11 @@
                     </nav>
                 </div>
 
-                <!-- Sidebar Footer: Apple-style User Switcher -->
-                <div class="p-3 border-t border-base-300/50">
-                    <div class="flex items-center justify-between p-2 rounded-xl bg-base-200/50 hover:bg-base-200 transition-all cursor-pointer">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="avatar placeholder">
-                                <div class="bg-neutral text-neutral-content rounded-lg w-8 h-8 flex items-center justify-center font-bold text-xs leading-none">
-                                    <span>HF</span>
-                                </div>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-xs font-bold text-base-content truncate">Restoran Halala</p>
-                                <p class="text-[10px] text-base-content/50 truncate">admin@halalafood.id</p>
-                            </div>
-                        </div>
-                        <x-icon name="selector" class="text-base text-base-content/40" />
+                <!-- Sidebar Footer: Toko Aktif info -->
+                <div class="p-6 border-t border-slate-200">
+                    <div class="text-sm text-slate-500">
+                        <p class="font-bold text-slate-800">Usaha Makanan Keluarga</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Versi 1.0 • Offline Ready</p>
                     </div>
                 </div>
             </aside>
