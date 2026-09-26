@@ -101,13 +101,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Harga Titip Toko (Rp) <span class="text-red-500">*</span></label>
-                            <input type="number" wire:model="consignment_price" min="0" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
-                            @error('consignment_price') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
+                            <x-currency-input model="consignment_price" />
+                            @error('consignment_price') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Harga Jual Toko (Rp) <span class="text-red-500">*</span></label>
-                            <input type="number" wire:model="retail_price" min="0" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
-                            @error('retail_price') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
+                            <x-currency-input model="retail_price" />
+                            @error('retail_price') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 

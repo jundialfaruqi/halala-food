@@ -144,7 +144,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Estimasi Harga Beli / Satuan (Rp)</label>
-                            <input type="number" wire:model="cost_per_unit" class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
+                            <x-currency-input model="cost_per_unit" />
                             @error('cost_per_unit') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>

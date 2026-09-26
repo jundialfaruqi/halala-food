@@ -214,9 +214,7 @@
                         <label class="block text-base font-bold text-slate-800 mb-1">
                             Jumlah Uang Yang Disetor Toko (Rp) <span class="text-red-500">*</span>
                         </label>
-                        <input type="number"
-                               wire:model="amount_paid"
-                               class="input input-bordered w-full font-mono font-bold text-xl rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12" />
+                        <x-currency-input model="amount_paid" size="text-xl" class="h-12 bg-slate-50 focus-within:bg-white" />
                         @error('amount_paid') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
