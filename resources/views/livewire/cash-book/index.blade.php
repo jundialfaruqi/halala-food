@@ -279,7 +279,7 @@
                     </button>
                 </div>
 
-                <form wire:submit="saveTransaction" class="space-y-4">
+                <form wire:submit="prepareTransactionConfirmation" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-1">Tanggal Transaksi <span class="text-red-500">*</span></label>
@@ -332,10 +332,104 @@
                             Batal
                         </button>
                         <button type="submit" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6">
-                            Simpan Transaksi
+                            Review & Simpan Transaksi →
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Konfirmasi & Review Transaksi Kas (Clean Apple Monochrome Style) -->
+    @if($showConfirmTransactionModal)
+        @php
+            $selectedAccount = $accounts->firstWhere('id', $account_id);
+            $currentBalance = $selectedAccount?->balance ?? 0;
+            $newBalance = $type === 'income' ? ($currentBalance + (float) $amount) : ($currentBalance - (float) $amount);
+        @endphp
+        <div class="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+            <div class="bg-white w-full max-w-lg rounded-2xl p-6 border border-slate-200 shadow-2xl space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">
+                            Konfirmasi Transaksi Kas
+                        </h3>
+                        <p class="text-xs text-slate-500">Pastikan data berikut sudah sesuai sebelum disimpan</p>
+                    </div>
+                    <button wire:click="$set('showConfirmTransactionModal', false)" class="text-slate-400 hover:text-slate-700 font-bold text-xl cursor-pointer">
+                        &times;
+                    </button>
+                </div>
+
+                <!-- Big Nominal Focus Box -->
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        @if($type === 'income')
+                            Pemasukan Usaha
+                        @elseif($type === 'expense')
+                            Pengeluaran Usaha
+                        @elseif($type === 'prive')
+                            Tarik Prive Keluarga
+                        @else
+                            Pengeluaran Pribadi
+                        @endif
+                    </span>
+                    <p class="text-3xl font-mono font-extrabold text-slate-900">
+                        {{ $type === 'income' ? '+' : '-' }} Rp {{ number_format((float) $amount, 0, ',', '.') }}
+                    </p>
+                </div>
+
+                <!-- Rincian Data Transaksi -->
+                <div class="space-y-2.5 text-sm">
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">Tanggal:</span>
+                        <span class="font-bold text-slate-900">
+                            {{ $transaction_date ? \Carbon\Carbon::parse($transaction_date)->translatedFormat('d F Y') : '-' }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">Rekening / Kas:</span>
+                        <span class="font-bold text-slate-900">
+                            {{ $selectedAccount?->name }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">Kategori / Pos:</span>
+                        <span class="font-bold text-slate-900">{{ $category }}</span>
+                    </div>
+
+                    @if($description)
+                        <div class="flex justify-between items-start py-1.5 border-b border-slate-100">
+                            <span class="text-slate-500 shrink-0">Keterangan:</span>
+                            <span class="font-medium text-slate-800 text-right ml-4">{{ $description }}</span>
+                        </div>
+                    @endif
+
+                    <div class="flex justify-between py-1.5 text-xs text-slate-500">
+                        <span>Estimasi Saldo Baru {{ $selectedAccount?->name }}:</span>
+                        <span class="font-mono font-bold text-slate-700 text-sm">
+                            Rp {{ number_format($newBalance, 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
+
+                @if($type === 'prive')
+                    <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        Catatan: Penarikan ini akan memotong saldo Kas Usaha dan dialihkan ke Kas Pribadi keluarga.
+                    </div>
+                @endif
+
+                <div class="flex justify-end items-center gap-3 pt-3 border-t border-slate-200">
+                    <button type="button" wire:click="$set('showConfirmTransactionModal', false)" class="btn btn-md bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl px-5 border border-slate-300 cursor-pointer">
+                        Ubah Data
+                    </button>
+                    <button type="button" wire:click="saveTransaction" wire:loading.attr="disabled" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6 cursor-pointer">
+                        <span wire:loading.remove wire:target="saveTransaction">Simpan Transaksi</span>
+                        <span wire:loading wire:target="saveTransaction">Menyimpan...</span>
+                    </button>
+                </div>
             </div>
         </div>
     @endif

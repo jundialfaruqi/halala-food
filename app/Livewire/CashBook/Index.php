@@ -32,6 +32,8 @@ class Index extends Component
 
     public bool $showTransactionModal = false;
 
+    public bool $showConfirmTransactionModal = false;
+
     public bool $showAccountModal = false;
 
     // Transaction Form
@@ -143,6 +145,7 @@ class Index extends Component
         $this->category = $this->getDefaultCategory($type);
         $this->amount = 0;
         $this->description = '';
+        $this->showConfirmTransactionModal = false;
         $this->showTransactionModal = true;
     }
 
@@ -160,6 +163,32 @@ class Index extends Component
     public function updatedType(string $value): void
     {
         $this->category = $this->getDefaultCategory($value);
+    }
+
+    public function prepareTransactionConfirmation(): void
+    {
+        $this->validate([
+            'transaction_date' => 'required|date',
+            'account_id' => 'required|exists:accounts,id',
+            'type' => 'required|in:income,expense,prive,personal_expense',
+            'category' => 'required|string|max:100',
+            'amount' => 'required|numeric|min:1',
+        ], [
+            'transaction_date.required' => 'Tanggal transaksi kas wajib diisi.',
+            'transaction_date.date' => 'Format tanggal transaksi tidak valid.',
+            'account_id.required' => 'Silakan pilih rekening atau kas yang digunakan.',
+            'account_id.exists' => 'Rekening atau kas yang dipilih tidak ditemukan.',
+            'type.required' => 'Jenis transaksi kas wajib dipilih.',
+            'type.in' => 'Jenis transaksi tidak valid.',
+            'category.required' => 'Kategori atau pos transaksi wajib diisi.',
+            'category.string' => 'Kategori transaksi harus berupa teks.',
+            'category.max' => 'Kategori transaksi maksimal 100 karakter.',
+            'amount.required' => 'Nominal uang transaksi wajib diisi.',
+            'amount.numeric' => 'Nominal uang harus berupa angka.',
+            'amount.min' => 'Nominal uang transaksi minimal Rp 1.',
+        ]);
+
+        $this->showConfirmTransactionModal = true;
     }
 
     public function saveTransaction(): void
@@ -214,6 +243,7 @@ class Index extends Component
             }
         });
 
+        $this->showConfirmTransactionModal = false;
         $this->showTransactionModal = false;
         $this->dispatch('toast', message: 'Transaksi berhasil dicatat ke buku kas.');
     }
