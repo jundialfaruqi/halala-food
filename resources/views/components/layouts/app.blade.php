@@ -114,6 +114,13 @@
                                     </a>
                                 </li>
                                 <li class="w-full">
+                                    <a href="{{ route('barcodes.index') }}"
+                                        class="{{ request()->routeIs('barcodes.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="tags" class="text-xl" />
+                                        <span class="text-base">Cetak Barcode Toko</span>
+                                    </a>
+                                </li>
+                                <li class="w-full">
                                     <a href="{{ route('productions.index') }}"
                                         class="{{ request()->routeIs('productions.*') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
                                         <x-icon name="tools-kitchen-2" class="text-xl" />
