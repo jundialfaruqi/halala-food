@@ -14,7 +14,10 @@
         <button wire:click="openAccountModal" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
             + Tambah Akun Kas
         </button>
-        <button wire:click="openTransactionModal('income')" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 text-base shadow-sm">
+        <button wire:click="openTransactionModal()" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 text-base shadow-sm">
+            + Transaksi Baru
+        </button>
+        <button wire:click="openTransactionModal('income')" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
             + Pemasukan
         </button>
         <button wire:click="openTransactionModal('expense')" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-4 text-base border border-slate-200 shadow-sm">
