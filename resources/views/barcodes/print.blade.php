@@ -155,42 +155,64 @@
 <body class="bg-slate-100 text-slate-900 font-sans antialiased min-h-screen p-0 sm:p-6">
 
     <!-- Action Bar (Hidden on Print) -->
-    <div class="no-print max-w-5xl mx-auto mb-6 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('barcodes.index', ['tab' => 'print']) }}" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border border-slate-300 gap-1.5 cursor-pointer">
-                <x-icon name="arrow-left" class="text-base" />
-                <span>Kembali ke Studio</span>
-            </a>
-            <div>
-                <p class="font-bold text-slate-900 text-sm leading-tight">Lembar Siap Cetak Barcode Toko</p>
-                <p class="text-xs text-slate-500 font-mono">
-                    {{ count($labels) }} Stiker Label • Grid {{ $columns }} × {{ $rows }} • Ukuran {{ $labelWidth }} × {{ $labelHeight }} mm
-                </p>
+    <div class="no-print max-w-5xl mx-auto mb-5 bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3.5">
+        <!-- Baris 1: Navigasi & Informasi Dokumen -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('barcodes.index', ['tab' => 'print']) }}" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border border-slate-300 gap-1.5 cursor-pointer">
+                    <x-icon name="arrow-left" class="text-base" />
+                    <span>Kembali ke Studio</span>
+                </a>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-base leading-tight">Lembar Siap Cetak Barcode Toko</h1>
+                    <p class="text-xs text-slate-500 font-medium">
+                        Toko: <strong class="text-slate-800">{{ $storeName ?: 'Umum' }}</strong>
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="badge badge-sm bg-slate-100 text-slate-700 font-mono font-bold border-slate-200">
+                    {{ count($labels) }} Stiker (Grid {{ $columns }} × {{ $rows }})
+                </span>
+                <span class="badge badge-sm bg-slate-100 text-slate-700 font-mono font-medium border-slate-200">
+                    Ukuran {{ $labelWidth }} × {{ $labelHeight }} mm
+                </span>
+                @if(count($labels) > $columns * $rows)
+                    <span class="badge badge-sm bg-amber-100 text-amber-800 font-bold border-amber-200">
+                        {{ ceil(count($labels) / ($columns * $rows)) }} Lembar A4
+                    </span>
+                @endif
             </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-            <!-- Download PDF Button -->
-            <button type="button" id="btn-download-pdf" onclick="exportToPdf()" 
-               class="btn btn-sm bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer"
-               title="Simpan lembar stiker ini langsung sebagai file PDF (.pdf)">
-                <x-icon name="file-type-pdf" class="text-base" />
-                <span>Simpan PDF (.pdf)</span>
-            </button>
+        <!-- Baris 2: Tombol Aksi Pencetakan & Ekspor -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <p class="text-xs text-slate-500 font-medium hidden sm:block">
+                Pilih opsi pencetakan atau download file:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full sm:w-auto">
+                <!-- Print Button (Primary) -->
+                <button type="button" onclick="window.print()" class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center">
+                    <x-icon name="printer" class="text-base" />
+                    <span>Cetak Sekarang (Ctrl+P)</span>
+                </button>
 
-            <!-- Download HTML for Flashdisk -->
-            <a href="{{ route('barcodes.export-html', request()->query()) }}" 
-               class="btn btn-sm bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer"
-               title="Download file mandiri offline untuk dimasukkan ke flashdisk">
-                <x-icon name="device-usb" class="text-base" />
-                <span>Simpan ke Flashdisk (.html)</span>
-            </a>
+                <!-- Download PDF Button -->
+                <button type="button" id="btn-download-pdf" onclick="exportToPdf()" 
+                   class="btn btn-sm bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center"
+                   title="Simpan lembar stiker ini langsung sebagai file PDF (.pdf)">
+                    <x-icon name="file-type-pdf" class="text-base" />
+                    <span>Simpan PDF (.pdf)</span>
+                </button>
 
-            <!-- Print Button -->
-            <button type="button" onclick="window.print()" class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-5 gap-2 shadow-xs cursor-pointer">
-                <x-icon name="printer" class="text-base" />
-                <span>Cetak Lembar A4 (Ctrl+P)</span>
-            </button>
+                <!-- Download HTML for Flashdisk -->
+                <a href="{{ route('barcodes.export-html', request()->query()) }}" 
+                   class="btn btn-sm bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center"
+                   title="Download file mandiri offline untuk dimasukkan ke flashdisk">
+                    <x-icon name="device-usb" class="text-base" />
+                    <span>Simpan Flashdisk (.html)</span>
+                </a>
+            </div>
         </div>
     </div>
 
