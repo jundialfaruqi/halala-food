@@ -261,7 +261,7 @@
 
         @if($transactions->hasPages())
             <div class="p-4 border-t border-slate-200">
-                {{ $transactions->links() }}
+                {{ $transactions->links('pagination.tailwind') }}
             </div>
         @endif
     </div>

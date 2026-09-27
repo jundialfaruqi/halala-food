@@ -4,6 +4,9 @@
 @import 'flatpickr/dist/flatpickr.min.css';
 
 @source '../views';
+@source '../views/**/*.blade.php';
+@source '../views/vendor/**/*.blade.php';
+@source '../../app/**/*.php';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @theme {
