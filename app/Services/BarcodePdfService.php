@@ -15,11 +15,11 @@ class BarcodePdfService
         $columns = max(1, (int) ($data['columns'] ?? 3));
         $rows = max(1, (int) ($data['rows'] ?? 8));
         $labelWidthMm = (float) ($data['labelWidth'] ?? 65.0);
-        $labelHeightMm = (float) ($data['labelHeight'] ?? 35.0);
-        $marginTopMm = (float) ($data['marginTop'] ?? 8.0);
-        $marginLeftMm = (float) ($data['marginLeft'] ?? 8.0);
-        $gapXMm = (float) ($data['gapX'] ?? 3.0);
-        $gapYMm = (float) ($data['gapY'] ?? 2.0);
+        $labelHeightMm = (float) ($data['labelHeight'] ?? 34.0);
+        $marginTopMm = (float) ($data['marginTop'] ?? 6.0);
+        $marginLeftMm = (float) ($data['marginLeft'] ?? 6.0);
+        $gapXMm = (float) ($data['gapX'] ?? 2.5);
+        $gapYMm = (float) ($data['gapY'] ?? 1.5);
 
         $showProductName = (bool) ($data['showProductName'] ?? true);
         $showStoreName = (bool) ($data['showStoreName'] ?? true);
@@ -27,31 +27,46 @@ class BarcodePdfService
         $showBarcodeText = (bool) ($data['showBarcodeText'] ?? true);
         $showCutBorders = (bool) ($data['showCutBorders'] ?? true);
 
-        // Responsive font sizing based on grid
+        // Safety Guard: Auto-fit sheet within A4 boundaries (210mm x 297mm)
+        $totalSheetWidthMm = $marginLeftMm + ($columns * $labelWidthMm) + (($columns - 1) * $gapXMm);
+        $totalSheetHeightMm = $marginTopMm + ($rows * $labelHeightMm) + (($rows - 1) * $gapYMm);
+
+        if ($totalSheetHeightMm > 294.0) {
+            $scaleY = 290.0 / $totalSheetHeightMm;
+            $marginTopMm = max(2.0, $marginTopMm * $scaleY);
+            $gapYMm = max(0.5, $gapYMm * $scaleY);
+            $labelHeightMm = $labelHeightMm * $scaleY;
+        }
+
+        if ($totalSheetWidthMm > 208.0) {
+            $scaleX = 204.0 / $totalSheetWidthMm;
+            $marginLeftMm = max(2.0, $marginLeftMm * $scaleX);
+            $gapXMm = max(0.5, $gapXMm * $scaleX);
+            $labelWidthMm = $labelWidthMm * $scaleX;
+        }
+
+        // Dynamic typography sizing based on sticker size
         if ($columns >= 5 || $labelHeightMm <= 20) {
-            // 5x8 Tom & Jerry 108 (38x18mm)
-            $storeFontSize = 4.8;
-            $titleFontSize = 5.8;
-            $priceFontSize = 5.5;
-            $skuFontSize = 4.5;
-            $barcodeNumSize = 5.0;
-            $maxBarHeightMm = 6.5;
+            // Tom & Jerry 108 / Small stickers (38x18mm)
+            $storeFontSize = 4.2;
+            $titleFontSize = 5.0;
+            $priceFontSize = 5.0;
+            $skuFontSize = 4.0;
+            $barcodeNumSize = 4.5;
         } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {
-            // 4x10 (48x28mm)
-            $storeFontSize = 5.8;
-            $titleFontSize = 7.0;
-            $priceFontSize = 6.8;
-            $skuFontSize = 5.2;
-            $barcodeNumSize = 6.0;
-            $maxBarHeightMm = 10.0;
+            // 4x10 (48x27mm) / 4x6
+            $storeFontSize = 5.2;
+            $titleFontSize = 6.2;
+            $priceFontSize = 6.0;
+            $skuFontSize = 4.8;
+            $barcodeNumSize = 5.5;
         } else {
-            // 3x8 (65x35mm) / 2x6
-            $storeFontSize = 7.0;
-            $titleFontSize = 8.5;
-            $priceFontSize = 8.0;
-            $skuFontSize = 6.2;
-            $barcodeNumSize = 7.0;
-            $maxBarHeightMm = 13.0;
+            // 3x8 (65x34mm) / 2x6
+            $storeFontSize = 6.5;
+            $titleFontSize = 7.8;
+            $priceFontSize = 7.5;
+            $skuFontSize = 5.8;
+            $barcodeNumSize = 6.5;
         }
 
         $sheetCapacity = max(1, $columns * $rows);
@@ -61,13 +76,11 @@ class BarcodePdfService
         }
 
         $mmToPt = 72.0 / 25.4; // 2.83464567
-
-        $pdfObjects = [];
-        $pageObjectIds = [];
+        $ptToMm = 25.4 / 72.0; // 0.35277778
 
         // Build content streams for each sheet
         $pageStreams = [];
-        foreach ($sheets as $sheetIndex => $sheetLabels) {
+        foreach ($sheets as $sheetLabels) {
             $stream = "q\n";
 
             foreach ($sheetLabels as $idx => $labelItem) {
@@ -79,11 +92,11 @@ class BarcodePdfService
                 $stickerY_mm = $marginTopMm + ($r * ($labelHeightMm + $gapYMm));
 
                 $x_pt = $stickerX_mm * $mmToPt;
-                $y_pt = (297.0 - $stickerY_mm - $labelHeightMm) * $mmToPt;
+                $y_pt = (297.0 - ($stickerY_mm + $labelHeightMm)) * $mmToPt;
                 $w_pt = $labelWidthMm * $mmToPt;
                 $h_pt = $labelHeightMm * $mmToPt;
 
-                // 1. Dashed Border
+                // 1. Dashed Cut Border
                 if ($showCutBorders) {
                     $stream .= "0.80 0.83 0.88 RG\n";
                     $stream .= "[2 2] 0 d\n";
@@ -92,66 +105,115 @@ class BarcodePdfService
                     $stream .= "[] 0 d\n";
                 }
 
-                // Inner content layout
-                $currentTopMm = $stickerY_mm + 1.2;
+                // 2. Strict Sticker Clipping to prevent any visual cutoffs / bleed
+                $stream .= "q\n";
+                $stream .= sprintf("%.2f %.2f %.2f %.2f re W n\n", $x_pt + 0.5, $y_pt + 0.5, $w_pt - 1.0, $h_pt - 1.0);
 
-                // 2. Store Name
+                // Vertical Layout Distribution
+                $pTopMm = max(0.8, min(1.5, $labelHeightMm * 0.04));
+                $pBottomMm = max(0.8, min(1.5, $labelHeightMm * 0.04));
+                $currentTopMm = $stickerY_mm + $pTopMm;
+
+                // 3. Store Name (Header Top)
                 if ($showStoreName && ! empty($item->store?->name)) {
-                    $storeName = strtoupper(mb_strimwidth($item->store->name, 0, 32, '..'));
-                    $escapedStore = self::escapePdfString($storeName);
-                    $storeY_pt = (297.0 - $currentTopMm - ($storeFontSize * 0.35)) * $mmToPt;
-                    $centerX_pt = $x_pt + ($w_pt / 2.0);
+                    $storeLineHeightMm = ($storeFontSize * $ptToMm * 1.15);
+                    $storeBaselineY_mm = $currentTopMm + ($storeFontSize * $ptToMm * 0.82);
+                    $storeY_pt = (297.0 - $storeBaselineY_mm) * $mmToPt;
 
-                    $approxWidthPt = strlen($storeName) * ($storeFontSize * 0.52);
-                    $textX_pt = max($x_pt + 3, $centerX_pt - ($approxWidthPt / 2.0));
+                    $maxStoreChars = max(6, (int) floor(($w_pt - 6.0) / ($storeFontSize * 0.52)));
+                    $storeName = strtoupper(mb_strimwidth($item->store->name, 0, $maxStoreChars, '..'));
+                    $escapedStore = self::escapePdfString($storeName);
+
+                    $actualStoreWidthPt = strlen($storeName) * ($storeFontSize * 0.52);
+                    $storeX_pt = $x_pt + max(2.0, ($w_pt - $actualStoreWidthPt) / 2.0);
 
                     $stream .= "0.40 0.45 0.55 rg\n";
                     $stream .= "BT\n";
                     $stream .= sprintf("/F2 %.1f Tf\n", $storeFontSize);
-                    $stream .= sprintf("%.2f %.2f Td\n", $textX_pt, $storeY_pt);
+                    $stream .= sprintf("%.2f %.2f Td\n", $storeX_pt, $storeY_pt);
                     $stream .= sprintf("(%s) Tj\n", $escapedStore);
                     $stream .= "ET\n";
 
-                    $currentTopMm += ($storeFontSize * 0.45);
+                    $currentTopMm += $storeLineHeightMm + 0.3;
                 }
 
-                // 3. Product Name
+                // 4. Product Name (Header)
                 if ($showProductName && ! empty($item->display_name)) {
-                    $prodName = mb_strimwidth($item->display_name, 0, 30, '..');
-                    $escapedProd = self::escapePdfString($prodName);
-                    $prodY_pt = (297.0 - $currentTopMm - ($titleFontSize * 0.35)) * $mmToPt;
-                    $centerX_pt = $x_pt + ($w_pt / 2.0);
+                    $titleLineHeightMm = ($titleFontSize * $ptToMm * 1.15);
+                    $prodBaselineY_mm = $currentTopMm + ($titleFontSize * $ptToMm * 0.82);
+                    $prodY_pt = (297.0 - $prodBaselineY_mm) * $mmToPt;
 
-                    $approxWidthPt = strlen($prodName) * ($titleFontSize * 0.52);
-                    $textX_pt = max($x_pt + 3, $centerX_pt - ($approxWidthPt / 2.0));
+                    $maxTitleChars = max(8, (int) floor(($w_pt - 6.0) / ($titleFontSize * 0.52)));
+                    $prodName = mb_strimwidth($item->display_name, 0, $maxTitleChars, '..');
+                    $escapedProd = self::escapePdfString($prodName);
+
+                    $actualTitleWidthPt = strlen($prodName) * ($titleFontSize * 0.52);
+                    $prodX_pt = $x_pt + max(2.0, ($w_pt - $actualTitleWidthPt) / 2.0);
 
                     $stream .= "0.06 0.09 0.16 rg\n";
                     $stream .= "BT\n";
                     $stream .= sprintf("/F2 %.1f Tf\n", $titleFontSize);
-                    $stream .= sprintf("%.2f %.2f Td\n", $textX_pt, $prodY_pt);
+                    $stream .= sprintf("%.2f %.2f Td\n", $prodX_pt, $prodY_pt);
                     $stream .= sprintf("(%s) Tj\n", $escapedProd);
                     $stream .= "ET\n";
 
-                    $currentTopMm += ($titleFontSize * 0.48);
+                    $currentTopMm += $titleLineHeightMm + 0.4;
                 }
 
-                // 4. Barcode Bars
+                // 5. Footer Bounds Calculation (Bottom-Up)
+                $hasFooter = $showPrice && ($item->display_price > 0 || ! empty($item->store_sku));
+                $footerHeightMm = $hasFooter ? (($priceFontSize * $ptToMm * 1.15) + 1.2) : 0.0;
+                $footerTopLimitMm = $stickerY_mm + $labelHeightMm - $pBottomMm - $footerHeightMm;
+
+                // 6. Barcode Number Text (Bottom of Barcode)
                 $rawBarcode = $item->barcode ?? '';
                 $barcodeType = $item->barcode_type ?? 'AUTO';
-                if (! empty($rawBarcode)) {
-                    $structure = BarcodeService::getBarcodeBarsStructure($rawBarcode, $barcodeType);
+                $structure = ! empty($rawBarcode) ? BarcodeService::getBarcodeBarsStructure($rawBarcode, $barcodeType) : null;
+                $displayCode = $structure ? $structure['text'] : '';
+
+                if ($showBarcodeText && ! empty($displayCode)) {
+                    $codeBaselineY_mm = $footerTopLimitMm - 0.3;
+                    $codeY_pt = (297.0 - $codeBaselineY_mm) * $mmToPt;
+
+                    // Clamp barcode font size if code is long
+                    $maxCodeWidthPt = $w_pt - 6.0;
+                    $calcCodeFontSize = $barcodeNumSize;
+                    if (strlen($displayCode) * ($calcCodeFontSize * 0.60) > $maxCodeWidthPt) {
+                        $calcCodeFontSize = max(3.5, $maxCodeWidthPt / (strlen($displayCode) * 0.60));
+                    }
+
+                    $escapedCode = self::escapePdfString($displayCode);
+                    $actualCodeWidthPt = strlen($displayCode) * ($calcCodeFontSize * 0.60);
+                    $codeX_pt = $x_pt + max(2.0, ($w_pt - $actualCodeWidthPt) / 2.0);
+
+                    $stream .= "0 0 0 rg\n";
+                    $stream .= "BT\n";
+                    $stream .= sprintf("/F3 %.1f Tf\n", $calcCodeFontSize);
+                    $stream .= sprintf("%.2f %.2f Td\n", $codeX_pt, $codeY_pt);
+                    $stream .= sprintf("(%s) Tj\n", $escapedCode);
+                    $stream .= "ET\n";
+
+                    $barcodeAreaBottomMm = $codeBaselineY_mm - ($calcCodeFontSize * $ptToMm) - 0.3;
+                } else {
+                    $barcodeAreaBottomMm = $footerTopLimitMm - 0.3;
+                }
+
+                // 7. Middle Barcode Graphic Bars
+                if ($structure) {
                     $totalModules = max(1.0, $structure['totalModules']);
                     $bars = $structure['bars'];
-                    $displayCode = $structure['text'];
 
-                    $maxBarcodeWidthMm = $labelWidthMm * 0.88;
-                    $moduleWidthMm = min(0.35, $maxBarcodeWidthMm / $totalModules);
+                    $barcodeAreaTopMm = $currentTopMm + 0.3;
+                    $availableBarHeightMm = max(3.0, $barcodeAreaBottomMm - $barcodeAreaTopMm);
+                    $actualBarHeightMm = min($availableBarHeightMm, $labelHeightMm * 0.38);
+
+                    $barcodeTopMm = $barcodeAreaTopMm + (($availableBarHeightMm - $actualBarHeightMm) / 2.0);
+
+                    $maxBarcodeWidthMm = $labelWidthMm - 4.0;
+                    $moduleWidthMm = min(0.32, $maxBarcodeWidthMm / $totalModules);
                     $actualBarcodeWidthMm = $totalModules * $moduleWidthMm;
 
                     $barcodeLeftMm = $stickerX_mm + (($labelWidthMm - $actualBarcodeWidthMm) / 2.0);
-                    $currentTopMm += 0.8;
-                    $barcodeTopMm = $currentTopMm;
-                    $barHeightMm = $maxBarHeightMm;
 
                     $stream .= "0 0 0 rg\n";
                     foreach ($bars as $bar) {
@@ -159,48 +221,31 @@ class BarcodePdfService
                         $barW_mm = $bar['width'] * $moduleWidthMm;
 
                         $bX_pt = $barX_mm * $mmToPt;
-                        $bY_pt = (297.0 - $barcodeTopMm - $barHeightMm) * $mmToPt;
+                        $bY_pt = (297.0 - ($barcodeTopMm + $actualBarHeightMm)) * $mmToPt;
                         $bW_pt = $barW_mm * $mmToPt;
-                        $bH_pt = $barHeightMm * $mmToPt;
+                        $bH_pt = $actualBarHeightMm * $mmToPt;
 
                         $stream .= sprintf("%.2f %.2f %.2f %.2f re f\n", $bX_pt, $bY_pt, $bW_pt, $bH_pt);
                     }
-
-                    $currentTopMm += $barHeightMm + 0.3;
-
-                    // Barcode number text
-                    if ($showBarcodeText) {
-                        $escapedCode = self::escapePdfString($displayCode);
-                        $codeY_pt = (297.0 - $currentTopMm - ($barcodeNumSize * 0.35)) * $mmToPt;
-                        $centerX_pt = $x_pt + ($w_pt / 2.0);
-                        $approxWidthPt = strlen($displayCode) * ($barcodeNumSize * 0.60);
-                        $textX_pt = max($x_pt + 3, $centerX_pt - ($approxWidthPt / 2.0));
-
-                        $stream .= "0 0 0 rg\n";
-                        $stream .= "BT\n";
-                        $stream .= sprintf("/F3 %.1f Tf\n", $barcodeNumSize);
-                        $stream .= sprintf("%.2f %.2f Td\n", $textX_pt, $codeY_pt);
-                        $stream .= sprintf("(%s) Tj\n", $escapedCode);
-                        $stream .= "ET\n";
-
-                        $currentTopMm += ($barcodeNumSize * 0.45);
-                    }
                 }
 
-                // 5. Footer: SKU & Price
-                if ($showPrice && ($item->display_price > 0 || ! empty($item->store_sku))) {
-                    $footerY_mm = $stickerY_mm + $labelHeightMm - 1.8;
-                    $footerY_pt = (297.0 - $footerY_mm) * $mmToPt;
+                // 8. Footer (SKU & Price)
+                if ($hasFooter) {
+                    $footerBaselineY_mm = $stickerY_mm + $labelHeightMm - $pBottomMm - 0.2;
+                    $footerY_pt = (297.0 - $footerBaselineY_mm) * $mmToPt;
+                    $dividerLineY_pt = $footerY_pt + ($priceFontSize * 0.95);
 
                     // Divider line
-                    $lineY_pt = $footerY_pt + ($priceFontSize * 0.85);
-                    $stream .= "0.94 0.96 0.98 RG\n";
+                    $stream .= "0.90 0.92 0.95 RG\n";
                     $stream .= "0.4 w\n";
-                    $stream .= sprintf("%.2f %.2f m %.2f %.2f l S\n", $x_pt + 4, $lineY_pt, $x_pt + $w_pt - 4, $lineY_pt);
+                    $stream .= sprintf("%.2f %.2f m %.2f %.2f l S\n", $x_pt + 3.0, $dividerLineY_pt, $x_pt + $w_pt - 3.0, $dividerLineY_pt);
 
                     // SKU Left
                     if (! empty($item->store_sku)) {
-                        $skuText = self::escapePdfString(mb_strimwidth($item->store_sku, 0, 14, '..'));
+                        $maxSkuWidthPt = ($w_pt * 0.45) - 3.0;
+                        $maxSkuChars = max(4, (int) floor($maxSkuWidthPt / ($skuFontSize * 0.52)));
+                        $skuText = self::escapePdfString(mb_strimwidth($item->store_sku, 0, $maxSkuChars, '..'));
+
                         $stream .= "0.40 0.45 0.55 rg\n";
                         $stream .= "BT\n";
                         $stream .= sprintf("/F1 %.1f Tf\n", $skuFontSize);
@@ -213,8 +258,8 @@ class BarcodePdfService
                     if ($item->display_price > 0) {
                         $priceStr = 'Rp '.number_format((float) $item->display_price, 0, ',', '.');
                         $escapedPrice = self::escapePdfString($priceStr);
-                        $approxPriceWidthPt = strlen($priceStr) * ($priceFontSize * 0.60);
-                        $priceX_pt = $x_pt + $w_pt - $approxPriceWidthPt - 3.0;
+                        $priceWidthPt = strlen($priceStr) * ($priceFontSize * 0.58);
+                        $priceX_pt = $x_pt + $w_pt - $priceWidthPt - 3.0;
 
                         $stream .= "0.06 0.09 0.16 rg\n";
                         $stream .= "BT\n";
@@ -224,9 +269,11 @@ class BarcodePdfService
                         $stream .= "ET\n";
                     }
                 }
+
+                $stream .= "Q\n"; // End of sticker clipping
             }
 
-            $stream .= "Q\n";
+            $stream .= "Q\n"; // End of sheet stream
             $pageStreams[] = $stream;
         }
 
@@ -237,9 +284,6 @@ class BarcodePdfService
         // 3: Font F1 (Helvetica)
         // 4: Font F2 (Helvetica-Bold)
         // 5: Font F3 (Courier-Bold)
-        // Then for each page i:
-        // Page Object: 6 + (2 * i)
-        // Content Stream: 7 + (2 * i)
         $catalogObjId = 1;
         $pagesObjId = 2;
         $fontF1ObjId = 3;

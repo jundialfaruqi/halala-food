@@ -79,15 +79,15 @@ class Index extends Component
 
     public float $labelWidthMm = 65.0;
 
-    public float $labelHeightMm = 35.0;
+    public float $labelHeightMm = 34.0;
 
-    public float $marginTopMm = 8.0;
+    public float $marginTopMm = 5.0;
 
-    public float $marginLeftMm = 8.0;
+    public float $marginLeftMm = 6.0;
 
-    public float $gapXMm = 3.0;
+    public float $gapXMm = 2.5;
 
-    public float $gapYMm = 2.0;
+    public float $gapYMm = 1.5;
 
     // Display Toggles for Stickers
     public bool $showProductName = true;
@@ -257,33 +257,33 @@ class Index extends Component
                 $this->columns = 3;
                 $this->rows = 8;
                 $this->labelWidthMm = 65.0;
-                $this->labelHeightMm = 35.0;
-                $this->marginTopMm = 8.0;
-                $this->marginLeftMm = 8.0;
-                $this->gapXMm = 3.0;
-                $this->gapYMm = 2.0;
+                $this->labelHeightMm = 34.0;
+                $this->marginTopMm = 5.0;
+                $this->marginLeftMm = 6.0;
+                $this->gapXMm = 2.5;
+                $this->gapYMm = 1.5;
                 $this->barcodeHeight = 34;
                 break;
             case 'a4_4x10': // 40 label A4 (kecil)
                 $this->columns = 4;
                 $this->rows = 10;
                 $this->labelWidthMm = 48.0;
-                $this->labelHeightMm = 28.0;
-                $this->marginTopMm = 6.0;
-                $this->marginLeftMm = 6.0;
+                $this->labelHeightMm = 27.0;
+                $this->marginTopMm = 5.0;
+                $this->marginLeftMm = 5.0;
                 $this->gapXMm = 2.0;
-                $this->gapYMm = 1.5;
+                $this->gapYMm = 1.2;
                 $this->barcodeHeight = 22;
                 break;
             case 'a4_2x6': // 12 label A4 (besar)
                 $this->columns = 2;
                 $this->rows = 6;
                 $this->labelWidthMm = 95.0;
-                $this->labelHeightMm = 45.0;
-                $this->marginTopMm = 12.0;
-                $this->marginLeftMm = 10.0;
-                $this->gapXMm = 4.0;
-                $this->gapYMm = 3.0;
+                $this->labelHeightMm = 44.0;
+                $this->marginTopMm = 8.0;
+                $this->marginLeftMm = 7.0;
+                $this->gapXMm = 3.0;
+                $this->gapYMm = 2.5;
                 $this->barcodeHeight = 44;
                 break;
             case 'tj_108': // Tom & Jerry No. 108 (5x8 = 40)
