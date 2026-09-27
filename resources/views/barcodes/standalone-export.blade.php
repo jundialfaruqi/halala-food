@@ -200,18 +200,30 @@
                 Toko: <strong style="color: #0f172a;">{{ $storeName ?: 'Umum' }}</strong> • Total: <strong style="color: #0f172a;">{{ count($labels) }} Stiker Label</strong> • Kertas A4 (Grid {{ $columns }} × {{ $rows }})
             </p>
         </div>
-        <button type="button" onclick="window.print()" class="btn-print">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
-                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                <rect x="6" y="14" width="12" height="8"></rect>
-            </svg>
-            <span>Cetak Dokumen (Ctrl + P)</span>
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" onclick="window.print()" class="btn-print" style="background-color: #be123c;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Simpan PDF (Save as PDF)</span>
+            </button>
+            <button type="button" onclick="window.print()" class="btn-print">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>Cetak Dokumen (Ctrl + P)</span>
+            </button>
+        </div>
     </div>
 
     <div class="guide-box">
-        <strong>💡 Petunjuk Percetakan:</strong> File ini siap cetak di kertas stiker label A4. Pada menu print browser, pastikan pilih <strong>Paper Size: A4</strong>, <strong>Scale: 100% (Actual Size / Do not fit)</strong>, dan <strong>Margins: None / Minimum</strong> agar presisi dengan ukuran pisau stiker.
+        <strong>💡 Petunjuk Percetakan & Simpan PDF:</strong> File ini siap cetak di kertas stiker label A4 atau disimpan ke PDF. Pada menu print browser (Ctrl + P), Anda dapat memilih <strong>Destination: Save as PDF (Simpan sebagai PDF)</strong> untuk menyimpan file PDF berkualitas tinggi, atau pilih printer stiker dengan <strong>Paper Size: A4</strong>, <strong>Scale: 100% (Actual Size / Do not fit)</strong>, dan <strong>Margins: None / Minimum</strong> agar presisi dengan ukuran pisau stiker.
     </div>
 
     @php

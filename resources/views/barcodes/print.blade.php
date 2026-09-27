@@ -170,6 +170,14 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+            <!-- Download PDF Button -->
+            <button type="button" id="btn-download-pdf" onclick="exportToPdf()" 
+               class="btn btn-sm bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer"
+               title="Simpan lembar stiker ini langsung sebagai file PDF (.pdf)">
+                <x-icon name="file-type-pdf" class="text-base" />
+                <span>Simpan PDF (.pdf)</span>
+            </button>
+
             <!-- Download HTML for Flashdisk -->
             <a href="{{ route('barcodes.export-html', request()->query()) }}" 
                class="btn btn-sm bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer"
@@ -225,65 +233,117 @@
         }
     @endphp
 
-    <!-- Printable A4 Sheets -->
-    @foreach($sheets as $sheetLabels)
-        <div class="print-sheet">
-            <div class="label-grid">
-                @foreach($sheetLabels as $idx => $label)
-                    <div class="barcode-sticker" 
-                         style="padding: {{ $printPadding }}; {{ $showCutBorders ? 'border: 1px dashed #cbd5e1;' : 'border: 1px solid transparent;' }}">
-                        
-                        <!-- Header Stiker: Nama Toko & Produk -->
-                        <div class="sticker-header">
-                            @if($showStoreName)
-                                <div class="sticker-store" style="font-size: {{ $printStoreSize }};">
-                                    {{ $label['item']->store->name }}
-                                </div>
-                            @endif
+    <div id="print-container">
+        <!-- Printable A4 Sheets -->
+        @foreach($sheets as $sheetLabels)
+            <div class="print-sheet">
+                <div class="label-grid">
+                    @foreach($sheetLabels as $idx => $label)
+                        <div class="barcode-sticker" 
+                             style="padding: {{ $printPadding }}; {{ $showCutBorders ? 'border: 1px dashed #cbd5e1;' : 'border: 1px solid transparent;' }}">
                             
-                            @if($showProductName)
-                                <div class="sticker-title" style="font-size: {{ $printTitleSize }};">
-                                    {{ $label['item']->display_name }}
+                            <!-- Header Stiker: Nama Toko & Produk -->
+                            <div class="sticker-header">
+                                @if($showStoreName)
+                                    <div class="sticker-store" style="font-size: {{ $printStoreSize }};">
+                                        {{ $label['item']->store->name }}
+                                    </div>
+                                @endif
+                                
+                                @if($showProductName)
+                                    <div class="sticker-title" style="font-size: {{ $printTitleSize }};">
+                                        {{ $label['item']->display_name }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Barcode Graphic Vector SVG -->
+                            <div class="sticker-barcode" style="max-height: {{ $printBarcodeMaxH }};">
+                                {!! $label['svg'] !!}
+                            </div>
+
+                            <!-- Footer Stiker: Harga Jual & SKU -->
+                            @if($showPrice && $label['item']->display_price > 0)
+                                <div class="sticker-footer" style="font-size: {{ $printPriceSize }};">
+                                    @if($label['item']->store_sku)
+                                        <span class="sticker-sku" style="font-size: {{ $printSkuSize }};">
+                                            {{ $label['item']->store_sku }}
+                                        </span>
+                                    @else
+                                        <span></span>
+                                    @endif
+                                    <span class="sticker-price">
+                                        Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}
+                                    </span>
                                 </div>
                             @endif
+
                         </div>
-
-                        <!-- Barcode Graphic Vector SVG -->
-                        <div class="sticker-barcode" style="max-height: {{ $printBarcodeMaxH }};">
-                            {!! $label['svg'] !!}
-                        </div>
-
-                        <!-- Footer Stiker: Harga Jual & SKU -->
-                        @if($showPrice && $label['item']->display_price > 0)
-                            <div class="sticker-footer" style="font-size: {{ $printPriceSize }};">
-                                @if($label['item']->store_sku)
-                                    <span class="sticker-sku" style="font-size: {{ $printSkuSize }};">
-                                        {{ $label['item']->store_sku }}
-                                    </span>
-                                @else
-                                    <span></span>
-                                @endif
-                                <span class="sticker-price">
-                                    Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}
-                                </span>
-                            </div>
-                        @endif
-
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
+    </div>
 
-    @if(request()->boolean('autoprint'))
-        <script>
+    <script src="/js/html2pdf.bundle.min.js"></script>
+    <script>
+        function exportToPdf() {
+            const btn = document.getElementById('btn-download-pdf');
+            const originalContent = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <svg class="animate-spin h-4 w-4 text-white inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Menyusun PDF...</span>
+                `;
+            }
+
+            const element = document.getElementById('print-container');
+            const opt = {
+                margin: 0,
+                filename: '{{ !empty($storeName) ? "Barcode-".preg_replace("/[^A-Za-z0-9_\-]/", "_", $storeName)."-".date("Ymd") : "Barcode-Cetak-".date("Ymd") }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 3, 
+                    useCORS: true, 
+                    logging: false 
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                }
+            }).catch(err => {
+                console.error('PDF error:', err);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                }
+                alert('Gagal menyusun PDF otomatis. Silakan gunakan tombol Cetak lalu pilih opsi "Save as PDF / Simpan sebagai PDF".');
+            });
+        }
+
+        @if(request()->boolean('autodownload_pdf'))
+            window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    exportToPdf();
+                }, 400);
+            });
+        @elseif(request()->boolean('autoprint'))
             window.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     window.print();
                 }, 350);
             });
-        </script>
-    @endif
+        @endif
+    </script>
 
 </body>
 </html>
