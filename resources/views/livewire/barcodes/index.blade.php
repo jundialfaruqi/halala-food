@@ -444,74 +444,81 @@
                         <h2 class="text-lg font-bold text-slate-900">Preview Lembar A4</h2>
                         <p class="text-xs text-slate-500">
                             Total <strong>{{ count($printableLabels) }} Stiker</strong> • Format Grid
-                            {{ $columns }} × {{ $rows }}
+                            {{ $columns }} × {{ $rows }} ({{ $columns * $rows }} per lembar)
                         </p>
                     </div>
-                    <span class="badge badge-sm bg-slate-100 text-slate-700 font-mono font-bold border-slate-200">
-                        Skala Layar 100%
-                    </span>
+                    <div class="flex items-center gap-2">
+                        @if(count($printableLabels) > ($columns * $rows))
+                            <span class="badge badge-sm bg-amber-100 text-amber-800 font-bold border-amber-200">
+                                {{ ceil(count($printableLabels) / ($columns * $rows)) }} Lembar A4
+                            </span>
+                        @endif
+                        <span class="badge badge-sm bg-white text-slate-700 font-mono font-bold border-slate-200 shadow-2xs">
+                            Proporsi A4 Pas
+                        </span>
+                    </div>
                 </div>
 
-                <!-- A4 Sheet Container Preview -->
-                <div
-                    class="bg-slate-200/90 rounded-3xl p-4 sm:p-6 overflow-x-auto shadow-inner border border-slate-300/80">
-                    <div class="mx-auto bg-white shadow-2xl transition-all"
-                        style="width: 210mm; min-height: 297mm; padding: {{ $marginTopMm }}mm {{ $marginLeftMm }}mm; box-sizing: border-box;">
+                <!-- A4 Sheet Container Preview (No Scroll, Responsive Fit) -->
+                <div class="bg-slate-200/90 rounded-3xl p-3 sm:p-5 border border-slate-300/80 flex flex-col items-center justify-center">
+                    <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200/80 p-3 sm:p-4 select-none aspect-[210/297] flex flex-col">
+                        
+                        @php
+                            $sheetCapacity = max(1, $columns * $rows);
+                            $firstSheetLabels = array_slice($printableLabels, 0, $sheetCapacity);
+                        @endphp
 
-                        <div
-                            style="display: grid; grid-template-columns: repeat({{ $columns }}, {{ $labelWidthMm }}mm); grid-auto-rows: {{ $labelHeightMm }}mm; column-gap: {{ $gapXMm }}mm; row-gap: {{ $gapYMm }}mm;">
-                            @forelse($printableLabels as $idx => $label)
-                                <div style="width: {{ $labelWidthMm }}mm; height: {{ $labelHeightMm }}mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; padding: 1.5mm 2mm; background: #ffffff; overflow: hidden;"
-                                    class="{{ $showCutBorders ? 'border border-dashed border-slate-300' : '' }}">
-
-                                    <!-- Header Stiker -->
-                                    <div class="w-full space-y-0.5 shrink-0">
-                                        @if ($showStoreName)
-                                            <p
-                                                class="text-[9px] uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
-                                                {{ $label['item']->store->name }}
-                                            </p>
-                                        @endif
-                                        @if ($showProductName)
-                                            <p class="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                                                {{ $label['item']->display_name }}
-                                            </p>
-                                        @endif
-                                    </div>
-
-                                    <!-- Barcode Graphic Vector -->
-                                    <div
-                                        class="w-full flex-1 flex flex-col justify-center items-center my-0.5 overflow-hidden">
-                                        {!! $label['svg'] !!}
-                                    </div>
-
-                                    <!-- Footer Stiker -->
-                                    @if ($showPrice && $label['item']->display_price > 0)
-                                        <div
-                                            class="w-full flex items-center justify-between text-[10px] font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 shrink-0">
-                                            @if ($label['item']->store_sku)
-                                                <span
-                                                    class="text-[8px] text-slate-500 font-normal truncate max-w-[45%]">
-                                                    {{ $label['item']->store_sku }}
-                                                </span>
-                                            @else
-                                                <span></span>
+                        @if(!empty($firstSheetLabels))
+                            <div class="w-full h-full grid"
+                                 style="grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr)); grid-template-rows: repeat({{ $rows }}, minmax(0, 1fr)); gap: 3px;">
+                                @foreach($firstSheetLabels as $idx => $label)
+                                    <div class="w-full h-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : '' }} rounded-xs p-0.5 sm:p-1 flex flex-col justify-between items-center text-center overflow-hidden">
+                                        
+                                        <!-- Header Stiker -->
+                                        <div class="w-full space-y-0 leading-none shrink-0">
+                                            @if ($showStoreName)
+                                                <p class="text-[7px] sm:text-[8px] uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
+                                                    {{ $label['item']->store->name }}
+                                                </p>
                                             @endif
-                                            <span
-                                                class="text-[10px] font-extrabold text-slate-900 ml-auto whitespace-nowrap">
-                                                Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}
-                                            </span>
+                                            @if ($showProductName)
+                                                <p class="text-[8px] sm:text-[9px] font-bold text-slate-900 leading-tight truncate">
+                                                    {{ $label['item']->display_name }}
+                                                </p>
+                                            @endif
                                         </div>
-                                    @endif
-                                </div>
-                            @empty
-                                <div class="col-span-full py-20 text-center text-slate-400">
-                                    <x-icon name="tags" class="text-4xl mx-auto mb-2 opacity-50" />
-                                    <p class="font-semibold text-sm">Pilih barcode atau tambahkan barcode toko terlebih
-                                        dahulu.</p>
-                                </div>
-                            @endforelse
-                        </div>
+
+                                        <!-- Barcode Graphic Vector -->
+                                        <div class="w-full flex-1 flex items-center justify-center my-0.5 overflow-hidden min-h-0">
+                                            <div class="w-full h-full flex items-center justify-center max-h-5 sm:max-h-7">
+                                                {!! $label['svg'] !!}
+                                            </div>
+                                        </div>
+
+                                        <!-- Footer Stiker -->
+                                        @if ($showPrice && $label['item']->display_price > 0)
+                                            <div class="w-full flex items-center justify-between text-[7px] sm:text-[8px] font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 leading-none shrink-0">
+                                                @if ($label['item']->store_sku)
+                                                    <span class="text-[6px] sm:text-[7px] text-slate-500 font-normal truncate max-w-[40%]">
+                                                        {{ $label['item']->store_sku }}
+                                                    </span>
+                                                @else
+                                                    <span></span>
+                                                @endif
+                                                <span class="font-extrabold ml-auto whitespace-nowrap">
+                                                    Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="w-full h-full flex flex-col items-center justify-center text-center text-slate-400 p-8 space-y-2">
+                                <x-icon name="tags" class="text-4xl opacity-50" />
+                                <p class="font-semibold text-sm">Pilih barcode atau tambahkan barcode toko terlebih dahulu.</p>
+                            </div>
+                        @endif
 
                     </div>
                 </div>
