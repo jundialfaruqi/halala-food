@@ -10,11 +10,13 @@
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('consignments.create') }}" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold text-base rounded-xl px-5 gap-2 shadow-sm">
+            <a href="{{ route('consignments.create') }}"
+                class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold text-base rounded-xl px-5 gap-2 shadow-sm">
                 <x-icon name="plus" class="text-xl" />
                 <span>Titip Barang Baru</span>
             </a>
-            <a href="{{ route('productions.index') }}" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold text-base rounded-xl px-4 gap-2 shadow-sm">
+            <a href="{{ route('productions.index') }}"
+                class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold text-base rounded-xl px-4 gap-2 shadow-sm">
                 <x-icon name="tools-kitchen-2" class="text-xl" />
                 <span>Catat Produksi</span>
             </a>
@@ -24,12 +26,15 @@
     <!-- Metrik Utama (Angka Besar & Jelas) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
         <!-- Kas Usaha -->
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+        <div
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
             <div>
                 <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Total Kas Usaha</p>
-                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
-                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight break-words" title="Rp {{ number_format($totalBusinessCash, 0, ',', '.') }}">
-                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span> {{ number_format($totalBusinessCash, 0, ',', '.') }}
+                <div class="py-3 min-h-17 flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight wrap-break-words"
+                        title="Rp {{ number_format($totalBusinessCash, 0, ',', '.') }}">
+                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span>
+                        {{ number_format($totalBusinessCash, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
@@ -39,29 +44,38 @@
         </div>
 
         <!-- Titipan Aktif di Toko -->
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+        <div
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
             <div>
                 <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Titipan di Toko</p>
-                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
-                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
-                        {{ $activeConsignmentsCount }} <span class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
+                <div class="py-3 min-h-17 flex flex-col justify-center">
+                    <p
+                        class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                        {{ $activeConsignmentsCount }} <span
+                            class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
                     </p>
                 </div>
             </div>
             <div class="pt-3 border-t border-slate-100 mt-auto">
-                <p class="text-xs sm:text-sm text-slate-500 leading-snug truncate" title="Estimasi nilai: Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}">
-                    Estimasi nilai: <span class="font-bold text-slate-700 font-mono">Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}</span>
+                <p class="text-xs sm:text-sm text-slate-500 leading-snug truncate"
+                    title="Estimasi nilai: Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}">
+                    Estimasi nilai: <span class="font-bold text-slate-700 font-mono">Rp
+                        {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}</span>
                 </p>
             </div>
         </div>
 
         <!-- Kas Pribadi / Keluarga (Terpisah) -->
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+        <div
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
             <div>
-                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Kas Pribadi / Keluarga</p>
-                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
-                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight break-words" title="Rp {{ number_format($totalPersonalCash, 0, ',', '.') }}">
-                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span> {{ number_format($totalPersonalCash, 0, ',', '.') }}
+                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Kas Pribadi / Keluarga
+                </p>
+                <div class="py-3 min-h-17 flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight wrap-break-words"
+                        title="Rp {{ number_format($totalPersonalCash, 0, ',', '.') }}">
+                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span>
+                        {{ number_format($totalPersonalCash, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
@@ -71,12 +85,15 @@
         </div>
 
         <!-- Total Mitra Toko -->
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+        <div
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
             <div>
                 <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Total Toko Mitra</p>
-                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
-                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
-                        {{ $totalStoresCount }} <span class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
+                <div class="py-3 min-h-17 flex flex-col justify-center">
+                    <p
+                        class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                        {{ $totalStoresCount }} <span
+                            class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
                     </p>
                 </div>
             </div>
@@ -100,11 +117,12 @@
                 </a>
             </div>
 
-            @if($dueConsignments->count() > 0)
+            @if ($dueConsignments->count() > 0)
                 <div class="overflow-x-auto mt-4">
                     <table class="table w-full text-base">
                         <thead>
-                            <tr class="border-b border-slate-200 text-slate-500 font-bold text-sm uppercase tracking-wider">
+                            <tr
+                                class="border-b border-slate-200 text-slate-500 font-bold text-sm uppercase tracking-wider">
                                 <th class="py-3 px-2">Nama Toko</th>
                                 <th class="py-3 px-2">Rute</th>
                                 <th class="py-3 px-2">Tgl Titip</th>
@@ -112,21 +130,24 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            @foreach($dueConsignments as $consignment)
+                            @foreach ($dueConsignments as $consignment)
                                 <tr class="hover:bg-slate-50 transition-colors">
                                     <td class="py-4 px-2">
                                         <p class="font-bold text-slate-900 text-lg">{{ $consignment->store->name }}</p>
-                                        <p class="text-sm text-slate-500">{{ $consignment->store->phone ?? 'Tanpa nomor telepon' }}</p>
+                                        <p class="text-sm text-slate-500">
+                                            {{ $consignment->store->phone ?? 'Tanpa nomor telepon' }}</p>
                                     </td>
                                     <td class="py-4 px-2 text-slate-700 font-medium">
                                         {{ $consignment->store->route ?? '-' }}
                                     </td>
                                     <td class="py-4 px-2 font-mono text-slate-700">
                                         {{ $consignment->drop_date->format('d M Y') }}
-                                        <span class="block text-xs text-slate-500">({{ $consignment->drop_date->diffForHumans() }})</span>
+                                        <span
+                                            class="block text-xs text-slate-500">({{ $consignment->drop_date->diffForHumans() }})</span>
                                     </td>
                                     <td class="py-4 px-2 text-right">
-                                        <a href="{{ route('consignments.edit', $consignment->id) }}" class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-lg px-4">
+                                        <a href="{{ route('consignments.edit', $consignment->id) }}"
+                                            class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-lg px-4">
                                             Cek Sisa / Tagih
                                         </a>
                                     </td>
@@ -149,7 +170,8 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
                     <h2 class="text-lg font-bold text-slate-900">Stok Produk Siap Antar</h2>
-                    <a href="{{ route('products.index') }}" class="text-sm font-bold text-slate-900 hover:underline">Kelola</a>
+                    <a href="{{ route('products.index') }}"
+                        class="text-sm font-bold text-slate-900 hover:underline">Kelola</a>
                 </div>
 
                 <div class="space-y-4">
@@ -157,16 +179,19 @@
                         <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
                             <div>
                                 <p class="font-bold text-slate-900 text-base">{{ $product->name }}</p>
-                                <p class="text-xs text-slate-500">Titip: Rp {{ number_format($product->consignment_price, 0, ',', '.') }}</p>
+                                <p class="text-xs text-slate-500">Titip: Rp
+                                    {{ number_format($product->consignment_price, 0, ',', '.') }}</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-mono font-bold text-lg text-slate-900">{{ $product->stock_ready }}</span>
+                                <span
+                                    class="font-mono font-bold text-lg text-slate-900">{{ $product->stock_ready }}</span>
                                 <span class="text-xs text-slate-500 block">{{ $product->unit }}</span>
                             </div>
                         </div>
                     @empty
                         <p class="text-sm text-slate-500 py-2">
-                            Belum ada data produk. <a href="{{ route('products.index') }}" class="text-slate-900 font-bold underline">Tambah Produk</a>
+                            Belum ada data produk. <a href="{{ route('products.index') }}"
+                                class="text-slate-900 font-bold underline">Tambah Produk</a>
                         </p>
                     @endforelse
                 </div>
@@ -176,19 +201,23 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
                     <h2 class="text-lg font-bold text-slate-900">Peringatan Bahan Baku</h2>
-                    <a href="{{ route('raw-materials.index') }}" class="text-sm font-bold text-slate-900 hover:underline">Lihat Semua</a>
+                    <a href="{{ route('raw-materials.index') }}"
+                        class="text-sm font-bold text-slate-900 hover:underline">Lihat Semua</a>
                 </div>
 
-                @if($lowStockMaterials->count() > 0)
+                @if ($lowStockMaterials->count() > 0)
                     <div class="space-y-3">
-                        @foreach($lowStockMaterials as $mat)
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                        @foreach ($lowStockMaterials as $mat)
+                            <div
+                                class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                 <div>
                                     <p class="font-bold text-slate-900 text-sm">{{ $mat->name }}</p>
-                                    <p class="text-xs text-slate-500">Min. stok: {{ $mat->min_stock }} {{ $mat->unit }}</p>
+                                    <p class="text-xs text-slate-500">Min. stok: {{ $mat->min_stock }}
+                                        {{ $mat->unit }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <span class="font-mono font-bold text-base text-slate-900">{{ $mat->stock }}</span>
+                                    <span
+                                        class="font-mono font-bold text-base text-slate-900">{{ $mat->stock }}</span>
                                     <span class="text-xs text-slate-500"> {{ $mat->unit }}</span>
                                 </div>
                             </div>

@@ -225,16 +225,24 @@
                                     </td>
                                     <td class="py-4 px-3 text-center">
                                         <input type="number"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
                                                wire:model.live="items.{{ $index }}.quantity_remaining"
                                                min="0"
                                                max="{{ $item['quantity_dropped'] }}"
+                                               @keydown="if (['e','E','+','-','.','/',',',' '].includes($event.key) && !$event.ctrlKey && !$event.metaKey) { $event.preventDefault(); }"
+                                               @input="$event.target.value = $event.target.value.replace(/\D/g, '')"
                                                class="input input-bordered w-24 text-center font-mono font-bold text-lg rounded-xl h-11 border-slate-300 focus:border-slate-900" />
                                     </td>
                                     <td class="py-4 px-3 text-center">
                                         <input type="number"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
                                                wire:model.live="items.{{ $index }}.quantity_returned"
                                                min="0"
                                                max="{{ $item['quantity_dropped'] }}"
+                                               @keydown="if (['e','E','+','-','.','/',',',' '].includes($event.key) && !$event.ctrlKey && !$event.metaKey) { $event.preventDefault(); }"
+                                               @input="$event.target.value = $event.target.value.replace(/\D/g, '')"
                                                class="input input-bordered w-20 text-center font-mono font-bold text-lg rounded-xl h-11 border-slate-300 focus:border-slate-900" />
                                     </td>
                                     <td class="py-4 px-3 text-center font-mono font-bold text-xl text-slate-900">
