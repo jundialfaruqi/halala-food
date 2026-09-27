@@ -275,5 +275,15 @@
         </div>
     @endforeach
 
+    @if(request()->boolean('autoprint'))
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    window.print();
+                }, 350);
+            });
+        </script>
+    @endif
+
 </body>
 </html>

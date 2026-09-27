@@ -415,18 +415,18 @@
                             <span>Simpan File ke Flashdisk (.html)</span>
                         </a>
 
-                        <!-- Secondary: Buka Halaman Print A4 -->
+                        <!-- Secondary: Buka Halaman Print A4 & Cetak -->
                         <div class="grid grid-cols-2 gap-2">
                             <a href="{{ route('barcodes.print', $printQuery) }}" target="_blank"
-                                class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl gap-1.5 cursor-pointer">
+                                class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl border border-slate-300 gap-1.5 cursor-pointer">
                                 <x-icon name="external-link" class="text-sm" />
                                 <span>Buka Lembar A4</span>
                             </a>
-                            <button type="button" onclick="window.print()"
-                                class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl border border-slate-300 gap-1.5 cursor-pointer">
+                            <a href="{{ route('barcodes.print', array_merge($printQuery, ['autoprint' => 1])) }}" target="_blank"
+                                class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl gap-1.5 cursor-pointer shadow-xs">
                                 <x-icon name="printer" class="text-sm" />
                                 <span>Cetak Sekarang</span>
-                            </button>
+                            </a>
                         </div>
                         <p class="text-[11px] text-slate-500 text-center leading-relaxed">
                             💡 File yang di-download siap langsung dibawa ke tukang cetak dan dibuka di komputer mana
