@@ -333,7 +333,7 @@
                                 <p class="text-[10px] opacity-75">Ukuran ~48 × 27 mm (Sedang)</p>
                             </button>
                             <button type="button" wire:click="setPaperTemplate('a4_5x12')"
-                                class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ ($paperTemplate === 'a4_5x12' || $paperTemplate === 'tj_108') ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
+                                class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ $paperTemplate === 'a4_5x12' || $paperTemplate === 'tj_108' ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
                                 <p class="text-xs">Grid 5 × 12 (60 Label)</p>
                                 <p class="text-[10px] opacity-75">Ukuran ~38 × 22 mm (Kecil / Muat Banyak)</p>
                             </button>
@@ -429,14 +429,16 @@
                                 <x-icon name="external-link" class="text-sm" />
                                 <span>Buka Lembar A4</span>
                             </a>
-                            <a href="{{ route('barcodes.print', array_merge($printQuery, ['autoprint' => 1])) }}" target="_blank"
+                            <a href="{{ route('barcodes.print', array_merge($printQuery, ['autoprint' => 1])) }}"
+                                target="_blank"
                                 class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl gap-1.5 cursor-pointer shadow-xs">
                                 <x-icon name="printer" class="text-sm" />
                                 <span>Cetak Sekarang</span>
                             </a>
                         </div>
                         <p class="text-[11px] text-slate-500 text-center leading-relaxed">
-                            💡 Format <strong>.pdf</strong> atau <strong>.html</strong> siap langsung dibawa ke tempat percetakan dan dicetak pada kertas stiker A4.
+                            💡 Format <strong>.pdf</strong> atau <strong>.html</strong> siap langsung dibawa ke tempat
+                            percetakan dan dicetak pada kertas stiker A4.
                         </p>
                     </div>
 
@@ -466,12 +468,11 @@
                     </div>
                 </div>
 
-                <!-- A4 Sheet Container Preview (Realistic Proportions matching Print & PDF) -->
+                <!-- A4 Sheet Container Preview (Realistic Proportions & No Cutoff) -->
                 <div
                     class="bg-slate-200/90 rounded-3xl p-3 sm:p-5 border border-slate-300/80 flex flex-col items-center justify-center">
                     <div
-                        class="w-full max-w-lg bg-white rounded-xl shadow-xl border border-slate-200/80 select-none aspect-210/297 relative overflow-hidden flex flex-col"
-                        style="padding: {{ ($marginTopMm / 297.0) * 100 }}% {{ ($marginLeftMm / 210.0) * 100 }}%;">
+                        class="w-full max-w-lg bg-white rounded-xl shadow-xl border border-slate-200/80 select-none aspect-210/297 relative overflow-hidden flex flex-col p-2.5 sm:p-3.5">
 
                         @php
                             $sheetCapacity = max(1, $columns * $rows);
@@ -483,15 +484,15 @@
                                 $pvTitleClass = 'text-[6px] sm:text-[7px]';
                                 $pvPriceClass = 'text-[5.5px] sm:text-[6.5px]';
                                 $pvSkuClass = 'text-[4.5px] sm:text-[5px]';
-                                $pvSvgMaxH = 'max-h-3 sm:max-h-4';
+                                $pvSvgMaxH = 'max-h-2.5 sm:max-h-3.5';
                                 $pvRowGap = 'gap-y-1 sm:gap-y-1.5';
                             } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {
                                 // 4x10 (48x27mm) / 4x6
-                                $pvStoreClass = 'text-[6.5px] sm:text-[7.5px]';
-                                $pvTitleClass = 'text-[7.5px] sm:text-[8.5px]';
-                                $pvPriceClass = 'text-[7px] sm:text-[8px]';
-                                $pvSkuClass = 'text-[5.5px] sm:text-[6.5px]';
-                                $pvSvgMaxH = 'max-h-4 sm:max-h-5.5';
+                                $pvStoreClass = 'text-[6px] sm:text-[7px]';
+                                $pvTitleClass = 'text-[7px] sm:text-[8px]';
+                                $pvPriceClass = 'text-[6.5px] sm:text-[7.5px]';
+                                $pvSkuClass = 'text-[5px] sm:text-[6px]';
+                                $pvSvgMaxH = 'max-h-3.5 sm:max-h-5';
                                 $pvRowGap = 'gap-y-1.5 sm:gap-y-2';
                             } elseif ($columns == 2) {
                                 // 2x6 (95x44mm)
@@ -500,7 +501,7 @@
                                 $pvPriceClass = 'text-[9px] sm:text-[10.5px]';
                                 $pvSkuClass = 'text-[7.5px] sm:text-[9px]';
                                 $pvSvgMaxH = 'max-h-7 sm:max-h-9';
-                                $pvRowGap = 'gap-y-2 sm:gap-y-3';
+                                $pvRowGap = 'gap-y-2.5 sm:gap-y-3';
                             } else {
                                 // 3x8 (65x34mm)
                                 $pvStoreClass = 'text-[7.5px] sm:text-[8.5px]';
@@ -508,20 +509,20 @@
                                 $pvPriceClass = 'text-[8px] sm:text-[9px]';
                                 $pvSkuClass = 'text-[6.5px] sm:text-[7.5px]';
                                 $pvSvgMaxH = 'max-h-5 sm:max-h-7';
-                                $pvRowGap = 'gap-y-1.5 sm:gap-y-2.5';
+                                $pvRowGap = 'gap-y-2 sm:gap-y-2.5';
                             }
                         @endphp
 
                         @if (!empty($firstSheetLabels))
-                            <div class="w-full grid {{ $pvRowGap }}"
+                            <div class="w-full h-full grid {{ $pvRowGap }}"
                                 style="
                                     grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr));
+                                    grid-template-rows: repeat({{ $rows }}, minmax(0, 1fr));
                                     column-gap: {{ ($gapXMm / 210.0) * 100 }}%;
                                 ">
                                 @foreach ($firstSheetLabels as $idx => $label)
                                     <div
-                                        class="w-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : 'border border-transparent' }} rounded-[2px] p-[1.5%] flex flex-col justify-between items-center text-center overflow-hidden"
-                                        style="aspect-ratio: {{ $labelWidthMm }} / {{ $labelHeightMm }};">
+                                        class="w-full h-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : 'border border-transparent' }} rounded-xs p-0.5 sm:p-1 flex flex-col justify-between items-center text-center overflow-hidden">
 
                                         <!-- Header Stiker -->
                                         <div class="w-full space-y-0 leading-none shrink-0">
