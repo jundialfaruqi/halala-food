@@ -364,14 +364,14 @@
         $sheetCapacity = max(1, $columns * $rows);
         $sheets = array_chunk($labels, $sheetCapacity);
 
-        if ($columns >= 5 || $labelHeight <= 20) {
-            // 5x8 (Tom & Jerry 108 / 38x18mm)
+        if ($columns >= 5 || $labelHeight <= 22) {
+            // 5x12 / 5x8 (38x22mm / 38x18mm)
             $printStoreSize = '6.5px';
             $printTitleSize = '7.5px';
-            $printPriceSize = '7px';
+            $printPriceSize = '7.5px';
             $printSkuSize = '5.5px';
             $printPadding = '1mm 1.5mm';
-            $printBarcodeMaxH = '7.5mm';
+            $printBarcodeMaxH = '8.5mm';
         } elseif ($rows >= 10 || $columns >= 4 || $labelHeight <= 30) {
             // 4x10 (48x28mm) / 4x6
             $printStoreSize = '7.5px';

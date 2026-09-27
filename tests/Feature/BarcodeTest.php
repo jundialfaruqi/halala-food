@@ -135,6 +135,23 @@ test('barcode pdf export works with various templates without clipping', functio
     $res4x10->assertSuccessful();
     expect($res4x10->getContent())->toStartWith('%PDF-1.4');
 
+    // Test 5x12 60-label A4 template
+    $res5x12 = get(route('barcodes.export-pdf', [
+        'mode' => 'single',
+        'barcode_id' => $barcode->id,
+        'cols' => 5,
+        'rows' => 12,
+        'w' => 38.0,
+        'h' => 22.0,
+        'mt' => 6.0,
+        'ml' => 6.0,
+        'gx' => 2.0,
+        'gy' => 1.5,
+        'copies' => 60,
+    ]));
+    $res5x12->assertSuccessful();
+    expect($res5x12->getContent())->toStartWith('%PDF-1.4');
+
     // Test 5x8 Tom & Jerry 108 template
     $res5x8 = get(route('barcodes.export-pdf', [
         'mode' => 'single',

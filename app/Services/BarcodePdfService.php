@@ -46,11 +46,11 @@ class BarcodePdfService
         }
 
         // Dynamic typography sizing based on sticker size
-        if ($columns >= 5 || $labelHeightMm <= 20) {
-            // Tom & Jerry 108 / Small stickers (38x18mm)
-            $storeFontSize = 4.2;
-            $titleFontSize = 5.0;
-            $priceFontSize = 5.0;
+        if ($columns >= 5 || $labelHeightMm <= 22) {
+            // 5x12 / 5x8 / Small stickers (38x22mm / 38x18mm)
+            $storeFontSize = 4.4;
+            $titleFontSize = 5.2;
+            $priceFontSize = 5.2;
             $skuFontSize = 4.0;
             $barcodeNumSize = 4.5;
         } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {

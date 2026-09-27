@@ -275,6 +275,18 @@ class Index extends Component
                 $this->gapYMm = 1.2;
                 $this->barcodeHeight = 22;
                 break;
+            case 'a4_5x12': // 60 label A4 (5x12 - kecil / muat banyak)
+            case 'tj_108': // Tom & Jerry / 5-kolom Grid
+                $this->columns = 5;
+                $this->rows = 12;
+                $this->labelWidthMm = 38.0;
+                $this->labelHeightMm = 22.0;
+                $this->marginTopMm = 6.0;
+                $this->marginLeftMm = 6.0;
+                $this->gapXMm = 2.0;
+                $this->gapYMm = 1.5;
+                $this->barcodeHeight = 18;
+                break;
             case 'a4_2x6': // 12 label A4 (besar)
                 $this->columns = 2;
                 $this->rows = 6;
@@ -285,17 +297,6 @@ class Index extends Component
                 $this->gapXMm = 3.0;
                 $this->gapYMm = 2.5;
                 $this->barcodeHeight = 44;
-                break;
-            case 'tj_108': // Tom & Jerry No. 108 (5x8 = 40)
-                $this->columns = 5;
-                $this->rows = 8;
-                $this->labelWidthMm = 38.0;
-                $this->labelHeightMm = 18.0;
-                $this->marginTopMm = 5.0;
-                $this->marginLeftMm = 5.0;
-                $this->gapXMm = 2.0;
-                $this->gapYMm = 1.5;
-                $this->barcodeHeight = 15;
                 break;
             case 'tj_107': // Tom & Jerry No. 107 (4x6 = 24)
                 $this->columns = 4;

@@ -325,22 +325,22 @@
                             <button type="button" wire:click="setPaperTemplate('a4_3x8')"
                                 class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ $paperTemplate === 'a4_3x8' ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
                                 <p class="text-xs">Grid 3 × 8 (24 Label)</p>
-                                <p class="text-[10px] opacity-75">Ukuran ~65 × 35 mm</p>
+                                <p class="text-[10px] opacity-75">Ukuran ~65 × 34 mm (Standar)</p>
                             </button>
                             <button type="button" wire:click="setPaperTemplate('a4_4x10')"
                                 class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ $paperTemplate === 'a4_4x10' ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
                                 <p class="text-xs">Grid 4 × 10 (40 Label)</p>
-                                <p class="text-[10px] opacity-75">Ukuran ~48 × 28 mm</p>
+                                <p class="text-[10px] opacity-75">Ukuran ~48 × 27 mm (Sedang)</p>
+                            </button>
+                            <button type="button" wire:click="setPaperTemplate('a4_5x12')"
+                                class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ ($paperTemplate === 'a4_5x12' || $paperTemplate === 'tj_108') ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
+                                <p class="text-xs">Grid 5 × 12 (60 Label)</p>
+                                <p class="text-[10px] opacity-75">Ukuran ~38 × 22 mm (Kecil / Muat Banyak)</p>
                             </button>
                             <button type="button" wire:click="setPaperTemplate('a4_2x6')"
                                 class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ $paperTemplate === 'a4_2x6' ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
                                 <p class="text-xs">Grid 2 × 6 (12 Label)</p>
-                                <p class="text-[10px] opacity-75">Ukuran ~95 × 45 mm (Besar)</p>
-                            </button>
-                            <button type="button" wire:click="setPaperTemplate('tj_108')"
-                                class="p-2.5 rounded-xl border text-left font-semibold transition cursor-pointer {{ $paperTemplate === 'tj_108' ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}">
-                                <p class="text-xs">Tom & Jerry No. 108</p>
-                                <p class="text-[10px] opacity-75">Grid 5 × 8 (40 Label)</p>
+                                <p class="text-[10px] opacity-75">Ukuran ~95 × 44 mm (Besar)</p>
                             </button>
                         </div>
                     </div>
@@ -466,58 +466,71 @@
                     </div>
                 </div>
 
-                <!-- A4 Sheet Container Preview (No Scroll, Responsive Fit) -->
+                <!-- A4 Sheet Container Preview (Realistic Proportions matching Print & PDF) -->
                 <div
                     class="bg-slate-200/90 rounded-3xl p-3 sm:p-5 border border-slate-300/80 flex flex-col items-center justify-center">
                     <div
-                        class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200/80 p-3 sm:p-4 select-none aspect-210/297 flex flex-col">
+                        class="w-full max-w-lg bg-white rounded-xl shadow-xl border border-slate-200/80 select-none aspect-210/297 relative overflow-hidden flex flex-col"
+                        style="padding: {{ ($marginTopMm / 297.0) * 100 }}% {{ ($marginLeftMm / 210.0) * 100 }}%;">
 
                         @php
                             $sheetCapacity = max(1, $columns * $rows);
                             $firstSheetLabels = array_slice($printableLabels, 0, $sheetCapacity);
 
-                            if ($columns >= 5 || $labelHeightMm <= 20) {
-                                // 5x8 Tom & Jerry 108 (38x18mm)
-                                $pvStoreClass = 'text-[5.5px] sm:text-[6.5px]';
-                                $pvTitleClass = 'text-[6.5px] sm:text-[7.5px]';
-                                $pvPriceClass = 'text-[6px] sm:text-[7px]';
-                                $pvSkuClass = 'text-[5px] sm:text-[6px]';
-                                $pvSvgMaxH = 'max-h-3 sm:max-h-4.5';
+                            if ($columns >= 5 || $labelHeightMm <= 22) {
+                                // 5x12 (38x22mm)
+                                $pvStoreClass = 'text-[5px] sm:text-[6px]';
+                                $pvTitleClass = 'text-[6px] sm:text-[7px]';
+                                $pvPriceClass = 'text-[5.5px] sm:text-[6.5px]';
+                                $pvSkuClass = 'text-[4.5px] sm:text-[5px]';
+                                $pvSvgMaxH = 'max-h-3 sm:max-h-4';
                             } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {
-                                // 4x10 (48x28mm) / 4x6
+                                // 4x10 (48x27mm) / 4x6
                                 $pvStoreClass = 'text-[6.5px] sm:text-[7.5px]';
                                 $pvTitleClass = 'text-[7.5px] sm:text-[8.5px]';
                                 $pvPriceClass = 'text-[7px] sm:text-[8px]';
                                 $pvSkuClass = 'text-[5.5px] sm:text-[6.5px]';
-                                $pvSvgMaxH = 'max-h-4.5 sm:max-h-6';
+                                $pvSvgMaxH = 'max-h-4 sm:max-h-5.5';
+                            } elseif ($columns == 2) {
+                                // 2x6 (95x44mm)
+                                $pvStoreClass = 'text-[9px] sm:text-[10px]';
+                                $pvTitleClass = 'text-[10px] sm:text-[11.5px]';
+                                $pvPriceClass = 'text-[9px] sm:text-[10.5px]';
+                                $pvSkuClass = 'text-[7.5px] sm:text-[9px]';
+                                $pvSvgMaxH = 'max-h-7 sm:max-h-9';
                             } else {
-                                // 3x8 / 2x6
+                                // 3x8 (65x34mm)
                                 $pvStoreClass = 'text-[7.5px] sm:text-[8.5px]';
                                 $pvTitleClass = 'text-[8.5px] sm:text-[9.5px]';
                                 $pvPriceClass = 'text-[8px] sm:text-[9px]';
                                 $pvSkuClass = 'text-[6.5px] sm:text-[7.5px]';
-                                $pvSvgMaxH = 'max-h-6 sm:max-h-8';
+                                $pvSvgMaxH = 'max-h-5 sm:max-h-7';
                             }
                         @endphp
 
                         @if (!empty($firstSheetLabels))
-                            <div class="w-full h-full grid"
-                                style="grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr)); grid-template-rows: repeat({{ $rows }}, minmax(0, 1fr)); gap: 3px;">
+                            <div class="w-full grid"
+                                style="
+                                    grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr));
+                                    column-gap: {{ ($gapXMm / 210.0) * 100 }}%;
+                                    row-gap: {{ ($gapYMm / 297.0) * 100 }}%;
+                                ">
                                 @foreach ($firstSheetLabels as $idx => $label)
                                     <div
-                                        class="w-full h-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : '' }} rounded-xs p-0.5 sm:p-1 flex flex-col justify-between items-center text-center overflow-hidden">
+                                        class="w-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : 'border border-transparent' }} rounded-[2px] p-[1.5%] flex flex-col justify-between items-center text-center overflow-hidden"
+                                        style="aspect-ratio: {{ $labelWidthMm }} / {{ $labelHeightMm }};">
 
                                         <!-- Header Stiker -->
                                         <div class="w-full space-y-0 leading-none shrink-0">
                                             @if ($showStoreName)
                                                 <p
-                                                    class="{{ $pvStoreClass }} uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
+                                                    class="{{ $pvStoreClass }} uppercase tracking-wider font-bold text-slate-500 truncate leading-none">
                                                     {{ $label['item']->store->name }}
                                                 </p>
                                             @endif
                                             @if ($showProductName)
                                                 <p
-                                                    class="{{ $pvTitleClass }} font-bold text-slate-900 leading-tight truncate">
+                                                    class="{{ $pvTitleClass }} font-bold text-slate-900 leading-tight truncate mt-0.5">
                                                     {{ $label['item']->display_name }}
                                                 </p>
                                             @endif
@@ -538,7 +551,7 @@
                                                 class="w-full flex items-center justify-between {{ $pvPriceClass }} font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 leading-none shrink-0">
                                                 @if ($label['item']->store_sku)
                                                     <span
-                                                        class="{{ $pvSkuClass }} text-slate-500 font-normal truncate max-w-[40%]">
+                                                        class="{{ $pvSkuClass }} text-slate-500 font-normal truncate max-w-[42%]">
                                                         {{ $label['item']->store_sku }}
                                                     </span>
                                                 @else
