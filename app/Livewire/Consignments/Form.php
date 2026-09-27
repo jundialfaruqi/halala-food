@@ -127,6 +127,13 @@ class Form extends Component
         $this->recalculateAudit();
     }
 
+    public function setFullPayment(): void
+    {
+        $this->recalculateAudit();
+        $totalSold = collect($this->items)->sum('subtotal');
+        $this->amount_paid = (float) $totalSold;
+    }
+
     public function saveDrop(): void
     {
         // Normalisasi quantity_dropped untuk semua item (konversi string kosong / null menjadi integer 0)

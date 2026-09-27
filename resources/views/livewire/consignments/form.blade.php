@@ -256,6 +256,22 @@
                         </tfoot>
                     </table>
                 </div>
+
+                <!-- Action Bar Bawah Tabel Hasil Penjualan -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                        <p class="text-sm font-medium text-slate-700">
+                            Total Tagihan Toko: <strong class="font-mono text-base font-bold text-slate-900">Rp {{ number_format($totalSoldAmount, 0, ',', '.') }}</strong>
+                        </p>
+                    </div>
+                    <button type="button"
+                            wire:click="setFullPayment"
+                            class="btn btn-sm bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl px-4 shadow-xs flex items-center gap-2 shrink-0">
+                        <x-icon name="arrow-down-right" class="text-base" />
+                        <span>Gunakan Nominal Ini ke Pembayaran ↓</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Pembayaran & Akun Kas Masuk -->
@@ -267,7 +283,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Akun Kas Masuk -->
                     <div>
-                        <label class="block text-base font-bold text-slate-800 mb-1">
+                        <label class="block text-base font-bold text-slate-800 mb-1.5">
                             Masukkan ke Akun Kas <span class="text-red-500">*</span>
                         </label>
                         <select wire:model="account_id" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 bg-slate-50 focus:bg-white h-12">
@@ -280,10 +296,21 @@
 
                     <!-- Jumlah Uang Yang Diterima -->
                     <div>
-                        <label class="block text-base font-bold text-slate-800 mb-1">
+                        <label class="block text-base font-bold text-slate-800 mb-1.5">
                             Jumlah Uang Yang Disetor Toko (Rp) <span class="text-red-500">*</span>
                         </label>
                         <x-currency-input model="amount_paid" size="text-xl" class="h-12 bg-slate-50 focus-within:bg-white" />
+                        
+                        <!-- Shortcut Button di Bawah Input -->
+                        <div class="flex items-center justify-between gap-2 mt-2">
+                            <span class="text-xs text-slate-500">Opsi cepat:</span>
+                            <button type="button"
+                                    wire:click="setFullPayment"
+                                    class="btn btn-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold rounded-lg px-2.5 py-1 flex items-center gap-1.5 transition-colors">
+                                <x-icon name="check" class="text-sm text-emerald-600" />
+                                <span>Set Lunas (Rp {{ number_format($totalSoldAmount, 0, ',', '.') }})</span>
+                            </button>
+                        </div>
                         @error('amount_paid') <span class="text-sm font-semibold text-red-600 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
