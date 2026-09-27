@@ -58,6 +58,8 @@ class Form extends Component
                     'id' => $item->id,
                     'product_id' => $item->product_id,
                     'product_name' => $item->product->name,
+                    'unit' => $item->product->unit ?: 'pcs',
+                    'stock_ready' => (int) $item->product->stock_ready,
                     'quantity_dropped' => $item->quantity_dropped,
                     'price_per_item' => (float) $item->price_per_item,
                     'quantity_remaining' => $item->quantity_remaining ?? 0,
@@ -77,13 +79,15 @@ class Form extends Component
             $this->drop_date = Carbon::now()->format('Y-m-d');
             $this->settlement_date = Carbon::now()->format('Y-m-d');
 
-            // Inisialisasi 3 produk utama langsung
+            // Inisialisasi produk aktif langsung
             $products = Product::where('is_active', true)->get();
             $this->items = [];
             foreach ($products as $p) {
                 $this->items[] = [
                     'product_id' => $p->id,
                     'product_name' => $p->name,
+                    'unit' => $p->unit ?: 'pcs',
+                    'stock_ready' => (int) $p->stock_ready,
                     'quantity_dropped' => 0,
                     'price_per_item' => (float) $p->consignment_price,
                     'quantity_remaining' => 0,

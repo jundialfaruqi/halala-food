@@ -76,9 +76,26 @@
                 <div class="space-y-4">
                     @forelse($items as $index => $item)
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 gap-4">
-                            <div class="flex-1">
-                                <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
-                                <p class="text-sm text-slate-500">Harga Titip: Rp {{ number_format($item['price_per_item'], 0, ',', '.') }} / pcs</p>
+                            <div class="flex-1 space-y-1">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
+                                    @if(isset($item['stock_ready']))
+                                        @if($item['stock_ready'] > 0)
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                                Stok Siap: {{ $item['stock_ready'] }} {{ $item['unit'] ?? 'pcs' }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                                Stok Habis (0 {{ $item['unit'] ?? 'pcs' }})
+                                            </span>
+                                        @endif
+                                    @endif
+                                </div>
+                                <p class="text-sm font-medium text-slate-500">
+                                    Harga Titip: <strong class="text-slate-800">Rp {{ number_format($item['price_per_item'], 0, ',', '.') }}</strong> / {{ $item['unit'] ?? 'pcs' }}
+                                </p>
                             </div>
 
                             <div class="flex flex-col items-end">
@@ -90,7 +107,7 @@
                                                min="0"
                                                class="input input-bordered w-full text-center font-bold text-lg rounded-xl h-12 bg-white focus:border-slate-900" />
                                     </div>
-                                    <span class="text-sm font-bold text-slate-600">pcs</span>
+                                    <span class="text-sm font-bold text-slate-600 min-w-10">{{ $item['unit'] ?? 'pcs' }}</span>
                                 </div>
                                 @error('items.'.$index.'.quantity_dropped')
                                     <span class="text-xs text-red-600 font-semibold mt-1">{{ $message }}</span>
@@ -157,10 +174,10 @@
                                 <tr>
                                     <td class="py-4 px-3 font-bold text-slate-900 text-lg">
                                         {{ $item['product_name'] }}
-                                        <span class="block text-xs font-normal text-slate-500">@ Rp {{ number_format($item['price_per_item'], 0, ',', '.') }}</span>
+                                        <span class="block text-xs font-normal text-slate-500">@ Rp {{ number_format($item['price_per_item'], 0, ',', '.') }} / {{ $item['unit'] ?? 'pcs' }}</span>
                                     </td>
                                     <td class="py-4 px-3 text-center font-mono font-bold text-lg text-slate-600">
-                                        {{ $item['quantity_dropped'] }} pcs
+                                        {{ $item['quantity_dropped'] }} <span class="text-xs font-normal text-slate-500">{{ $item['unit'] ?? 'pcs' }}</span>
                                     </td>
                                     <td class="py-4 px-3 text-center">
                                         <input type="number"
@@ -177,7 +194,7 @@
                                                class="input input-bordered w-20 text-center font-mono font-bold text-lg rounded-xl h-11 border-slate-300 focus:border-slate-900" />
                                     </td>
                                     <td class="py-4 px-3 text-center font-mono font-bold text-xl text-slate-900">
-                                        {{ $item['quantity_sold'] }} pcs
+                                        {{ $item['quantity_sold'] }} <span class="text-xs font-normal text-slate-500">{{ $item['unit'] ?? 'pcs' }}</span>
                                     </td>
                                     <td class="py-4 px-3 text-right font-mono font-bold text-lg text-slate-900">
                                         Rp {{ number_format($item['subtotal'], 0, ',', '.') }}
