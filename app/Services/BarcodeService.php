@@ -255,4 +255,132 @@ class BarcodeService
 
         return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
+
+    /**
+     * Get structured vector bars data (in module units) for PDF generation.
+     *
+     * @return array{bars: array<int, array{offset: float, width: float}>, totalModules: float, text: string}
+     */
+    public static function getBarcodeBarsStructure(string $code, string $type = 'AUTO'): array
+    {
+        $cleanCode = trim($code);
+        $resolvedType = strtoupper($type);
+        if ($resolvedType === 'AUTO') {
+            $digitsOnly = preg_replace('/[^0-9]/', '', $cleanCode);
+            if (strlen($digitsOnly) === 13 && strlen($cleanCode) === 13) {
+                $resolvedType = 'EAN13';
+            } else {
+                $resolvedType = 'CODE128';
+            }
+        }
+
+        if ($resolvedType === 'EAN13' && ctype_digit($cleanCode) && (strlen($cleanCode) === 12 || strlen($cleanCode) === 13)) {
+            $digits = $cleanCode;
+            if (strlen($digits) === 12) {
+                $sum = 0;
+                for ($i = 0; $i < 12; $i++) {
+                    $sum += ((int) $digits[$i]) * ($i % 2 === 0 ? 1 : 3);
+                }
+                $check = (10 - ($sum % 10)) % 10;
+                $digits .= $check;
+            }
+
+            $patternsL = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
+            $patternsG = ['0100111', '0110011', '0011011', '0100001', '0011101', '0111001', '0000101', '0010001', '0001001', '0010111'];
+            $patternsR = ['1110010', '1100110', '1101100', '1000010', '1011100', '1001110', '1010000', '1000100', '1001000', '1110100'];
+            $structure = [
+                0 => 'LLLLLL', 1 => 'LLGLGG', 2 => 'LLGGLG', 3 => 'LLGGGL', 4 => 'LGLLGG',
+                5 => 'LGGLLG', 6 => 'LGGGLL', 7 => 'LGLGLG', 8 => 'LGLGGL', 9 => 'LGGLGL',
+            ];
+
+            $firstDigit = (int) $digits[0];
+            $struct = $structure[$firstDigit];
+            $bin = '101';
+            for ($i = 1; $i <= 6; $i++) {
+                $d = (int) $digits[$i];
+                $bin .= ($struct[$i - 1] === 'L') ? $patternsL[$d] : $patternsG[$d];
+            }
+            $bin .= '01010';
+            for ($i = 7; $i <= 12; $i++) {
+                $d = (int) $digits[$i];
+                $bin .= $patternsR[$d];
+            }
+            $bin .= '101';
+
+            $quietZone = 9;
+            $totalModules = strlen($bin) + ($quietZone * 2);
+            $bars = [];
+            $currentOffset = $quietZone;
+
+            for ($i = 0; $i < strlen($bin); $i++) {
+                if ($bin[$i] === '1') {
+                    $bars[] = ['offset' => (float) $currentOffset, 'width' => 1.0];
+                }
+                $currentOffset += 1;
+            }
+
+            return [
+                'bars' => $bars,
+                'totalModules' => (float) $totalModules,
+                'text' => $digits,
+            ];
+        }
+
+        // Code 128
+        $codes = [];
+        $length = strlen($cleanCode);
+        $isNumeric = ctype_digit($cleanCode) && $length >= 4 && ($length % 2 === 0);
+
+        if ($isNumeric) {
+            $codes[] = 105;
+            for ($i = 0; $i < $length; $i += 2) {
+                $codes[] = (int) substr($cleanCode, $i, 2);
+            }
+        } else {
+            $codes[] = 104;
+            for ($i = 0; $i < $length; $i++) {
+                $ascii = ord($cleanCode[$i]);
+                $codes[] = ($ascii >= 32 && $ascii <= 126) ? $ascii - 32 : 0;
+            }
+        }
+
+        $checkSum = $codes[0];
+        for ($i = 1; $i < count($codes); $i++) {
+            $checkSum += $i * $codes[$i];
+        }
+        $codes[] = $checkSum % 103;
+        $codes[] = 106;
+
+        $patternString = '';
+        foreach ($codes as $c) {
+            if (isset(self::$code128Patterns[$c])) {
+                $patternString .= self::$code128Patterns[$c];
+            }
+        }
+
+        $moduleCount = 0;
+        for ($i = 0; $i < strlen($patternString); $i++) {
+            $moduleCount += (int) $patternString[$i];
+        }
+
+        $quietZone = 10;
+        $totalModules = $moduleCount + ($quietZone * 2);
+        $bars = [];
+        $currentOffset = $quietZone;
+
+        for ($i = 0; $i < strlen($patternString); $i++) {
+            $w = (int) $patternString[$i];
+            $isBar = ($i % 2 === 0);
+            if ($isBar) {
+                $bars[] = ['offset' => (float) $currentOffset, 'width' => (float) $w];
+            }
+            $currentOffset += $w;
+        }
+
+        return [
+            'bars' => $bars,
+            'totalModules' => (float) $totalModules,
+            'text' => $cleanCode,
+        ];
+    }
 }

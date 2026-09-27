@@ -76,4 +76,9 @@ test('barcode print page and standalone export can be accessed', function () {
     $exportRes = $this->get(route('barcodes.export-html', ['mode' => 'single', 'barcode_id' => $barcode->id]));
     $exportRes->assertSuccessful();
     $exportRes->assertHeader('Content-Type', 'text/html; charset=utf-8');
+
+    $pdfRes = $this->get(route('barcodes.export-pdf', ['mode' => 'single', 'barcode_id' => $barcode->id]));
+    $pdfRes->assertSuccessful();
+    $pdfRes->assertHeader('Content-Type', 'application/pdf');
+    expect($pdfRes->getContent())->toStartWith('%PDF-1.4');
 });

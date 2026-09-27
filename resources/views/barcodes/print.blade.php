@@ -326,7 +326,7 @@
                 </button>
 
                 <!-- Download PDF Button -->
-                <button type="button" id="btn-download-pdf" onclick="exportToPdf()" class="btn-action btn-pdf"
+                <a href="{{ route('barcodes.export-pdf', request()->query()) }}" class="btn-action btn-pdf"
                    title="Simpan lembar stiker ini langsung sebagai file PDF (.pdf)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -336,7 +336,7 @@
                         <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                     <span>Simpan PDF (.pdf)</span>
-                </button>
+                </a>
 
                 <!-- Download HTML for Flashdisk -->
                 <a href="{{ route('barcodes.export-html', request()->query()) }}" class="btn-action btn-html"
@@ -439,80 +439,14 @@
         @endforeach
     </div>
 
-    <script src="/js/html2pdf.bundle.min.js"></script>
-    <script>
-        function exportToPdf() {
-            const btn = document.getElementById('btn-download-pdf');
-            const originalContent = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; animation: spin 1s linear infinite;">
-                        <line x1="12" y1="2" x2="12" y2="6"></line>
-                        <line x1="12" y1="18" x2="12" y2="22"></line>
-                        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                        <line x1="2" y1="12" x2="6" y2="12"></line>
-                        <line x1="18" y1="12" x2="22" y2="12"></line>
-                        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                    </svg>
-                    <span>Menyusun PDF...</span>
-                `;
-            }
-
-            const element = document.getElementById('print-container');
-            const filename = '{{ !empty($storeName) ? "Barcode-".preg_replace("/[^A-Za-z0-9_\-]/", "_", $storeName)."-".date("Ymd") : "Barcode-Cetak-".date("Ymd") }}.pdf';
-            const opt = {
-                margin: 0,
-                filename: filename,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 3, 
-                    useCORS: true, 
-                    logging: false,
-                    letterRendering: true
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            };
-
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = originalContent;
-                    }
-                }).catch(err => {
-                    console.error('PDF error:', err);
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = originalContent;
-                    }
-                    window.print();
-                });
-            } else {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalContent;
-                }
-                window.print();
-            }
-        }
-
-        @if(request()->boolean('autodownload_pdf'))
-            window.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => {
-                    exportToPdf();
-                }, 400);
-            });
-        @elseif(request()->boolean('autoprint'))
+    @if(request()->boolean('autoprint'))
+        <script>
             window.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     window.print();
                 }, 350);
             });
-        @endif
-    </script>
+        </script>
+    @endif
 </body>
 </html>

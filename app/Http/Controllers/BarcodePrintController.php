@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use App\Models\StoreProductBarcode;
+use App\Services\BarcodePdfService;
 use App\Services\BarcodeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,6 +20,26 @@ class BarcodePrintController extends Controller
         $data = $this->prepareBarcodeSheetData($request);
 
         return view('barcodes.print', $data);
+    }
+
+    /**
+     * Download crisp vector A4 PDF file directly.
+     */
+    public function downloadPdf(Request $request): Response
+    {
+        $data = $this->prepareBarcodeSheetData($request);
+        $pdfContent = BarcodePdfService::generate($data);
+
+        $filename = 'Barcode-Cetak-'.date('Ymd-His').'.pdf';
+        if (! empty($data['storeName'])) {
+            $safeStore = preg_replace('/[^A-Za-z0-9_\-]/', '_', $data['storeName']);
+            $filename = "Barcode-{$safeStore}-".date('Ymd').'.pdf';
+        }
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
     }
 
     /**

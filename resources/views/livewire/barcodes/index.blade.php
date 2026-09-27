@@ -410,7 +410,7 @@
                     <div class="space-y-2.5 pt-4 border-t border-slate-200">
                         <!-- Primary Actions: Download PDF & Flashdisk HTML (Stacked 2 Baris) -->
                         <div class="space-y-2">
-                            <a href="{{ route('barcodes.print', array_merge($printQuery, ['autodownload_pdf' => 1])) }}" target="_blank"
+                            <a href="{{ route('barcodes.export-pdf', $printQuery) }}"
                                 class="btn btn-md bg-rose-700 hover:bg-rose-800 text-white font-bold w-full rounded-xl gap-2 shadow-xs cursor-pointer text-base">
                                 <x-icon name="file-type-pdf" class="text-xl" />
                                 <span>Simpan Dokumen PDF (.pdf)</span>

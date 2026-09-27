@@ -23,6 +23,7 @@ Route::get('/stores', StoreIndex::class)->name('stores.index');
 Route::get('/products', ProductIndex::class)->name('products.index');
 Route::get('/barcodes', BarcodeIndex::class)->name('barcodes.index');
 Route::get('/barcodes/print', [BarcodePrintController::class, 'show'])->name('barcodes.print');
+Route::get('/barcodes/export-pdf', [BarcodePrintController::class, 'downloadPdf'])->name('barcodes.export-pdf');
 Route::get('/barcodes/export-html', [BarcodePrintController::class, 'downloadHtml'])->name('barcodes.export-html');
 Route::get('/productions', ProductionIndex::class)->name('productions.index');
 Route::get('/raw-materials', RawMaterialIndex::class)->name('raw-materials.index');
