@@ -98,17 +98,21 @@
             background-color: #065f46;
         }
 
-        .badge-info {
+        .badge {
             display: inline-flex;
             align-items: center;
             padding: 4px 10px;
             font-size: 11px;
             font-weight: 700;
             border-radius: 6px;
+            border: 1px solid transparent;
+            font-family: ui-monospace, monospace;
+        }
+
+        .badge-info {
             background-color: #f1f5f9;
             color: #334155;
-            border: 1px solid #e2e8f0;
-            font-family: ui-monospace, monospace;
+            border-color: #e2e8f0;
         }
 
         .badge-warning {
@@ -295,14 +299,14 @@
                 </div>
             </div>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-                <span class="badge-info">
+                <span class="badge badge-info">
                     {{ count($labels) }} Stiker (Grid {{ $columns }} × {{ $rows }})
                 </span>
-                <span class="badge-info">
+                <span class="badge badge-info">
                     Ukuran {{ $labelWidth }} × {{ $labelHeight }} mm
                 </span>
                 @if(count($labels) > $columns * $rows)
-                    <span class="badge-info badge-warning">
+                    <span class="badge badge-warning">
                         {{ ceil(count($labels) / ($columns * $rows)) }} Lembar A4
                     </span>
                 @endif

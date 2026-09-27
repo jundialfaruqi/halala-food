@@ -7,7 +7,9 @@ use App\Models\StoreProductBarcode;
 use App\Models\User;
 use App\Services\BarcodeService;
 use Livewire\Livewire;
+use Tests\TestCase;
 
+/** @var TestCase $this */
 beforeEach(function () {
     $this->actingAs(User::factory()->create());
 });
