@@ -45,6 +45,11 @@ class Product extends Model
         return $this->hasMany(ConsignmentItem::class);
     }
 
+    public function barcodes(): HasMany
+    {
+        return $this->hasMany(StoreProductBarcode::class);
+    }
+
     public function getMaterialCostAttribute(): float
     {
         return (float) $this->recipes->sum(function ($r) {

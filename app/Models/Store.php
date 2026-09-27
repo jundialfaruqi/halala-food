@@ -33,4 +33,9 @@ class Store extends Model
     {
         return $this->hasMany(Consignment::class);
     }
+
+    public function barcodes(): HasMany
+    {
+        return $this->hasMany(StoreProductBarcode::class);
+    }
 }

@@ -68,6 +68,10 @@
                             </td>
                             <td class="py-4 px-6 text-right">
                                 <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('barcodes.index', ['storeFilter' => $store->id]) }}" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg px-2.5 border border-slate-300 gap-1 transition" title="Lihat & Cetak Barcode Toko Ini">
+                                        <x-icon name="tags" class="text-sm" />
+                                        <span>Barcode</span>
+                                    </a>
                                     <button wire:click="openEditModal({{ $store->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
                                         Edit
                                     </button>

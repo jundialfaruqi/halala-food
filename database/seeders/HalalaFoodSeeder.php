@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductRecipe;
 use App\Models\RawMaterial;
 use App\Models\Store;
+use App\Models\StoreProductBarcode;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -370,5 +371,54 @@ class HalalaFoodSeeder extends Seeder
                 'description' => $exp['desc'],
             ]);
         }
+
+        // 8. Sample Barcode Toko Mitra
+        StoreProductBarcode::firstOrCreate([
+            'store_id' => $toko2->id,
+            'product_id' => $merryWijen->id,
+        ], [
+            'barcode' => '201948281023',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'PLU-8821',
+            'custom_product_name' => 'MERRY WIJEN 200GR',
+            'custom_price' => 16000,
+            'notes' => 'Barcode kasir Minimarket Rezeki',
+        ]);
+
+        StoreProductBarcode::firstOrCreate([
+            'store_id' => $toko2->id,
+            'product_id' => $bumbuPecel->id,
+        ], [
+            'barcode' => '201948281024',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'PLU-8822',
+            'custom_product_name' => 'BUMBU PECEL KHAS 250G',
+            'custom_price' => 19000,
+            'notes' => 'Barcode kasir Minimarket Rezeki',
+        ]);
+
+        StoreProductBarcode::firstOrCreate([
+            'store_id' => $toko2->id,
+            'product_id' => $tingTingSusu->id,
+        ], [
+            'barcode' => '201948281025',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'PLU-8823',
+            'custom_product_name' => 'TING-TING SUSU HALALA',
+            'custom_price' => 13500,
+            'notes' => 'Barcode kasir Minimarket Rezeki',
+        ]);
+
+        StoreProductBarcode::firstOrCreate([
+            'store_id' => $toko4->id,
+            'product_id' => $merryWijen->id,
+        ], [
+            'barcode' => '899720194001',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'OLH-01',
+            'custom_product_name' => 'Merry Wijen Super Oleh-oleh',
+            'custom_price' => 17500,
+            'notes' => 'Barcode Toko Oleh-Oleh Asli',
+        ]);
     }
 }
