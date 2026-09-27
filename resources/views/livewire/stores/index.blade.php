@@ -92,7 +92,7 @@
 
         @if($stores->hasPages())
             <div class="p-4 border-t border-slate-200">
-                {{ $stores->links() }}
+                {{ $stores->links('pagination.tailwind') }}
             </div>
         @endif
     </div>

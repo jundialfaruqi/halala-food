@@ -57,7 +57,7 @@
 
         @if($productions->hasPages())
             <div class="p-4 border-t border-slate-200">
-                {{ $productions->links() }}
+                {{ $productions->links('pagination.tailwind') }}
             </div>
         @endif
     </div>
