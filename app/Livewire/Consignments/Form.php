@@ -8,6 +8,7 @@ use App\Models\Consignment;
 use App\Models\ConsignmentItem;
 use App\Models\Product;
 use App\Models\Store;
+use App\Services\AccountingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -49,7 +50,7 @@ class Form extends Component
             $this->settlement_date = $consignment->settlement_date ? $consignment->settlement_date->format('Y-m-d') : Carbon::now()->format('Y-m-d');
             $this->notes = $consignment->notes ?? '';
             $this->amount_paid = (float) $consignment->amount_paid;
-            $this->payment_status = $consignment->payment_status;
+            $this->payment_status = $consignment->payment_status ?? 'unpaid';
 
             // Load items
             $this->items = [];
@@ -258,6 +259,15 @@ class Form extends Component
                 'notes' => $this->notes,
             ]);
 
+            // Hitung HPP dan kerugian retur rusak
+            $totalCogs = 0;
+            $totalReturnedLoss = 0;
+            foreach ($this->consignment->items()->with('product.recipes.rawMaterial')->get() as $cItem) {
+                $unitCost = (float) $cItem->product->material_cost;
+                $totalCogs += (float) ($cItem->quantity_sold * $unitCost);
+                $totalReturnedLoss += (float) ($cItem->quantity_returned * $unitCost);
+            }
+
             // Catat uang masuk ke Buku Kas jika ada pembayaran
             if ($this->amount_paid > 0) {
                 $account = Account::find($this->account_id);
@@ -273,9 +283,18 @@ class Form extends Component
                     'description' => 'Hasil tagihan toko '.$this->consignment->store->name.' ('.$this->consignment->consignment_number.')',
                 ]);
             }
+
+            // Catat Jurnal Akuntansi Formal Lengkap
+            AccountingService::recordConsignmentSettlement(
+                $this->consignment,
+                $totalSold,
+                $this->amount_paid,
+                $totalCogs,
+                $totalReturnedLoss
+            );
         });
 
-        session()->flash('message', 'Penagihan toko berhasil diselesaikan dan uang telah masuk ke Buku Kas.');
+        session()->flash('message', 'Penagihan toko berhasil diselesaikan dan jurnal akuntansi telah tercatat.');
         $this->redirect(route('consignments.index'), navigate: true);
     }
 

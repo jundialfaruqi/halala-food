@@ -4,6 +4,7 @@ namespace App\Livewire\CashBook;
 
 use App\Models\Account;
 use App\Models\CashTransaction;
+use App\Services\AccountingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -225,7 +226,7 @@ class Index extends Component
             }
 
             // Simpan transaksi
-            CashTransaction::create([
+            $tx = CashTransaction::create([
                 'transaction_date' => $this->transaction_date,
                 'account_id' => $this->account_id,
                 'type' => $this->type,
@@ -233,6 +234,9 @@ class Index extends Component
                 'amount' => $this->amount,
                 'description' => $this->description,
             ]);
+
+            // Catat Jurnal Akuntansi Otomatis
+            AccountingService::recordCashTransaction($tx);
 
             // Jika Prive: otomatis tambahkan saldo ke Kas Pribadi jika ada
             if ($this->type === 'prive') {
@@ -245,7 +249,7 @@ class Index extends Component
 
         $this->showConfirmTransactionModal = false;
         $this->showTransactionModal = false;
-        $this->dispatch('toast', message: 'Transaksi berhasil dicatat ke buku kas.');
+        $this->dispatch('toast', message: 'Transaksi berhasil dicatat ke buku kas & jurnal akuntansi.');
     }
 
     public function render(): View

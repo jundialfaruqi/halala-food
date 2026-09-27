@@ -11,6 +11,7 @@ use App\Models\ProductRecipe;
 use App\Models\RawMaterial;
 use App\Models\Store;
 use App\Models\StoreProductBarcode;
+use App\Services\AccountingService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -146,6 +147,36 @@ class HalalaFoodSeeder extends Seeder
         ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $plastik->id, 'quantity_needed' => 1]);
         ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $label->id, 'quantity_needed' => 1]);
 
+        // Jurnal Modal Awal & Saldo Awal Neraca
+        $initialDate = Carbon::now()->subDays(65)->toDateString();
+        $totalRawCost = ($wijen->stock * $wijen->cost_per_unit) +
+            ($kacang->stock * $kacang->cost_per_unit) +
+            ($gula->stock * $gula->cost_per_unit) +
+            ($susu->stock * $susu->cost_per_unit) +
+            ($rempah->stock * $rempah->cost_per_unit) +
+            ($plastik->stock * $plastik->cost_per_unit) +
+            ($label->stock * $label->cost_per_unit);
+
+        $totalProductCost = ($merryWijen->stock_ready * $merryWijen->material_cost) +
+            ($bumbuPecel->stock_ready * $bumbuPecel->material_cost) +
+            ($tingTingSusu->stock_ready * $tingTingSusu->material_cost);
+
+        $totalInitialCapital = 2500000 + 12500000 + $totalRawCost + $totalProductCost;
+
+        AccountingService::postEntry(
+            date: $initialDate,
+            notes: 'Penyetoran Modal Awal Usaha (Kas, Bank & Persediaan Awal)',
+            items: [
+                ['account_code' => '1-1001', 'debit' => 2500000, 'credit' => 0, 'memo' => 'Saldo Awal Kas Tunai Usaha'],
+                ['account_code' => '1-1002', 'debit' => 12500000, 'credit' => 0, 'memo' => 'Saldo Awal BCA Rekening Usaha'],
+                ['account_code' => '1-1300', 'debit' => $totalRawCost, 'credit' => 0, 'memo' => 'Persediaan Bahan Baku Awal'],
+                ['account_code' => '1-1400', 'debit' => $totalProductCost, 'credit' => 0, 'memo' => 'Persediaan Produk Jadi Awal'],
+                ['account_code' => '3-1000', 'debit' => 0, 'credit' => $totalInitialCapital, 'memo' => 'Setoran Modal Usaha Pemilik'],
+            ],
+            referenceType: 'initial_balance',
+            referenceId: 1
+        );
+
         // 5. Toko Mitra
         $toko1 = Store::create([
             'name' => 'Toko Barokah Jaya',
@@ -267,13 +298,16 @@ class HalalaFoodSeeder extends Seeder
                 'notes' => 'Tagihan selesai & lunas disetor ke kas',
             ]);
 
+            $totalCogs = 0;
             foreach ($itemsData as $row) {
                 $row['consignment_id'] = $c->id;
-                ConsignmentItem::create($row);
+                $ci = ConsignmentItem::create($row);
+                $unitCost = (float) $ci->product->material_cost;
+                $totalCogs += ($ci->quantity_sold * $unitCost);
             }
 
             // Catat transaksi kas pemasukan
-            CashTransaction::create([
+            $tx = CashTransaction::create([
                 'account_id' => $kasTunai->id,
                 'type' => 'income',
                 'category' => 'Setoran Konsinyasi',
@@ -282,6 +316,9 @@ class HalalaFoodSeeder extends Seeder
                 'description' => "Setoran hasil titipan dari {$sample['store']->name} (#{$c->consignment_number})",
                 'consignment_id' => $c->id,
             ]);
+
+            // Auto Journal Akuntansi
+            AccountingService::recordConsignmentSettlement($c, $totalGross, $totalGross, $totalCogs, 0);
         }
 
         // Additional completed consignments over previous 60 days
@@ -336,9 +373,12 @@ class HalalaFoodSeeder extends Seeder
                 'notes' => 'Tagihan konsinyasi selesai',
             ]);
 
+            $totalCogs = 0;
             foreach ($itemsData as $row) {
                 $row['consignment_id'] = $c->id;
-                ConsignmentItem::create($row);
+                $ci = ConsignmentItem::create($row);
+                $unitCost = (float) $ci->product->material_cost;
+                $totalCogs += ($ci->quantity_sold * $unitCost);
             }
 
             CashTransaction::create([
@@ -350,6 +390,9 @@ class HalalaFoodSeeder extends Seeder
                 'description' => "Setoran hasil titipan dari {$sample['store']->name} (#{$c->consignment_number})",
                 'consignment_id' => $c->id,
             ]);
+
+            // Auto Journal Akuntansi
+            AccountingService::recordConsignmentSettlement($c, $totalGross, $totalGross, $totalCogs, 0);
         }
 
         // Biaya Operasional Sampel
@@ -362,7 +405,7 @@ class HalalaFoodSeeder extends Seeder
         ];
 
         foreach ($expenseSamples as $idx => $exp) {
-            CashTransaction::create([
+            $tx = CashTransaction::create([
                 'account_id' => $kasTunai->id,
                 'type' => 'expense',
                 'category' => $exp['category'],
@@ -370,6 +413,8 @@ class HalalaFoodSeeder extends Seeder
                 'transaction_date' => Carbon::now()->subDays($exp['days_ago'])->toDateString(),
                 'description' => $exp['desc'],
             ]);
+
+            AccountingService::recordCashTransaction($tx);
         }
 
         // 8. Sample Barcode Toko Mitra

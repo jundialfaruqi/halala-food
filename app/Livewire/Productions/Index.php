@@ -4,6 +4,7 @@ namespace App\Livewire\Productions;
 
 use App\Models\Product;
 use App\Models\Production;
+use App\Services\AccountingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -76,7 +77,7 @@ class Index extends Component
 
         DB::transaction(function () use ($product) {
             // 1. Catat log produksi
-            Production::create([
+            $production = Production::create([
                 'production_date' => $this->production_date,
                 'product_id' => $this->product_id,
                 'quantity_produced' => $this->quantity_produced,
@@ -86,11 +87,16 @@ class Index extends Component
             // 2. Tambah stok produk jadi
             $product->increment('stock_ready', $this->quantity_produced);
 
-            // 3. Potong stok bahan baku otomatis sesuai resep
+            // 3. Potong stok bahan baku otomatis sesuai resep & hitung nilai modal bahan
+            $totalMaterialCost = 0;
             foreach ($product->recipes as $recipe) {
                 $needed = $recipe->quantity_needed * $this->quantity_produced;
                 $recipe->rawMaterial->decrement('stock', $needed);
+                $totalMaterialCost += (float) ($needed * (float) $recipe->rawMaterial->cost_per_unit);
             }
+
+            // 4. Catat Jurnal Akuntansi (Dr. Persediaan Produk Jadi | Cr. Persediaan Bahan Baku)
+            AccountingService::recordProduction($production, $totalMaterialCost);
         });
 
         $this->showModal = false;

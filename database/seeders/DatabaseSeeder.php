@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@halalafood.id',
         ]);
 
-        $this->call(HalalaFoodSeeder::class);
+        $this->call([
+            AccountingSeeder::class,
+            HalalaFoodSeeder::class,
+        ]);
     }
 }

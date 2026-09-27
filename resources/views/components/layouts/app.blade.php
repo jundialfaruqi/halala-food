@@ -11,6 +11,60 @@
 
     <!-- Vite Styles and Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="{{ asset('js/html2pdf.bundle.min.js') }}" defer></script>
+
+    <style>
+        .print-only {
+            display: none !important;
+        }
+
+        @media print {
+            html, body {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 11pt !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            aside, header, footer, nav, .no-print, .toast, .navbar {
+                display: none !important;
+            }
+
+            .h-screen, .h-full, .overflow-y-auto, .overflow-x-hidden, .overflow-hidden, .min-h-0, .flex-1 {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                display: block !important;
+                position: static !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                display: block !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm 15mm;
+            }
+        }
+    </style>
 </head>
 
 <body
@@ -22,19 +76,28 @@
             if (window.innerWidth >= 1024) {
                 localStorage.setItem('hf_sidebar_open', this.sidebarOpen);
             }
+        },
+        handleResize() {
+            if (window.innerWidth < 1024) {
+                this.sidebarOpen = false;
+            } else {
+                this.sidebarOpen = localStorage.getItem('hf_sidebar_open') !== 'false';
+            }
         }
-    }" @keydown.window.ctrl.b.prevent="toggleSidebar()"
+    }" 
+    @resize.window="handleResize()"
+    @keydown.window.ctrl.b.prevent="toggleSidebar()"
     @keydown.window.cmd.b.prevent="toggleSidebar()">
     <!-- Global DaisyUI Toast Notifications -->
     <x-toast />
 
-    <div class="h-screen flex bg-slate-100/70 overflow-hidden">
+    <div class="h-screen flex bg-slate-100/70 overflow-hidden print:h-auto print:overflow-visible print:bg-white print:block">
         <!-- Backdrop for Mobile Drawer -->
         <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-out duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
             x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0" @click="sidebarOpen = false"
-            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden" style="display: none;"></div>
+            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden no-print print:hidden" style="display: none;"></div>
 
         <!-- Apple-style Clean Sidebar (Collapsible & Fixed/Static on Desktop) -->
         <aside
@@ -42,7 +105,7 @@
                 'w-72 translate-x-0': sidebarOpen,
                 'w-0 -translate-x-full lg:translate-x-0 lg:w-0 border-r-0 pointer-events-none': !sidebarOpen
             }"
-            class="fixed inset-y-0 left-0 z-50 lg:static lg:h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none overflow-hidden">
+            class="fixed inset-y-0 left-0 z-50 lg:static lg:h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none overflow-hidden no-print print:hidden">
             <div class="w-72 min-w-[18rem] flex flex-col justify-between h-full shrink-0">
                 <div class="flex flex-col flex-1 min-h-0">
                     <!-- Sidebar Header: Mac window controls, Brand & Mobile Close -->
@@ -69,7 +132,25 @@
                     </div>
 
                     <!-- Sidebar Navigation Menu (Scrolls independently if screen height is short) -->
-                    <nav class="py-4 space-y-6 overflow-y-auto flex-1">
+                    <nav class="py-4 space-y-6 overflow-y-auto flex-1"
+                        x-data="{
+                            init() {
+                                const saved = sessionStorage.getItem('sidebar_scroll_pos');
+                                if (saved !== null) {
+                                    this.$el.scrollTop = parseInt(saved, 10);
+                                }
+                                this.$nextTick(() => {
+                                    const active = this.$el.querySelector('a.bg-slate-900');
+                                    if (active) {
+                                        active.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+                                    }
+                                });
+                            },
+                            saveScroll() {
+                                sessionStorage.setItem('sidebar_scroll_pos', this.$el.scrollTop);
+                            }
+                        }"
+                        @scroll.passive="saveScroll()">
                         <!-- Group 1: Utama & Penjualan -->
                         <div>
                             <div class="px-6 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -159,6 +240,36 @@
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Group 4: Akuntansi Formal -->
+                        <div>
+                            <div class="px-6 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Akuntansi Formal
+                            </div>
+                            <ul class="menu p-0 w-full text-base font-semibold">
+                                <li class="w-full">
+                                    <a href="{{ route('accounting.journals') }}"
+                                        class="{{ request()->routeIs('accounting.journals') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="book" class="text-xl" />
+                                        <span class="text-base">Jurnal Umum</span>
+                                    </a>
+                                </li>
+                                <li class="w-full">
+                                    <a href="{{ route('accounting.ledger') }}"
+                                        class="{{ request()->routeIs('accounting.ledger') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="list-details" class="text-xl" />
+                                        <span class="text-base">Buku Besar</span>
+                                    </a>
+                                </li>
+                                <li class="w-full">
+                                    <a href="{{ route('accounting.financial-statements') }}"
+                                        class="{{ request()->routeIs('accounting.financial-statements') ? 'bg-slate-900 text-white font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }} w-full rounded-none py-3 px-6 gap-3 flex items-center transition-colors">
+                                        <x-icon name="file-spreadsheet" class="text-xl" />
+                                        <span class="text-base">Neraca & Laba Rugi</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </nav>
                 </div>
 
@@ -173,10 +284,10 @@
         </aside>
 
         <!-- Main Content Area (Isolated Scroll Container) -->
-        <div class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0">
+        <div class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0 print:h-auto print:overflow-visible print:block">
             <!-- Apple-style Clean Topbar -->
             <header
-                class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 shrink-0 transition-all">
+                class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 shrink-0 transition-all no-print print:hidden">
                 <!-- Left: Toggle Sidebar Button & Title -->
                 <div class="navbar-start gap-3 flex items-center">
                     <button @click="toggleSidebar()" type="button"
@@ -210,12 +321,12 @@
             </header>
 
             <!-- Main Page View Content -->
-            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full">
                 {{ $slot }}
             </main>
 
             <!-- Minimal Footer -->
-            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80 shrink-0">
+            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80 shrink-0 no-print print:hidden">
                 &copy; {{ date('Y') }} {{ config('app.name', 'Halala Food') }} • Sistem Pembukuan & Inventori
                 Konsinyasi
             </footer>

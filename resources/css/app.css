@@ -17,3 +17,47 @@
     display: none !important;
 }
 
+.print-only {
+    display: none;
+}
+
+@media print {
+    html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        font-size: 11pt !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    aside, header, .no-print, .toast, .navbar {
+        display: none !important;
+    }
+
+    .h-screen, .h-full, .overflow-y-auto, .overflow-x-hidden, .overflow-hidden {
+        height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 15mm 15mm;
+    }
+}
+
+
