@@ -73,7 +73,7 @@
                     2. Jumlah Makanan yang Dititipkan
                 </h2>
 
-                <div class="space-y-4">
+                <div class="space-y-6 pt-2">
                     @forelse($items as $index => $item)
                         <div x-data="{
                                 initialStock: {{ (int) ($item['stock_ready'] ?? 0) }},
@@ -85,44 +85,44 @@
                                     return this.initialStock - used;
                                 }
                             }"
-                            class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border gap-4 transition-all duration-150"
+                            class="relative flex flex-col sm:flex-row sm:items-center justify-between p-4 pt-5 rounded-xl border gap-4 transition-all duration-150"
                             :class="{
                                 'bg-red-50/50 border-red-300': remainingStock < 0,
                                 'bg-emerald-50/30 border-emerald-300': remainingStock >= 0 && dropped > 0,
                                 'bg-slate-50 border-slate-200': dropped <= 0 || isNaN(parseInt(dropped))
                             }">
+                            <!-- Floating Badge di Atas Border Card Item -->
+                            <div class="absolute -top-3 left-4 flex items-center z-10">
+                                <span x-show="remainingStock > 0 && (!dropped || dropped == 0)"
+                                      class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs ring-2 ring-white">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                    Stok Siap: {{ $item['stock_ready'] }} {{ $item['unit'] ?? 'pcs' }}
+                                </span>
+
+                                <span x-show="remainingStock > 0 && dropped > 0"
+                                      x-cloak
+                                      class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white border border-emerald-700 shadow-xs ring-2 ring-white">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    <span>Sisa Stok: <strong x-text="remainingStock + ' ' + unit"></strong> <span class="font-normal opacity-90">(Awal: {{ $item['stock_ready'] }})</span></span>
+                                </span>
+
+                                <span x-show="remainingStock === 0"
+                                      x-cloak
+                                      class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white border border-amber-600 shadow-xs ring-2 ring-white">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    <span>Stok Pas Habis (0 <span x-text="unit"></span>)</span>
+                                </span>
+
+                                <span x-show="remainingStock < 0"
+                                      x-cloak
+                                      class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white border border-red-700 shadow-xs ring-2 ring-white animate-pulse">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    <span>Melebihi Stok! (Kurang <strong x-text="Math.abs(remainingStock) + ' ' + unit"></strong>)</span>
+                                </span>
+                            </div>
+
                             <div class="flex-1 space-y-1">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
-
-                                    <!-- Stok Siap / Sisa Stok Realtime (Client Side) -->
-                                    <span x-show="remainingStock > 0 && (!dropped || dropped == 0)"
-                                          class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                        Stok Siap: {{ $item['stock_ready'] }} {{ $item['unit'] ?? 'pcs' }}
-                                    </span>
-
-                                    <span x-show="remainingStock > 0 && dropped > 0"
-                                          x-cloak
-                                          class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                        <span>Sisa Stok: <strong x-text="remainingStock + ' ' + unit"></strong> <span class="text-emerald-700 font-normal">(Awal: {{ $item['stock_ready'] }})</span></span>
-                                    </span>
-
-                                    <span x-show="remainingStock === 0"
-                                          x-cloak
-                                          class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 shadow-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                                        <span>Stok Pas Habis (0 <span x-text="unit"></span>)</span>
-                                    </span>
-
-                                    <span x-show="remainingStock < 0"
-                                          x-cloak
-                                          class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300 shadow-sm animate-pulse">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
-                                        <span>Melebihi Stok! (Kurang <strong x-text="Math.abs(remainingStock) + ' ' + unit"></strong>)</span>
-                                    </span>
-                                </div>
+                                <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
                                 <p class="text-sm font-medium text-slate-500">
                                     Harga Titip: <strong class="text-slate-800">Rp {{ number_format($item['price_per_item'], 0, ',', '.') }}</strong> / {{ $item['unit'] ?? 'pcs' }}
                                 </p>
