@@ -145,9 +145,29 @@
                         @endforeach
                     @empty
                         <tr>
-                            <td colspan="5" class="py-10 text-center text-slate-500">
-                                <p class="text-base font-medium">Belum ada catatan jurnal pada periode ini.</p>
-                                <p class="text-sm text-slate-400 mt-1">Transaksi kas, produksi, dan penagihan toko akan otomatis tercatat di sini.</p>
+                            <td colspan="5" class="py-14 text-center">
+                                <div class="max-w-md mx-auto space-y-3">
+                                    <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-slate-400">
+                                        <x-icon name="book-2" class="text-2xl" />
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-bold text-slate-800">Belum Ada Catatan Jurnal</p>
+                                        <p class="text-sm text-slate-500 mt-1">
+                                            @if(!empty($search) || !empty($dateRange))
+                                                Tidak ditemukan catatan jurnal yang cocok dengan filter atau kata kunci pencarian.
+                                            @else
+                                                Transaksi titip jual, pencatatan kas, dan produksi akan otomatis dicatat dalam jurnal umum di sini.
+                                            @endif
+                                        </p>
+                                    </div>
+                                    @if(!empty($search) || !empty($dateRange))
+                                        <div class="pt-1">
+                                            <button type="button" wire:click="setQuickDate('all')" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg border border-slate-300">
+                                                Reset Filter Tanggal
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforelse

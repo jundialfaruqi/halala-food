@@ -4,6 +4,7 @@ namespace App\Livewire\Accounting;
 
 use App\Models\ChartOfAccount;
 use App\Models\JournalItem;
+use App\Services\AccountingService;
 use Carbon\Carbon;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
@@ -22,9 +23,17 @@ class Ledger extends Component
     public function mount(): void
     {
         if (! $this->selectedAccountId) {
-            $first = ChartOfAccount::first();
+            $first = ChartOfAccount::orderBy('code')->first();
             $this->selectedAccountId = $first?->id;
         }
+    }
+
+    public function initDefaultAccounts(): void
+    {
+        AccountingService::ensureChartOfAccountsExist();
+        $first = ChartOfAccount::orderBy('code')->first();
+        $this->selectedAccountId = $first?->id;
+        session()->flash('success', 'Bagan Akun perkiraan standar berhasil diinisialisasi!');
     }
 
     public function setQuickDate(string $period): void
@@ -41,8 +50,13 @@ class Ledger extends Component
     public function render(): View
     {
         $accounts = ChartOfAccount::orderBy('code')->get();
+
+        if ($this->selectedAccountId && ! $accounts->contains('id', $this->selectedAccountId)) {
+            $this->selectedAccountId = $accounts->first()?->id;
+        }
+
         $currentAccount = $this->selectedAccountId
-            ? ChartOfAccount::find($this->selectedAccountId)
+            ? $accounts->firstWhere('id', $this->selectedAccountId)
             : $accounts->first();
 
         $startDate = '';
