@@ -5,6 +5,8 @@ use App\Models\ConsignmentItem;
 use App\Models\Product;
 use App\Models\Store;
 
+use function Pest\Laravel\get;
+
 test('can access printable invoice page for consignment', function () {
     $store = Store::create([
         'name' => 'Toko Mitra Berkah',
@@ -37,7 +39,7 @@ test('can access printable invoice page for consignment', function () {
         'price_per_item' => 12000,
     ]);
 
-    $response = $this->get(route('consignments.print', $consignment->id));
+    $response = get(route('consignments.print', $consignment->id));
 
     $response->assertOk()
         ->assertSee('SURAT TITIP BARANG')

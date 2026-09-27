@@ -7,15 +7,17 @@ use App\Models\StoreProductBarcode;
 use App\Models\User;
 use App\Services\BarcodeService;
 use Livewire\Livewire;
-use Tests\TestCase;
 
-/** @var TestCase $this */
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\get;
+
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAs(User::factory()->create());
 });
 
 test('barcodes index page can be rendered', function () {
-    $response = $this->get(route('barcodes.index'));
+    $response = get(route('barcodes.index'));
 
     $response->assertSuccessful();
 });
@@ -48,7 +50,7 @@ test('store barcode can be created via livewire component', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    $this->assertDatabaseHas('store_product_barcodes', [
+    assertDatabaseHas('store_product_barcodes', [
         'store_id' => $store->id,
         'product_id' => $product->id,
         'barcode' => '201948281023',
@@ -72,14 +74,14 @@ test('barcode print page and standalone export can be accessed', function () {
         'barcode' => '201948281023',
     ]);
 
-    $printRes = $this->get(route('barcodes.print', ['mode' => 'single', 'barcode_id' => $barcode->id]));
+    $printRes = get(route('barcodes.print', ['mode' => 'single', 'barcode_id' => $barcode->id]));
     $printRes->assertSuccessful();
 
-    $exportRes = $this->get(route('barcodes.export-html', ['mode' => 'single', 'barcode_id' => $barcode->id]));
+    $exportRes = get(route('barcodes.export-html', ['mode' => 'single', 'barcode_id' => $barcode->id]));
     $exportRes->assertSuccessful();
     $exportRes->assertHeader('Content-Type', 'text/html; charset=utf-8');
 
-    $pdfRes = $this->get(route('barcodes.export-pdf', [
+    $pdfRes = get(route('barcodes.export-pdf', [
         'mode' => 'single',
         'barcode_id' => $barcode->id,
         'template' => 'a4_3x8',
@@ -117,7 +119,7 @@ test('barcode pdf export works with various templates without clipping', functio
     ]);
 
     // Test 4x10 template
-    $res4x10 = $this->get(route('barcodes.export-pdf', [
+    $res4x10 = get(route('barcodes.export-pdf', [
         'mode' => 'single',
         'barcode_id' => $barcode->id,
         'cols' => 4,
@@ -134,7 +136,7 @@ test('barcode pdf export works with various templates without clipping', functio
     expect($res4x10->getContent())->toStartWith('%PDF-1.4');
 
     // Test 5x8 Tom & Jerry 108 template
-    $res5x8 = $this->get(route('barcodes.export-pdf', [
+    $res5x8 = get(route('barcodes.export-pdf', [
         'mode' => 'single',
         'barcode_id' => $barcode->id,
         'cols' => 5,
@@ -151,7 +153,7 @@ test('barcode pdf export works with various templates without clipping', functio
     expect($res5x8->getContent())->toStartWith('%PDF-1.4');
 
     // Test oversized custom grid auto-scaling
-    $resOversized = $this->get(route('barcodes.export-pdf', [
+    $resOversized = get(route('barcodes.export-pdf', [
         'mode' => 'single',
         'barcode_id' => $barcode->id,
         'cols' => 4,
