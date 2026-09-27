@@ -4,12 +4,129 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Lembar Barcode Toko - {{ $storeName ?: 'Halala Food' }}</title>
-    
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.4;
+            padding: 24px 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header-bar {
+            max-width: 210mm;
+            margin: 0 auto 16px auto;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-row-1 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .header-row-2 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 12px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-back {
+            background-color: #f8fafc;
+            color: #334155;
+            border-color: #cbd5e1;
+        }
+        .btn-back:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-print-main {
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+        .btn-print-main:hover {
+            background-color: #000000;
+        }
+
+        .btn-pdf {
+            background-color: #be123c;
+            color: #ffffff;
+        }
+        .btn-pdf:hover {
+            background-color: #9f1239;
+        }
+
+        .btn-html {
+            background-color: #047857;
+            color: #ffffff;
+        }
+        .btn-html:hover {
+            background-color: #065f46;
+        }
+
+        .badge-info {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            background-color: #f1f5f9;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            font-family: ui-monospace, monospace;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .guide-box {
+            max-width: 210mm;
+            margin: 0 auto 20px auto;
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .print-sheet {
@@ -150,35 +267,42 @@
                 margin: 0;
             }
         }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-900 font-sans antialiased min-h-screen p-0 sm:p-6">
+<body>
 
     <!-- Action Bar (Hidden on Print) -->
-    <div class="no-print max-w-5xl mx-auto mb-5 bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3.5">
+    <div class="no-print header-bar">
         <!-- Baris 1: Navigasi & Informasi Dokumen -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('barcodes.index', ['tab' => 'print']) }}" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border border-slate-300 gap-1.5 cursor-pointer">
-                    <x-icon name="arrow-left" class="text-base" />
+        <div class="header-row-1">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="{{ route('barcodes.index', ['tab' => 'print']) }}" class="btn-action btn-back">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
                     <span>Kembali ke Studio</span>
                 </a>
                 <div>
-                    <h1 class="font-bold text-slate-900 text-base leading-tight">Lembar Siap Cetak Barcode Toko</h1>
-                    <p class="text-xs text-slate-500 font-medium">
-                        Toko: <strong class="text-slate-800">{{ $storeName ?: 'Umum' }}</strong>
+                    <h1 style="font-size: 16px; font-weight: 700; color: #0f172a;">Lembar Siap Cetak Barcode Toko</h1>
+                    <p style="font-size: 12px; color: #64748b; font-weight: 500;">
+                        Toko: <strong style="color: #0f172a;">{{ $storeName ?: 'Umum' }}</strong>
                     </p>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="badge badge-sm bg-slate-100 text-slate-700 font-mono font-bold border-slate-200">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                <span class="badge-info">
                     {{ count($labels) }} Stiker (Grid {{ $columns }} × {{ $rows }})
                 </span>
-                <span class="badge badge-sm bg-slate-100 text-slate-700 font-mono font-medium border-slate-200">
+                <span class="badge-info">
                     Ukuran {{ $labelWidth }} × {{ $labelHeight }} mm
                 </span>
                 @if(count($labels) > $columns * $rows)
-                    <span class="badge badge-sm bg-amber-100 text-amber-800 font-bold border-amber-200">
+                    <span class="badge-info badge-warning">
                         {{ ceil(count($labels) / ($columns * $rows)) }} Lembar A4
                     </span>
                 @endif
@@ -186,30 +310,41 @@
         </div>
 
         <!-- Baris 2: Tombol Aksi Pencetakan & Ekspor -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <p class="text-xs text-slate-500 font-medium hidden sm:block">
+        <div class="header-row-2">
+            <p style="font-size: 12px; color: #64748b; font-weight: 500;">
                 Pilih opsi pencetakan atau download file:
             </p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full sm:w-auto">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 <!-- Print Button (Primary) -->
-                <button type="button" onclick="window.print()" class="btn btn-sm bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center">
-                    <x-icon name="printer" class="text-base" />
+                <button type="button" onclick="window.print()" class="btn-action btn-print-main">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
                     <span>Cetak Sekarang (Ctrl+P)</span>
                 </button>
 
                 <!-- Download PDF Button -->
-                <button type="button" id="btn-download-pdf" onclick="exportToPdf()" 
-                   class="btn btn-sm bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center"
+                <button type="button" id="btn-download-pdf" onclick="exportToPdf()" class="btn-action btn-pdf"
                    title="Simpan lembar stiker ini langsung sebagai file PDF (.pdf)">
-                    <x-icon name="file-type-pdf" class="text-base" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
                     <span>Simpan PDF (.pdf)</span>
                 </button>
 
                 <!-- Download HTML for Flashdisk -->
-                <a href="{{ route('barcodes.export-html', request()->query()) }}" 
-                   class="btn btn-sm bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl px-4 gap-2 shadow-xs cursor-pointer justify-center"
+                <a href="{{ route('barcodes.export-html', request()->query()) }}" class="btn-action btn-html"
                    title="Download file mandiri offline untuk dimasukkan ke flashdisk">
-                    <x-icon name="device-usb" class="text-base" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;">
+                        <path d="M7 2h10v4H7z"></path>
+                        <path d="M5 6h14a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a2 2 0 0 1 2-2z"></path>
+                    </svg>
                     <span>Simpan Flashdisk (.html)</span>
                 </a>
             </div>
@@ -217,11 +352,8 @@
     </div>
 
     <!-- Info banner for print shop -->
-    <div class="no-print max-w-5xl mx-auto mb-4 bg-amber-50 border border-amber-200/80 rounded-xl p-3 text-xs text-amber-800 flex items-center gap-2">
-        <x-icon name="info-circle" class="text-lg text-amber-600 shrink-0" />
-        <span>
-            <strong>Petunjuk Cetak Percetakan:</strong> Gunakan kertas stiker / label HVS/Glossy A4. Pada dialog Print, pastikan <strong>Scale/Skala: 100% (Actual Size / Do not fit)</strong> dan <strong>Margins: None / Minimum</strong> agar presisi dengan ukuran pisau stiker.
-        </span>
+    <div class="no-print guide-box">
+        <strong>💡 Petunjuk Cetak Percetakan:</strong> Gunakan kertas stiker / label HVS/Glossy A4. Pada dialog Print, pastikan <strong>Scale/Skala: 100% (Actual Size / Do not fit)</strong> dan <strong>Margins: None / Minimum</strong> agar presisi dengan ukuran pisau stiker.
     </div>
 
     @php
@@ -315,41 +447,57 @@
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = `
-                    <svg class="animate-spin h-4 w-4 text-white inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; animation: spin 1s linear infinite;">
+                        <line x1="12" y1="2" x2="12" y2="6"></line>
+                        <line x1="12" y1="18" x2="12" y2="22"></line>
+                        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                        <line x1="2" y1="12" x2="6" y2="12"></line>
+                        <line x1="18" y1="12" x2="22" y2="12"></line>
+                        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
                     </svg>
                     <span>Menyusun PDF...</span>
                 `;
             }
 
             const element = document.getElementById('print-container');
+            const filename = '{{ !empty($storeName) ? "Barcode-".preg_replace("/[^A-Za-z0-9_\-]/", "_", $storeName)."-".date("Ymd") : "Barcode-Cetak-".date("Ymd") }}.pdf';
             const opt = {
                 margin: 0,
-                filename: '{{ !empty($storeName) ? "Barcode-".preg_replace("/[^A-Za-z0-9_\-]/", "_", $storeName)."-".date("Ymd") : "Barcode-Cetak-".date("Ymd") }}.pdf',
+                filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { 
                     scale: 3, 
                     useCORS: true, 
-                    logging: false 
+                    logging: false,
+                    letterRendering: true
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['css', 'legacy'] }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                    }
+                }).catch(err => {
+                    console.error('PDF error:', err);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                    }
+                    window.print();
+                });
+            } else {
                 if (btn) {
                     btn.disabled = false;
                     btn.innerHTML = originalContent;
                 }
-            }).catch(err => {
-                console.error('PDF error:', err);
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalContent;
-                }
-                alert('Gagal menyusun PDF otomatis. Silakan gunakan tombol Cetak lalu pilih opsi "Save as PDF / Simpan sebagai PDF".');
-            });
+                window.print();
+            }
         }
 
         @if(request()->boolean('autodownload_pdf'))
@@ -366,6 +514,5 @@
             });
         @endif
     </script>
-
 </body>
 </html>
