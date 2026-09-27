@@ -59,9 +59,8 @@
                                             class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
                                             Edit
                                         </button>
-                                        <button wire:click="deleteMaterial({{ $mat->id }})"
-                                            wire:confirm="Apakah Anda yakin ingin menghapus bahan baku '{{ $mat->name }}'?"
-                                            class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                                        <button wire:click="confirmDelete({{ $mat->id }}, '{{ addslashes($mat->name) }}')"
+                                            class="btn btn-sm bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 font-bold rounded-lg px-3 border border-slate-300 transition">
                                             Hapus
                                         </button>
                                     </div>
@@ -416,4 +415,14 @@
             </div>
         </div>
     @endif
+
+    <!-- Modal Konfirmasi Hapus Bahan Baku (Apple UI) -->
+    <x-confirm-delete-modal 
+        :show="$showDeleteModal"
+        title="Hapus Bahan Baku?"
+        :item-name="$deletingName"
+        message="Apakah Anda yakin ingin menghapus data bahan baku ini? Pastikan bahan ini tidak sedang digunakan pada resep aktif."
+        confirm-action="deleteMaterial"
+        confirm-text="Ya, Hapus Bahan"
+    />
 </div>

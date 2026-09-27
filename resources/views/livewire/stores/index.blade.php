@@ -71,9 +71,8 @@
                                     <button wire:click="openEditModal({{ $store->id }})" class="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg px-3 border border-slate-300">
                                         Edit
                                     </button>
-                                    <button wire:click="deleteStore({{ $store->id }})"
-                                            wire:confirm="Apakah Anda yakin ingin menghapus toko '{{ $store->name }}'?"
-                                            class="btn btn-sm bg-slate-100 hover:bg-red-50 text-red-600 hover:text-red-700 font-bold rounded-lg px-3 border border-slate-300">
+                                    <button wire:click="confirmDelete({{ $store->id }}, '{{ addslashes($store->name) }}')"
+                                            class="btn btn-sm bg-slate-100 hover:bg-rose-50 text-rose-600 hover:text-rose-700 font-bold rounded-lg px-3 border border-slate-300 transition active:scale-95">
                                         Hapus
                                     </button>
                                 </div>
@@ -187,4 +186,14 @@
             </div>
         </div>
     @endif
+
+    <!-- Modal Konfirmasi Hapus Toko (Apple UI) -->
+    <x-confirm-delete-modal
+        :show="$showDeleteModal"
+        title="Hapus Toko Mitra?"
+        :item-name="$deletingName"
+        message="Apakah Anda yakin ingin menghapus data toko ini? Riwayat titipan barang dan rekap keuangan sebelumnya tetap tersimpan rapi."
+        confirm-action="deleteStore"
+        confirm-text="Ya, Hapus Toko"
+    />
 </div>

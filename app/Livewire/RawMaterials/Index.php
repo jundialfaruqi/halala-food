@@ -17,6 +17,12 @@ class Index extends Component
 
     public bool $showRecipeModal = false;
 
+    public bool $showDeleteModal = false;
+
+    public ?int $deletingId = null;
+
+    public string $deletingName = '';
+
     public ?int $materialId = null;
 
     // Material Form
@@ -91,14 +97,26 @@ class Index extends Component
         $this->dispatch('toast', message: 'Data bahan baku berhasil disimpan.');
     }
 
-    public function deleteMaterial(int $id): void
+    public function confirmDelete(int $id, string $name): void
     {
-        $material = RawMaterial::find($id);
-        if ($material) {
-            $name = $material->name;
-            $material->delete();
-            $this->dispatch('toast', message: "Bahan baku '{$name}' berhasil dihapus.");
+        $this->deletingId = $id;
+        $this->deletingName = $name;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteMaterial(): void
+    {
+        if ($this->deletingId) {
+            $material = RawMaterial::find($this->deletingId);
+            if ($material) {
+                $name = $material->name;
+                $material->delete();
+                $this->dispatch('toast', message: "Bahan baku '{$name}' berhasil dihapus.");
+            }
         }
+        $this->showDeleteModal = false;
+        $this->deletingId = null;
+        $this->deletingName = '';
     }
 
     public function openRecipeModal(int $productId): void

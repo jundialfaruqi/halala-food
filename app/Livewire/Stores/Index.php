@@ -22,6 +22,12 @@ class Index extends Component
 
     public bool $showModal = false;
 
+    public bool $showDeleteModal = false;
+
+    public ?int $deletingId = null;
+
+    public string $deletingName = '';
+
     public ?int $storeId = null;
 
     // Form fields
@@ -98,14 +104,26 @@ class Index extends Component
         $this->dispatch('toast', message: 'Data toko berhasil disimpan.');
     }
 
-    public function deleteStore(int $id): void
+    public function confirmDelete(int $id, string $name): void
     {
-        $store = Store::find($id);
-        if ($store) {
-            $name = $store->name;
-            $store->delete();
-            $this->dispatch('toast', message: "Toko '{$name}' berhasil dihapus.");
+        $this->deletingId = $id;
+        $this->deletingName = $name;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteStore(): void
+    {
+        if ($this->deletingId) {
+            $store = Store::find($this->deletingId);
+            if ($store) {
+                $name = $store->name;
+                $store->delete();
+                $this->dispatch('toast', message: "Toko '{$name}' berhasil dihapus.");
+            }
         }
+        $this->showDeleteModal = false;
+        $this->deletingId = null;
+        $this->deletingName = '';
     }
 
     public function render(): View

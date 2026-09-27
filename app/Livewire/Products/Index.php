@@ -12,6 +12,12 @@ class Index extends Component
 {
     public bool $showModal = false;
 
+    public bool $showDeleteModal = false;
+
+    public ?int $deletingId = null;
+
+    public string $deletingName = '';
+
     public ?int $productId = null;
 
     public string $name = '';
@@ -88,14 +94,26 @@ class Index extends Component
         $this->dispatch('toast', message: 'Data produk berhasil disimpan.');
     }
 
-    public function deleteProduct(int $id): void
+    public function confirmDelete(int $id, string $name): void
     {
-        $product = Product::find($id);
-        if ($product) {
-            $name = $product->name;
-            $product->delete();
-            $this->dispatch('toast', message: "Produk '{$name}' berhasil dihapus.");
+        $this->deletingId = $id;
+        $this->deletingName = $name;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteProduct(): void
+    {
+        if ($this->deletingId) {
+            $product = Product::find($this->deletingId);
+            if ($product) {
+                $name = $product->name;
+                $product->delete();
+                $this->dispatch('toast', message: "Produk '{$name}' berhasil dihapus.");
+            }
         }
+        $this->showDeleteModal = false;
+        $this->deletingId = null;
+        $this->deletingName = '';
     }
 
     public function render(): View
