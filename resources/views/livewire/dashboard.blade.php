@@ -22,41 +22,67 @@
     </div>
 
     <!-- Metrik Utama (Angka Besar & Jelas) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
         <!-- Kas Usaha -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Kas Usaha</p>
-            <p class="text-3xl font-extrabold text-slate-900 mt-2 font-mono">
-                Rp {{ number_format($totalBusinessCash, 0, ',', '.') }}
-            </p>
-            <p class="text-sm text-slate-500 mt-1">Kas tunai tagihan & rekening usaha</p>
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+            <div>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Total Kas Usaha</p>
+                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight break-words" title="Rp {{ number_format($totalBusinessCash, 0, ',', '.') }}">
+                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span> {{ number_format($totalBusinessCash, 0, ',', '.') }}
+                    </p>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 mt-auto">
+                <p class="text-xs sm:text-sm text-slate-500 leading-snug">Kas tunai tagihan & rekening usaha</p>
+            </div>
         </div>
 
         <!-- Titipan Aktif di Toko -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Titipan di Toko</p>
-            <p class="text-3xl font-extrabold text-slate-900 mt-2 font-mono">
-                {{ $activeConsignmentsCount }} Toko
-            </p>
-            <p class="text-sm text-slate-500 mt-1">Estimasi nilai: Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}</p>
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+            <div>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Titipan di Toko</p>
+                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                        {{ $activeConsignmentsCount }} <span class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
+                    </p>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 mt-auto">
+                <p class="text-xs sm:text-sm text-slate-500 leading-snug truncate" title="Estimasi nilai: Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}">
+                    Estimasi nilai: <span class="font-bold text-slate-700 font-mono">Rp {{ number_format($totalGoodsInStoresValue, 0, ',', '.') }}</span>
+                </p>
+            </div>
         </div>
 
         <!-- Kas Pribadi / Keluarga (Terpisah) -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Kas Pribadi / Keluarga</p>
-            <p class="text-3xl font-extrabold text-slate-900 mt-2 font-mono">
-                Rp {{ number_format($totalPersonalCash, 0, ',', '.') }}
-            </p>
-            <p class="text-sm text-slate-500 mt-1">Uang belanja dapur & rumah tangga</p>
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+            <div>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Kas Pribadi / Keluarga</p>
+                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight break-words" title="Rp {{ number_format($totalPersonalCash, 0, ',', '.') }}">
+                        <span class="text-base sm:text-lg font-bold text-slate-500 font-sans">Rp</span> {{ number_format($totalPersonalCash, 0, ',', '.') }}
+                    </p>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 mt-auto">
+                <p class="text-xs sm:text-sm text-slate-500 leading-snug">Uang belanja dapur & rumah tangga</p>
+            </div>
         </div>
 
         <!-- Total Mitra Toko -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Toko Mitra</p>
-            <p class="text-3xl font-extrabold text-slate-900 mt-2 font-mono">
-                {{ $totalStoresCount }} Toko
-            </p>
-            <p class="text-sm text-slate-500 mt-1">Aktif menjalin kerja sama titip jual</p>
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full transition-all hover:border-slate-300">
+            <div>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Total Toko Mitra</p>
+                <div class="py-3 min-h-[4.25rem] flex flex-col justify-center">
+                    <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                        {{ $totalStoresCount }} <span class="text-base sm:text-lg font-bold text-slate-600 font-sans">Toko</span>
+                    </p>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 mt-auto">
+                <p class="text-xs sm:text-sm text-slate-500 leading-snug">Aktif menjalin kerja sama titip jual</p>
+            </div>
         </div>
     </div>
 
