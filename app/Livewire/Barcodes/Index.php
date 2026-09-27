@@ -164,7 +164,7 @@ class Index extends Component
         $this->showModal = true;
     }
 
-    public function updatedProductId($val): void
+    public function updatedProductId(?int $val): void
     {
         if ($val && empty($this->custom_price)) {
             $prod = Product::find($val);
@@ -262,6 +262,7 @@ class Index extends Component
                 $this->marginLeftMm = 8.0;
                 $this->gapXMm = 3.0;
                 $this->gapYMm = 2.0;
+                $this->barcodeHeight = 34;
                 break;
             case 'a4_4x10': // 40 label A4 (kecil)
                 $this->columns = 4;
@@ -272,6 +273,7 @@ class Index extends Component
                 $this->marginLeftMm = 6.0;
                 $this->gapXMm = 2.0;
                 $this->gapYMm = 1.5;
+                $this->barcodeHeight = 22;
                 break;
             case 'a4_2x6': // 12 label A4 (besar)
                 $this->columns = 2;
@@ -282,6 +284,7 @@ class Index extends Component
                 $this->marginLeftMm = 10.0;
                 $this->gapXMm = 4.0;
                 $this->gapYMm = 3.0;
+                $this->barcodeHeight = 44;
                 break;
             case 'tj_108': // Tom & Jerry No. 108 (5x8 = 40)
                 $this->columns = 5;
@@ -291,7 +294,8 @@ class Index extends Component
                 $this->marginTopMm = 5.0;
                 $this->marginLeftMm = 5.0;
                 $this->gapXMm = 2.0;
-                $this->gapYMm = 2.0;
+                $this->gapYMm = 1.5;
+                $this->barcodeHeight = 15;
                 break;
             case 'tj_107': // Tom & Jerry No. 107 (4x6 = 24)
                 $this->columns = 4;
@@ -302,6 +306,7 @@ class Index extends Component
                 $this->marginLeftMm = 5.0;
                 $this->gapXMm = 2.0;
                 $this->gapYMm = 2.0;
+                $this->barcodeHeight = 16;
                 break;
         }
 

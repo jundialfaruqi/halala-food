@@ -178,16 +178,41 @@
         <strong>Petunjuk Percetakan:</strong> File ini siap cetak di kertas stiker label A4. Pada menu print browser, pilih <strong>Paper Size: A4</strong>, <strong>Scale: 100% (Actual Size)</strong>, dan <strong>Margins: None / Minimum</strong>.
     </div>
 
+    @php
+        if ($columns >= 5 || $labelHeight <= 20) {
+            // 5x8 / Tom & Jerry 108
+            $exportStoreSize = '7px';
+            $exportTitleSize = '8px';
+            $exportPriceSize = '7.5px';
+            $exportSkuSize = '6.5px';
+            $exportPadding = '1mm 1.5mm';
+        } elseif ($rows >= 10 || $columns >= 4 || $labelHeight <= 30) {
+            // 4x10 / 4x6
+            $exportStoreSize = '8px';
+            $exportTitleSize = '9.5px';
+            $exportPriceSize = '8.5px';
+            $exportSkuSize = '7px';
+            $exportPadding = '1.2mm 1.8mm';
+        } else {
+            // 3x8 / 2x6
+            $exportStoreSize = '9px';
+            $exportTitleSize = '11px';
+            $exportPriceSize = '10px';
+            $exportSkuSize = '8px';
+            $exportPadding = '1.5mm 2mm';
+        }
+    @endphp
+
     <div class="print-sheet">
         <div class="label-grid">
             @foreach($labels as $label)
-                <div class="barcode-sticker">
+                <div class="barcode-sticker" style="padding: {{ $exportPadding }};">
                     <div style="width: 100%;">
                         @if($showStoreName)
-                            <div class="sticker-store">{{ $label['item']->store->name }}</div>
+                            <div class="sticker-store" style="font-size: {{ $exportStoreSize }};">{{ $label['item']->store->name }}</div>
                         @endif
                         @if($showProductName)
-                            <div class="sticker-title">{{ $label['item']->display_name }}</div>
+                            <div class="sticker-title" style="font-size: {{ $exportTitleSize }};">{{ $label['item']->display_name }}</div>
                         @endif
                     </div>
 
@@ -196,8 +221,8 @@
                     </div>
 
                     @if($showPrice && $label['item']->display_price > 0)
-                        <div class="sticker-footer">
-                            <span style="font-size: 8px; color: #64748b;">{{ $label['item']->store_sku ?: '' }}</span>
+                        <div class="sticker-footer" style="font-size: {{ $exportPriceSize }};">
+                            <span style="font-size: {{ $exportSkuSize }}; color: #64748b;">{{ $label['item']->store_sku ?: '' }}</span>
                             <span>Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}</span>
                         </div>
                     @endif

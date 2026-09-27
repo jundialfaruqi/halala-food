@@ -448,58 +448,91 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
-                        @if(count($printableLabels) > ($columns * $rows))
+                        @if (count($printableLabels) > $columns * $rows)
                             <span class="badge badge-sm bg-amber-100 text-amber-800 font-bold border-amber-200">
                                 {{ ceil(count($printableLabels) / ($columns * $rows)) }} Lembar A4
                             </span>
                         @endif
-                        <span class="badge badge-sm bg-white text-slate-700 font-mono font-bold border-slate-200 shadow-2xs">
+                        <span
+                            class="badge badge-sm bg-white text-slate-700 font-mono font-bold border-slate-200 shadow-2xs">
                             Proporsi A4 Pas
                         </span>
                     </div>
                 </div>
 
                 <!-- A4 Sheet Container Preview (No Scroll, Responsive Fit) -->
-                <div class="bg-slate-200/90 rounded-3xl p-3 sm:p-5 border border-slate-300/80 flex flex-col items-center justify-center">
-                    <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200/80 p-3 sm:p-4 select-none aspect-[210/297] flex flex-col">
-                        
+                <div
+                    class="bg-slate-200/90 rounded-3xl p-3 sm:p-5 border border-slate-300/80 flex flex-col items-center justify-center">
+                    <div
+                        class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200/80 p-3 sm:p-4 select-none aspect-210/297 flex flex-col">
+
                         @php
                             $sheetCapacity = max(1, $columns * $rows);
                             $firstSheetLabels = array_slice($printableLabels, 0, $sheetCapacity);
+
+                            if ($columns >= 5 || $labelHeightMm <= 20) {
+                                // 5x8 Tom & Jerry 108 (38x18mm)
+                                $pvStoreClass = 'text-[5.5px] sm:text-[6.5px]';
+                                $pvTitleClass = 'text-[6.5px] sm:text-[7.5px]';
+                                $pvPriceClass = 'text-[6px] sm:text-[7px]';
+                                $pvSkuClass = 'text-[5px] sm:text-[6px]';
+                                $pvSvgMaxH = 'max-h-3 sm:max-h-4.5';
+                            } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {
+                                // 4x10 (48x28mm) / 4x6
+                                $pvStoreClass = 'text-[6.5px] sm:text-[7.5px]';
+                                $pvTitleClass = 'text-[7.5px] sm:text-[8.5px]';
+                                $pvPriceClass = 'text-[7px] sm:text-[8px]';
+                                $pvSkuClass = 'text-[5.5px] sm:text-[6.5px]';
+                                $pvSvgMaxH = 'max-h-4.5 sm:max-h-6';
+                            } else {
+                                // 3x8 / 2x6
+                                $pvStoreClass = 'text-[7.5px] sm:text-[8.5px]';
+                                $pvTitleClass = 'text-[8.5px] sm:text-[9.5px]';
+                                $pvPriceClass = 'text-[8px] sm:text-[9px]';
+                                $pvSkuClass = 'text-[6.5px] sm:text-[7.5px]';
+                                $pvSvgMaxH = 'max-h-6 sm:max-h-8';
+                            }
                         @endphp
 
-                        @if(!empty($firstSheetLabels))
+                        @if (!empty($firstSheetLabels))
                             <div class="w-full h-full grid"
-                                 style="grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr)); grid-template-rows: repeat({{ $rows }}, minmax(0, 1fr)); gap: 3px;">
-                                @foreach($firstSheetLabels as $idx => $label)
-                                    <div class="w-full h-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : '' }} rounded-xs p-0.5 sm:p-1 flex flex-col justify-between items-center text-center overflow-hidden">
-                                        
+                                style="grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr)); grid-template-rows: repeat({{ $rows }}, minmax(0, 1fr)); gap: 3px;">
+                                @foreach ($firstSheetLabels as $idx => $label)
+                                    <div
+                                        class="w-full h-full bg-white {{ $showCutBorders ? 'border border-dashed border-slate-300' : '' }} rounded-xs p-0.5 sm:p-1 flex flex-col justify-between items-center text-center overflow-hidden">
+
                                         <!-- Header Stiker -->
                                         <div class="w-full space-y-0 leading-none shrink-0">
                                             @if ($showStoreName)
-                                                <p class="text-[7px] sm:text-[8px] uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
+                                                <p
+                                                    class="{{ $pvStoreClass }} uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
                                                     {{ $label['item']->store->name }}
                                                 </p>
                                             @endif
                                             @if ($showProductName)
-                                                <p class="text-[8px] sm:text-[9px] font-bold text-slate-900 leading-tight truncate">
+                                                <p
+                                                    class="{{ $pvTitleClass }} font-bold text-slate-900 leading-tight truncate">
                                                     {{ $label['item']->display_name }}
                                                 </p>
                                             @endif
                                         </div>
 
                                         <!-- Barcode Graphic Vector -->
-                                        <div class="w-full flex-1 flex items-center justify-center my-0.5 overflow-hidden min-h-0">
-                                            <div class="w-full h-full flex items-center justify-center max-h-5 sm:max-h-7">
+                                        <div
+                                            class="w-full flex-1 flex items-center justify-center my-0.5 overflow-hidden min-h-0">
+                                            <div
+                                                class="w-full h-full flex items-center justify-center {{ $pvSvgMaxH }}">
                                                 {!! $label['svg'] !!}
                                             </div>
                                         </div>
 
                                         <!-- Footer Stiker -->
                                         @if ($showPrice && $label['item']->display_price > 0)
-                                            <div class="w-full flex items-center justify-between text-[7px] sm:text-[8px] font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 leading-none shrink-0">
+                                            <div
+                                                class="w-full flex items-center justify-between {{ $pvPriceClass }} font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 leading-none shrink-0">
                                                 @if ($label['item']->store_sku)
-                                                    <span class="text-[6px] sm:text-[7px] text-slate-500 font-normal truncate max-w-[40%]">
+                                                    <span
+                                                        class="{{ $pvSkuClass }} text-slate-500 font-normal truncate max-w-[40%]">
                                                         {{ $label['item']->store_sku }}
                                                     </span>
                                                 @else
@@ -514,9 +547,11 @@
                                 @endforeach
                             </div>
                         @else
-                            <div class="w-full h-full flex flex-col items-center justify-center text-center text-slate-400 p-8 space-y-2">
+                            <div
+                                class="w-full h-full flex flex-col items-center justify-center text-center text-slate-400 p-8 space-y-2">
                                 <x-icon name="tags" class="text-4xl opacity-50" />
-                                <p class="font-semibold text-sm">Pilih barcode atau tambahkan barcode toko terlebih dahulu.</p>
+                                <p class="font-semibold text-sm">Pilih barcode atau tambahkan barcode toko terlebih
+                                    dahulu.</p>
                             </div>
                         @endif
 

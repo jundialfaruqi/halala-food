@@ -125,7 +125,9 @@ class BarcodeService
         $quietZone = 10; // 10 modules quiet zone each side
         $totalWidth = ($totalModules + ($quietZone * 2)) * $moduleWidth;
         $barHeight = $height;
-        $totalSvgHeight = $showText ? ($barHeight + 16) : $barHeight;
+        $fontSize = (int) max(7, min(12, round($barHeight * 0.38)));
+        $textOffset = (int) max(9, round($fontSize * 1.15));
+        $totalSvgHeight = $showText ? ($barHeight + $textOffset + 3) : $barHeight;
 
         $svgBars = [];
         $currentX = $quietZone * $moduleWidth;
@@ -146,8 +148,8 @@ class BarcodeService
         $escapedText = htmlspecialchars($code, ENT_QUOTES, 'UTF-8');
         $textSvg = '';
         if ($showText) {
-            $textY = $barHeight + 12;
-            $textSvg = "<text x=\"50%\" y=\"{$textY}\" text-anchor=\"middle\" font-family=\"monospace, -apple-system, system-ui\" font-weight=\"700\" font-size=\"11\" letter-spacing=\"1\" fill=\"{$color}\">{$escapedText}</text>";
+            $textY = $barHeight + $textOffset;
+            $textSvg = "<text x=\"50%\" y=\"{$textY}\" text-anchor=\"middle\" font-family=\"monospace, -apple-system, system-ui\" font-weight=\"700\" font-size=\"{$fontSize}\" letter-spacing=\"0.5\" fill=\"{$color}\">{$escapedText}</text>";
         }
 
         $bgRect = $bgColor !== 'transparent' ? "<rect width=\"100%\" height=\"100%\" fill=\"{$bgColor}\" />" : '';
@@ -214,7 +216,9 @@ class BarcodeService
         $quietZone = 9;
         $totalWidth = ($moduleCount + ($quietZone * 2)) * $moduleWidth;
         $barHeight = $height;
-        $totalSvgHeight = $showText ? ($barHeight + 16) : $barHeight;
+        $fontSize = (int) max(7, min(12, round($barHeight * 0.38)));
+        $textOffset = (int) max(9, round($fontSize * 1.15));
+        $totalSvgHeight = $showText ? ($barHeight + $textOffset + 3) : $barHeight;
 
         $svgBars = [];
         $currentX = $quietZone * $moduleWidth;
@@ -233,8 +237,8 @@ class BarcodeService
         $escapedText = htmlspecialchars($digits, ENT_QUOTES, 'UTF-8');
         $textSvg = '';
         if ($showText) {
-            $textY = $barHeight + 12;
-            $textSvg = "<text x=\"50%\" y=\"{$textY}\" text-anchor=\"middle\" font-family=\"monospace, -apple-system, system-ui\" font-weight=\"700\" font-size=\"11\" letter-spacing=\"1\" fill=\"{$color}\">{$escapedText}</text>";
+            $textY = $barHeight + $textOffset;
+            $textSvg = "<text x=\"50%\" y=\"{$textY}\" text-anchor=\"middle\" font-family=\"monospace, -apple-system, system-ui\" font-weight=\"700\" font-size=\"{$fontSize}\" letter-spacing=\"0.5\" fill=\"{$color}\">{$escapedText}</text>";
         }
 
         $bgRect = $bgColor !== 'transparent' ? "<rect width=\"100%\" height=\"100%\" fill=\"{$bgColor}\" />" : '';

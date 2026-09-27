@@ -101,24 +101,52 @@
         </span>
     </div>
 
+    @php
+        if ($columns >= 5 || $labelHeight <= 20) {
+            // 5x8 (Tom & Jerry 108 / 38x18mm)
+            $printStoreSize = '7px';
+            $printTitleSize = '8px';
+            $printPriceSize = '7.5px';
+            $printSkuSize = '6.5px';
+            $printPadding = '1mm 1.5mm';
+        } elseif ($rows >= 10 || $columns >= 4 || $labelHeight <= 30) {
+            // 4x10 (48x28mm) / 4x6
+            $printStoreSize = '8px';
+            $printTitleSize = '9.5px';
+            $printPriceSize = '8.5px';
+            $printSkuSize = '7px';
+            $printPadding = '1.2mm 1.8mm';
+        } else {
+            // 3x8 / 2x6
+            $printStoreSize = '9px';
+            $printTitleSize = '11px';
+            $printPriceSize = '10px';
+            $printSkuSize = '8px';
+            $printPadding = '1.5mm 2mm';
+        }
+    @endphp
+
     <!-- Printable A4 Sheet -->
     <div class="print-sheet max-w-[210mm] mx-auto bg-white border border-slate-200 shadow-xl rounded-none transition-all"
          style="padding: {{ $marginTop }}mm {{ $marginLeft }}mm; min-height: 297mm; width: 210mm;">
         
         <div class="label-grid">
             @foreach($labels as $idx => $label)
-                <div class="barcode-sticker {{ $showCutBorders ? 'border border-dashed border-slate-300 print:border-slate-300' : '' }}">
+                <div class="barcode-sticker {{ $showCutBorders ? 'border border-dashed border-slate-300 print:border-slate-300' : '' }}"
+                     style="padding: {{ $printPadding }};">
                     
                     <!-- Header Stiker: Nama Toko & Produk -->
                     <div class="w-full space-y-0.5 shrink-0">
                         @if($showStoreName)
-                            <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 truncate leading-tight">
+                            <p class="uppercase tracking-wider font-bold text-slate-500 truncate leading-tight"
+                               style="font-size: {{ $printStoreSize }};">
                                 {{ $label['item']->store->name }}
                             </p>
                         @endif
                         
                         @if($showProductName)
-                            <p class="text-[11px] font-bold text-slate-900 leading-tight line-clamp-1 truncate">
+                            <p class="font-bold text-slate-900 leading-tight line-clamp-1 truncate"
+                               style="font-size: {{ $printTitleSize }};">
                                 {{ $label['item']->display_name }}
                             </p>
                         @endif
@@ -131,15 +159,18 @@
 
                     <!-- Footer Stiker: Harga Jual & SKU -->
                     @if($showPrice && $label['item']->display_price > 0)
-                        <div class="w-full flex items-center justify-between text-[10px] font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 shrink-0">
+                        <div class="w-full flex items-center justify-between font-mono font-bold text-slate-900 border-t border-slate-100 pt-0.5 shrink-0"
+                             style="font-size: {{ $printPriceSize }};">
                             @if($label['item']->store_sku)
-                                <span class="text-[8px] text-slate-500 font-normal truncate max-w-[45%]">
+                                <span class="text-slate-500 font-normal truncate max-w-[45%]"
+                                      style="font-size: {{ $printSkuSize }};">
                                     {{ $label['item']->store_sku }}
                                 </span>
                             @else
                                 <span></span>
                             @endif
-                            <span class="text-[10px] font-extrabold text-slate-900 ml-auto whitespace-nowrap">
+                            <span class="font-extrabold text-slate-900 ml-auto whitespace-nowrap"
+                                  style="font-size: {{ $printPriceSize }};">
                                 Rp {{ number_format($label['item']->display_price, 0, ',', '.') }}
                             </span>
                         </div>
