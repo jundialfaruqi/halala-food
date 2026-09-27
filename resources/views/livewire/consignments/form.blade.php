@@ -83,6 +83,14 @@
                                     const qty = parseInt(this.dropped, 10);
                                     const used = isNaN(qty) ? 0 : qty;
                                     return this.initialStock - used;
+                                },
+                                sanitizeInput(e) {
+                                    let cleanVal = e.target.value.replace(/\D/g, '');
+                                    if (cleanVal.length > 1 && cleanVal.startsWith('0')) {
+                                        cleanVal = String(parseInt(cleanVal, 10));
+                                    }
+                                    e.target.value = cleanVal;
+                                    this.dropped = cleanVal === '' ? 0 : parseInt(cleanVal, 10);
                                 }
                             }"
                             class="relative flex flex-col sm:flex-row sm:items-center justify-between p-4 pt-5 rounded-xl border gap-4 transition-all duration-150"
@@ -121,25 +129,29 @@
                                 </span>
                             </div>
 
-                            <div class="flex-1 space-y-1">
-                                <p class="text-lg font-bold text-slate-900">{{ $item['product_name'] }}</p>
+                            <div class="flex-1 min-w-0 space-y-1">
+                                <p class="text-lg font-bold text-slate-900 truncate">{{ $item['product_name'] }}</p>
                                 <p class="text-sm font-medium text-slate-500">
                                     Harga Titip: <strong class="text-slate-800">Rp {{ number_format($item['price_per_item'], 0, ',', '.') }}</strong> / {{ $item['unit'] ?? 'pcs' }}
                                 </p>
                             </div>
 
-                            <div class="flex flex-col items-end">
-                                <div class="flex items-center gap-3">
-                                    <label class="text-sm font-bold text-slate-700">Jumlah Titip:</label>
-                                    <div class="w-32">
-                                        <input type="number"
+                            <div class="sm:shrink-0 flex flex-col items-start sm:items-end">
+                                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                                    <label class="text-sm font-bold text-slate-700 shrink-0 whitespace-nowrap">Jumlah Titip:</label>
+                                    <div class="w-28 sm:w-32 shrink-0">
+                                        <input type="text"
+                                               inputmode="numeric"
+                                               pattern="[0-9]*"
                                                wire:model="items.{{ $index }}.quantity_dropped"
-                                               x-model.number="dropped"
-                                               min="0"
+                                               x-model="dropped"
+                                               @keydown="if (['e','E','+','-','.','/',',',' '].includes($event.key) && !$event.ctrlKey && !$event.metaKey) { $event.preventDefault(); }"
+                                               @input="sanitizeInput($event)"
+                                               placeholder="0"
                                                class="input input-bordered w-full text-center font-bold text-lg rounded-xl h-12 bg-white focus:border-slate-900 transition-colors"
                                                :class="{ 'border-red-500 text-red-700 focus:border-red-600': remainingStock < 0 }" />
                                     </div>
-                                    <span class="text-sm font-bold text-slate-600 min-w-10">{{ $item['unit'] ?? 'pcs' }}</span>
+                                    <span class="text-sm font-bold text-slate-600 w-14 sm:w-16 shrink-0 truncate text-left">{{ $item['unit'] ?? 'pcs' }}</span>
                                 </div>
                                 @error('items.'.$index.'.quantity_dropped')
                                     <span class="text-xs text-red-600 font-semibold mt-1">{{ $message }}</span>
