@@ -35,20 +35,20 @@
     @endif
 
     <!-- Filter & Pencarian (Besar & Mudah Dibaca) -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-4 sm:gap-y-0 sm:divide-x sm:divide-slate-200">
         <!-- Pencarian Toko -->
-        <div>
+        <div class="sm:pr-4">
             <label class="block text-sm font-bold text-slate-700 mb-1">Cari Toko / No. Titipan</label>
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Ketik nama toko..."
-                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white" />
+                   class="input input-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white shadow-xs" />
         </div>
 
         <!-- Filter Rute Toko -->
-        <div>
+        <div class="sm:px-4">
             <label class="block text-sm font-bold text-slate-700 mb-1">Pilih Rute / Wilayah</label>
-            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white">
+            <select wire:model.live="routeFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white shadow-xs">
                 <option value="">Semua Rute</option>
                 @foreach($routes as $route)
                     <option value="{{ $route }}">{{ $route }}</option>
@@ -57,9 +57,9 @@
         </div>
 
         <!-- Filter Status -->
-        <div>
+        <div class="sm:pl-4">
             <label class="block text-sm font-bold text-slate-700 mb-1">Status Titipan</label>
-            <select wire:model.live="statusFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white">
+            <select wire:model.live="statusFilter" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900 focus:outline-none bg-white shadow-xs">
                 <option value="active">Sedang Dititip (Aktif)</option>
                 <option value="completed">Selesai / Sudah Ditagih</option>
                 <option value="all">Semua Status</option>
