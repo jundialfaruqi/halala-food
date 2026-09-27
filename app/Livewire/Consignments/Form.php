@@ -129,12 +129,19 @@ class Form extends Component
 
     public function saveDrop(): void
     {
+        // Normalisasi quantity_dropped untuk semua item (konversi string kosong / null menjadi integer 0)
+        foreach ($this->items as $idx => $item) {
+            $this->items[$idx]['quantity_dropped'] = is_numeric($item['quantity_dropped'] ?? null)
+                ? (int) $item['quantity_dropped']
+                : 0;
+        }
+
         $this->validate([
             'store_id' => 'required|exists:stores,id',
             'drop_date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity_dropped' => 'required|integer|min:0',
+            'items.*.quantity_dropped' => 'nullable|integer|min:0',
         ], [
             'store_id.required' => 'Silakan pilih toko mitra tujuan titip barang.',
             'store_id.exists' => 'Toko mitra yang dipilih tidak ditemukan.',
@@ -144,7 +151,6 @@ class Form extends Component
             'items.min' => 'Daftar produk titipan minimal harus berisi 1 produk.',
             'items.*.product_id.required' => 'Produk makanan wajib dipilih.',
             'items.*.product_id.exists' => 'Produk makanan tidak valid.',
-            'items.*.quantity_dropped.required' => 'Jumlah barang titip wajib diisi.',
             'items.*.quantity_dropped.integer' => 'Jumlah barang titip harus berupa bilangan bulat.',
             'items.*.quantity_dropped.min' => 'Jumlah barang titip tidak boleh negatif.',
         ]);
