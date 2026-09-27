@@ -484,6 +484,7 @@
                                 $pvPriceClass = 'text-[5.5px] sm:text-[6.5px]';
                                 $pvSkuClass = 'text-[4.5px] sm:text-[5px]';
                                 $pvSvgMaxH = 'max-h-3 sm:max-h-4';
+                                $pvRowGap = 'gap-y-1 sm:gap-y-1.5';
                             } elseif ($rows >= 10 || $columns >= 4 || $labelHeightMm <= 30) {
                                 // 4x10 (48x27mm) / 4x6
                                 $pvStoreClass = 'text-[6.5px] sm:text-[7.5px]';
@@ -491,6 +492,7 @@
                                 $pvPriceClass = 'text-[7px] sm:text-[8px]';
                                 $pvSkuClass = 'text-[5.5px] sm:text-[6.5px]';
                                 $pvSvgMaxH = 'max-h-4 sm:max-h-5.5';
+                                $pvRowGap = 'gap-y-1.5 sm:gap-y-2';
                             } elseif ($columns == 2) {
                                 // 2x6 (95x44mm)
                                 $pvStoreClass = 'text-[9px] sm:text-[10px]';
@@ -498,6 +500,7 @@
                                 $pvPriceClass = 'text-[9px] sm:text-[10.5px]';
                                 $pvSkuClass = 'text-[7.5px] sm:text-[9px]';
                                 $pvSvgMaxH = 'max-h-7 sm:max-h-9';
+                                $pvRowGap = 'gap-y-2 sm:gap-y-3';
                             } else {
                                 // 3x8 (65x34mm)
                                 $pvStoreClass = 'text-[7.5px] sm:text-[8.5px]';
@@ -505,15 +508,15 @@
                                 $pvPriceClass = 'text-[8px] sm:text-[9px]';
                                 $pvSkuClass = 'text-[6.5px] sm:text-[7.5px]';
                                 $pvSvgMaxH = 'max-h-5 sm:max-h-7';
+                                $pvRowGap = 'gap-y-1.5 sm:gap-y-2.5';
                             }
                         @endphp
 
                         @if (!empty($firstSheetLabels))
-                            <div class="w-full grid"
+                            <div class="w-full grid {{ $pvRowGap }}"
                                 style="
                                     grid-template-columns: repeat({{ $columns }}, minmax(0, 1fr));
                                     column-gap: {{ ($gapXMm / 210.0) * 100 }}%;
-                                    row-gap: {{ ($gapYMm / 297.0) * 100 }}%;
                                 ">
                                 @foreach ($firstSheetLabels as $idx => $label)
                                     <div
