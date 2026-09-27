@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\CashTransaction;
 use App\Models\Consignment;
 use App\Models\ConsignmentItem;
+use App\Models\Production;
 use App\Models\Product;
 use App\Models\ProductRecipe;
 use App\Models\RawMaterial;
@@ -19,451 +20,265 @@ class HalalaFoodSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Akun Kas
+        // 1. Rekening & Akun Kas
         $kasTunai = Account::create([
-            'name' => 'Kas Tunai Toko (Hasil Tagihan)',
+            'name' => 'Kas Tunai Usaha (Kasir / Hasil Tagihan)',
             'type' => 'business',
-            'balance' => 2500000,
-            'description' => 'Uang tunai hasil keliling jemput tagihan toko',
+            'balance' => 873000,
+            'description' => 'Uang tunai operasional harian dan hasil jemput tagihan toko',
         ]);
 
         $bcaUsaha = Account::create([
             'name' => 'BCA Rekening Usaha',
             'type' => 'business',
-            'balance' => 12500000,
-            'description' => 'Rekening utama modal & belanja bahan',
+            'balance' => 2000000,
+            'description' => 'Rekening bank utama modal usaha dan simpanan laba',
         ]);
 
         $kasPribadi = Account::create([
             'name' => 'Kas Kebutuhan Pribadi / Keluarga',
             'type' => 'personal',
-            'balance' => 3000000,
-            'description' => 'Dana rumah tangga, dapur, dan keperluan keluarga',
+            'balance' => 1500000,
+            'description' => 'Dana rumah tangga dan keperluan pribadi keluarga',
         ]);
 
-        // 2. Produk Jadi
-        $merryWijen = Product::create([
-            'name' => 'Merry Wijen',
-            'unit' => 'bungkus',
-            'consignment_price' => 12000,
-            'retail_price' => 15000,
-            'stock_ready' => 150,
-            'description' => 'Kue kering wijen renyah rasa manis gurih',
-        ]);
-
-        $bumbuPecel = Product::create([
-            'name' => 'Bumbu Pecel Asli',
-            'unit' => 'bungkus',
-            'consignment_price' => 15000,
-            'retail_price' => 18000,
-            'stock_ready' => 100,
-            'description' => 'Bumbu pecel kacang sangrai khas resep keluarga (250gr)',
-        ]);
-
-        $tingTingSusu = Product::create([
-            'name' => 'Ting-Ting Susu',
-            'unit' => 'bungkus',
-            'consignment_price' => 10000,
-            'retail_price' => 12500,
-            'stock_ready' => 120,
-            'description' => 'Permen ting-ting kacang karamel susu lembut',
-        ]);
-
-        // 3. Bahan Baku
-        $wijen = RawMaterial::create([
-            'name' => 'Wijen Putih',
-            'unit' => 'kg',
-            'stock' => 35.0,
-            'min_stock' => 10.0,
-            'cost_per_unit' => 45000,
-        ]);
-
-        $kacang = RawMaterial::create([
-            'name' => 'Kacang Tanah Kupas',
-            'unit' => 'kg',
-            'stock' => 50.0,
-            'min_stock' => 15.0,
-            'cost_per_unit' => 32000,
-        ]);
-
-        $gula = RawMaterial::create([
-            'name' => 'Gula Pasir',
-            'unit' => 'kg',
-            'stock' => 40.0,
-            'min_stock' => 10.0,
-            'cost_per_unit' => 17500,
-        ]);
-
-        $susu = RawMaterial::create([
-            'name' => 'Susu Bubuk & SKM',
-            'unit' => 'kg',
-            'stock' => 20.0,
-            'min_stock' => 5.0,
-            'cost_per_unit' => 60000,
-        ]);
-
-        $rempah = RawMaterial::create([
-            'name' => 'Rempah Cabai & Asam Pecel',
-            'unit' => 'kg',
-            'stock' => 15.0,
-            'min_stock' => 5.0,
-            'cost_per_unit' => 40000,
-        ]);
-
-        $plastik = RawMaterial::create([
-            'name' => 'Plastik Standing Pouch',
-            'unit' => 'pcs',
-            'stock' => 500,
-            'min_stock' => 100,
-            'cost_per_unit' => 600,
-        ]);
-
-        $label = RawMaterial::create([
-            'name' => 'Stiker Label Halala',
-            'unit' => 'pcs',
-            'stock' => 600,
-            'min_stock' => 100,
-            'cost_per_unit' => 300,
-        ]);
-
-        // 4. Resep
-        // Merry Wijen
-        ProductRecipe::create(['product_id' => $merryWijen->id, 'raw_material_id' => $wijen->id, 'quantity_needed' => 0.04]);
-        ProductRecipe::create(['product_id' => $merryWijen->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 0.02]);
-        ProductRecipe::create(['product_id' => $merryWijen->id, 'raw_material_id' => $plastik->id, 'quantity_needed' => 1]);
-        ProductRecipe::create(['product_id' => $merryWijen->id, 'raw_material_id' => $label->id, 'quantity_needed' => 1]);
-
-        // Bumbu Pecel
-        ProductRecipe::create(['product_id' => $bumbuPecel->id, 'raw_material_id' => $kacang->id, 'quantity_needed' => 0.15]);
-        ProductRecipe::create(['product_id' => $bumbuPecel->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 0.05]);
-        ProductRecipe::create(['product_id' => $bumbuPecel->id, 'raw_material_id' => $rempah->id, 'quantity_needed' => 0.03]);
-        ProductRecipe::create(['product_id' => $bumbuPecel->id, 'raw_material_id' => $plastik->id, 'quantity_needed' => 1]);
-        ProductRecipe::create(['product_id' => $bumbuPecel->id, 'raw_material_id' => $label->id, 'quantity_needed' => 1]);
-
-        // Ting-Ting Susu
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $kacang->id, 'quantity_needed' => 0.08]);
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $susu->id, 'quantity_needed' => 0.03]);
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 0.03]);
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $plastik->id, 'quantity_needed' => 1]);
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $label->id, 'quantity_needed' => 1]);
-
-        // Jurnal Modal Awal & Saldo Awal Neraca
-        $initialDate = Carbon::now()->subDays(65)->toDateString();
-        $totalRawCost = ($wijen->stock * $wijen->cost_per_unit) +
-            ($kacang->stock * $kacang->cost_per_unit) +
-            ($gula->stock * $gula->cost_per_unit) +
-            ($susu->stock * $susu->cost_per_unit) +
-            ($rempah->stock * $rempah->cost_per_unit) +
-            ($plastik->stock * $plastik->cost_per_unit) +
-            ($label->stock * $label->cost_per_unit);
-
-        $totalProductCost = ($merryWijen->stock_ready * $merryWijen->material_cost) +
-            ($bumbuPecel->stock_ready * $bumbuPecel->material_cost) +
-            ($tingTingSusu->stock_ready * $tingTingSusu->material_cost);
-
-        $totalInitialCapital = 2500000 + 12500000 + $totalRawCost + $totalProductCost;
-
-        AccountingService::postEntry(
-            date: $initialDate,
-            notes: 'Penyetoran Modal Awal Usaha (Kas, Bank & Persediaan Awal)',
-            items: [
-                ['account_code' => '1-1001', 'debit' => 2500000, 'credit' => 0, 'memo' => 'Saldo Awal Kas Tunai Usaha'],
-                ['account_code' => '1-1002', 'debit' => 12500000, 'credit' => 0, 'memo' => 'Saldo Awal BCA Rekening Usaha'],
-                ['account_code' => '1-1300', 'debit' => $totalRawCost, 'credit' => 0, 'memo' => 'Persediaan Bahan Baku Awal'],
-                ['account_code' => '1-1400', 'debit' => $totalProductCost, 'credit' => 0, 'memo' => 'Persediaan Produk Jadi Awal'],
-                ['account_code' => '3-1000', 'debit' => 0, 'credit' => $totalInitialCapital, 'memo' => 'Setoran Modal Usaha Pemilik'],
-            ],
-            referenceType: 'initial_balance',
-            referenceId: 1
-        );
-
-        // 5. Toko Mitra
+        // 2. Master Toko Mitra (2 Toko Konsinyasi)
         $toko1 = Store::create([
-            'name' => 'Toko Barokah Jaya',
+            'name' => 'Pusat Oleh-Oleh Barokah',
             'owner_name' => 'Ibu Hj. Aminah',
             'phone' => '081234567890',
-            'address' => 'Jl. Pasar Kliwon No. 12',
-            'route' => 'Rute Pasar Besar',
+            'address' => 'Jl. Raya Pasar Besar No. 12',
+            'route' => 'Rute Pasar Kota',
             'commission_rate' => 0,
-            'notes' => 'Pembayaran tunai langsung saat jemput barang',
+            'is_active' => true,
+            'notes' => 'Rak display kaca dekat kasir utama. Jadwal cek tagihan tiap hari Sabtu.',
         ]);
 
         $toko2 = Store::create([
-            'name' => 'Minimarket Rezeki',
-            'owner_name' => 'Pak Joko',
-            'phone' => '081398765432',
-            'address' => 'Jl. Raya Barat No. 88',
-            'route' => 'Rute Barat',
+            'name' => 'Toko Snack Berkah Jaya',
+            'owner_name' => 'Pak Bambang',
+            'phone' => '085798765432',
+            'address' => 'Jl. Ahmad Yani No. 45',
+            'route' => 'Rute Jalur Utama',
             'commission_rate' => 0,
-            'notes' => 'Titip di rak depan kasir',
+            'is_active' => true,
+            'notes' => 'Rak khusus oleh-oleh makanan khas. Jadwal cek tagihan tiap hari Minggu.',
         ]);
 
-        $toko3 = Store::create([
-            'name' => 'Toko Snack Bu Hartati',
-            'owner_name' => 'Bu Hartati',
-            'phone' => '082155443322',
-            'address' => 'Komplek Pertokoan Sentral Blok A3',
-            'route' => 'Rute Kota',
-            'commission_rate' => 0,
-            'notes' => 'Laku cepat untuk Ting-Ting Susu',
+        // 3. Master Bahan Baku Kemasan Riil Pasar (Total Modal Belanja Rp 1.627.000)
+        $kacang = RawMaterial::create([
+            'name' => 'Kacang Tanah Sangrai',
+            'unit' => 'bungkus',
+            'stock' => 14.0,
+            'min_stock' => 3.0,
+            'cost_per_unit' => 33000, // Bungkus 1 kg
         ]);
 
-        $toko4 = Store::create([
-            'name' => 'Toko Oleh-Oleh Asli',
-            'owner_name' => 'Pak Hendra',
-            'phone' => '085611223344',
-            'address' => 'Jl. Pahlawan No. 45',
-            'route' => 'Rute Wisata',
-            'commission_rate' => 0,
-            'notes' => 'Pengambilan tiap akhir pekan',
+        $susu = RawMaterial::create([
+            'name' => 'Susu Bubuk Full Cream',
+            'unit' => 'box',
+            'stock' => 15.0,
+            'min_stock' => 3.0,
+            'cost_per_unit' => 38000, // Box 400 gram
         ]);
 
-        // 6. Transaksi Konsinyasi Aktif (Contoh: Titip di Toko Barokah Jaya)
+        $gula = RawMaterial::create([
+            'name' => 'Gula Pasir Kristal',
+            'unit' => 'bungkus',
+            'stock' => 8.0,
+            'min_stock' => 2.0,
+            'cost_per_unit' => 17500, // Bungkus 1 kg
+        ]);
+
+        $mentega = RawMaterial::create([
+            'name' => 'Mentega / Margarin',
+            'unit' => 'bungkus',
+            'stock' => 10.0,
+            'min_stock' => 2.0,
+            'cost_per_unit' => 9500, // Bungkus 200 gram
+        ]);
+
+        $pouch = RawMaterial::create([
+            'name' => 'Standing Pouch Klip (150g)',
+            'unit' => 'pak',
+            'stock' => 4.0,
+            'min_stock' => 1.0,
+            'cost_per_unit' => 45000, // Pak isi 50 pcs
+        ]);
+
+        $stiker = RawMaterial::create([
+            'name' => 'Stiker Label Kemasan Halala',
+            'unit' => 'lembar',
+            'stock' => 5.0,
+            'min_stock' => 1.0,
+            'cost_per_unit' => 18000, // Lembar A3 isi 40 stiker
+        ]);
+
+        $wrap = RawMaterial::create([
+            'name' => 'Plastik Seal Satuan (Dalam)',
+            'unit' => 'pak',
+            'stock' => 2.0,
+            'min_stock' => 1.0,
+            'cost_per_unit' => 45000, // Pak isi 1.000 lembar
+        ]);
+
+        // 4. Master Produk Jadi (Ting Ting Susu 150g isi 10 pcs)
+        $tingTingSusu = Product::create([
+            'name' => 'Ting Ting Susu (Pouch 150g / 10 pcs)',
+            'unit' => 'bungkus',
+            'consignment_price' => 12500, // Harga setor titip ke toko
+            'retail_price' => 15000, // Harga ecer toko ke pembeli (Toko untung Rp 2.500)
+            'stock_ready' => 200, // Hasil produksi 200 pouch
+            'description' => 'Camilan manis gurih khas dengan kacang sangrai renyah dan susu gurih, kemasan pouch 150 gram isi 10 butir.',
+            'is_active' => true,
+        ]);
+
+        // 5. Resep Produk (BOM per 1 Pouch 150g)
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $kacang->id, 'quantity_needed' => 0.0700]); // 70g dari 1 bungkus 1kg
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $susu->id, 'quantity_needed' => 0.0750]); // 30g dari 1 box 400g
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 0.0400]); // 40g dari 1 bungkus 1kg
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $mentega->id, 'quantity_needed' => 0.0500]); // 10g dari 1 bungkus 200g
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $pouch->id, 'quantity_needed' => 0.0200]); // 1 pcs dari 1 pak isi 50
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $stiker->id, 'quantity_needed' => 0.0250]); // 1 stiker dari 1 lembar A3 isi 40
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $wrap->id, 'quantity_needed' => 0.0050]); // 10 lembar wrap dari 1 pak isi 1000
+
+        // 6. Catat Riwayat Produksi Batch 200 Pouch
+        $prodDate = Carbon::now()->subDays(2)->toDateString();
+        Production::create([
+            'production_date' => $prodDate,
+            'product_id' => $tingTingSusu->id,
+            'quantity_produced' => 200,
+            'notes' => 'Batch 1 - Produksi perdana 200 pouch Ting Ting Susu untuk titipan 2 toko mitra',
+        ]);
+
+        // 7. Master Barcode Toko Khusus
+        StoreProductBarcode::create([
+            'store_id' => $toko1->id,
+            'product_id' => $tingTingSusu->id,
+            'barcode' => '899202615001',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'TTS-BAROKAH-150',
+            'custom_product_name' => 'TING TING SUSU 150GR',
+            'custom_price' => 15000,
+            'notes' => 'Barcode kasir Pusat Oleh-Oleh Barokah',
+        ]);
+
+        StoreProductBarcode::create([
+            'store_id' => $toko2->id,
+            'product_id' => $tingTingSusu->id,
+            'barcode' => '899202615002',
+            'barcode_type' => 'CODE128',
+            'store_sku' => 'TTS-BERKAH-150',
+            'custom_product_name' => 'TING TING SUSU POUCH',
+            'custom_price' => 15000,
+            'notes' => 'Barcode kasir Toko Snack Berkah Jaya',
+        ]);
+
+        // 8. Transaksi Arus Kas (Buku Kas)
+        // A. Pemasukan Modal Awal
+        $txModal = CashTransaction::create([
+            'account_id' => $kasTunai->id,
+            'type' => 'income',
+            'category' => 'Setoran Modal',
+            'amount' => 2500000,
+            'transaction_date' => Carbon::now()->subDays(5)->toDateString(),
+            'description' => 'Setoran modal awal usaha produksi Ting Ting Susu',
+        ]);
+
+        // B. Pengeluaran Belanja Bahan Baku & Kemasan
+        $txBahan = CashTransaction::create([
+            'account_id' => $kasTunai->id,
+            'type' => 'expense',
+            'category' => 'Belanja Bahan Baku',
+            'amount' => 1627000,
+            'transaction_date' => Carbon::now()->subDays(4)->toDateString(),
+            'description' => 'Pembelian bahan baku (Kacang, Susu, Gula, Mentega) & Kemasan (Pouch, Label, Wrap) untuk 200 pouch',
+        ]);
+
+        // 9. Transaksi Konsinyasi / Titip Jual (100 Pouch ke Toko 1 & 100 Pouch ke Toko 2)
         $consignment1 = Consignment::create([
             'consignment_number' => 'KNS-'.date('Ym').'-001',
             'store_id' => $toko1->id,
-            'drop_date' => Carbon::now()->subDays(10)->toDateString(),
+            'drop_date' => Carbon::now()->subDay()->toDateString(),
             'status' => 'active',
             'payment_status' => 'unpaid',
-            'notes' => 'Titip 40 Merry Wijen & 20 Bumbu Pecel',
+            'total_sold_amount' => 0,
+            'total_commission' => 0,
+            'total_net_received' => 0,
+            'amount_paid' => 0,
+            'notes' => 'Pengiriman pertama 100 pouch Ting Ting Susu',
         ]);
 
         ConsignmentItem::create([
             'consignment_id' => $consignment1->id,
-            'product_id' => $merryWijen->id,
-            'quantity_dropped' => 40,
-            'price_per_item' => 12000,
-            'quantity_remaining' => null,
-            'quantity_returned' => 0,
-            'quantity_sold' => 0,
-            'subtotal' => 0,
-        ]);
-
-        ConsignmentItem::create([
-            'consignment_id' => $consignment1->id,
-            'product_id' => $bumbuPecel->id,
-            'quantity_dropped' => 20,
-            'price_per_item' => 15000,
-            'quantity_remaining' => null,
-            'quantity_returned' => 0,
-            'quantity_sold' => 0,
-            'subtotal' => 0,
-        ]);
-
-        // 7. Transaksi Konsinyasi Selesai (Histori Penjualan untuk Trend Chart)
-        $completedSamples = [
-            ['store' => $toko1, 'days_ago' => 24, 'drop_days' => 31, 'items' => [[$merryWijen, 30, 25], [$tingTingSusu, 20, 18]]],
-            ['store' => $toko2, 'days_ago' => 19, 'drop_days' => 26, 'items' => [[$bumbuPecel, 25, 22], [$merryWijen, 20, 19]]],
-            ['store' => $toko3, 'days_ago' => 14, 'drop_days' => 21, 'items' => [[$tingTingSusu, 40, 38], [$merryWijen, 30, 28]]],
-            ['store' => $toko4, 'days_ago' => 10, 'drop_days' => 17, 'items' => [[$bumbuPecel, 30, 28], [$tingTingSusu, 25, 25]]],
-            ['store' => $toko1, 'days_ago' => 6,  'drop_days' => 13, 'items' => [[$merryWijen, 35, 32], [$bumbuPecel, 20, 18]]],
-            ['store' => $toko2, 'days_ago' => 3,  'drop_days' => 9,  'items' => [[$tingTingSusu, 30, 28], [$merryWijen, 25, 24]]],
-            ['store' => $toko3, 'days_ago' => 1,  'drop_days' => 7,  'items' => [[$merryWijen, 40, 39], [$bumbuPecel, 25, 24]]],
-        ];
-
-        foreach ($completedSamples as $idx => $sample) {
-            $settleDate = Carbon::now()->subDays($sample['days_ago'])->toDateString();
-            $dropDate = Carbon::now()->subDays($sample['drop_days'])->toDateString();
-
-            $totalGross = 0;
-            $itemsData = [];
-            foreach ($sample['items'] as $it) {
-                $prod = $it[0];
-                $dropped = $it[1];
-                $sold = $it[2];
-                $subtotal = $sold * $prod->consignment_price;
-                $totalGross += $subtotal;
-                $itemsData[] = [
-                    'product_id' => $prod->id,
-                    'quantity_dropped' => $dropped,
-                    'quantity_remaining' => $dropped - $sold,
-                    'quantity_returned' => 0,
-                    'quantity_sold' => $sold,
-                    'price_per_item' => $prod->consignment_price,
-                    'subtotal' => $subtotal,
-                ];
-            }
-
-            $c = Consignment::create([
-                'consignment_number' => 'KNS-'.date('Ym').'-'.str_pad((string) ($idx + 2), 3, '0', STR_PAD_LEFT),
-                'store_id' => $sample['store']->id,
-                'drop_date' => $dropDate,
-                'settlement_date' => $settleDate,
-                'status' => 'completed',
-                'payment_status' => 'paid',
-                'total_sold_amount' => $totalGross,
-                'total_commission' => 0,
-                'total_net_received' => $totalGross,
-                'amount_paid' => $totalGross,
-                'notes' => 'Tagihan selesai & lunas disetor ke kas',
-            ]);
-
-            $totalCogs = 0;
-            foreach ($itemsData as $row) {
-                $row['consignment_id'] = $c->id;
-                $ci = ConsignmentItem::create($row);
-                $unitCost = (float) $ci->product->material_cost;
-                $totalCogs += ($ci->quantity_sold * $unitCost);
-            }
-
-            // Catat transaksi kas pemasukan
-            $tx = CashTransaction::create([
-                'account_id' => $kasTunai->id,
-                'type' => 'income',
-                'category' => 'Setoran Konsinyasi',
-                'amount' => $totalGross,
-                'transaction_date' => $settleDate,
-                'description' => "Setoran hasil titipan dari {$sample['store']->name} (#{$c->consignment_number})",
-                'consignment_id' => $c->id,
-            ]);
-
-            // Auto Journal Akuntansi
-            AccountingService::recordConsignmentSettlement($c, $totalGross, $totalGross, $totalCogs, 0);
-        }
-
-        // Additional completed consignments over previous 60 days
-        $moreSamples = [
-            ['store' => $toko4, 'days_ago' => 55, 'drop_days' => 62, 'items' => [[$merryWijen, 30, 28], [$bumbuPecel, 20, 19]]],
-            ['store' => $toko1, 'days_ago' => 48, 'drop_days' => 55, 'items' => [[$tingTingSusu, 45, 42], [$merryWijen, 25, 23]]],
-            ['store' => $toko2, 'days_ago' => 42, 'drop_days' => 49, 'items' => [[$bumbuPecel, 30, 29], [$tingTingSusu, 20, 19]]],
-            ['store' => $toko3, 'days_ago' => 38, 'drop_days' => 45, 'items' => [[$merryWijen, 40, 36], [$tingTingSusu, 35, 33]]],
-            ['store' => $toko1, 'days_ago' => 32, 'drop_days' => 39, 'items' => [[$bumbuPecel, 35, 32], [$merryWijen, 30, 29]]],
-            ['store' => $toko2, 'days_ago' => 28, 'drop_days' => 35, 'items' => [[$tingTingSusu, 50, 48], [$bumbuPecel, 20, 20]]],
-            ['store' => $toko4, 'days_ago' => 22, 'drop_days' => 29, 'items' => [[$merryWijen, 35, 33], [$bumbuPecel, 25, 24]]],
-            ['store' => $toko3, 'days_ago' => 16, 'drop_days' => 23, 'items' => [[$tingTingSusu, 40, 38], [$merryWijen, 30, 29]]],
-            ['store' => $toko1, 'days_ago' => 8,  'drop_days' => 15, 'items' => [[$bumbuPecel, 30, 29], [$tingTingSusu, 25, 24]]],
-            ['store' => $toko4, 'days_ago' => 4,  'drop_days' => 11, 'items' => [[$merryWijen, 50, 47], [$tingTingSusu, 30, 29]]],
-            ['store' => $toko2, 'days_ago' => 1,  'drop_days' => 8,  'items' => [[$bumbuPecel, 25, 25], [$merryWijen, 35, 34]]],
-        ];
-
-        foreach ($moreSamples as $idx => $sample) {
-            $settleDate = Carbon::now()->subDays($sample['days_ago'])->toDateString();
-            $dropDate = Carbon::now()->subDays($sample['drop_days'])->toDateString();
-
-            $totalGross = 0;
-            $itemsData = [];
-            foreach ($sample['items'] as $it) {
-                $prod = $it[0];
-                $dropped = $it[1];
-                $sold = $it[2];
-                $subtotal = $sold * $prod->consignment_price;
-                $totalGross += $subtotal;
-                $itemsData[] = [
-                    'product_id' => $prod->id,
-                    'quantity_dropped' => $dropped,
-                    'quantity_remaining' => $dropped - $sold,
-                    'quantity_returned' => 0,
-                    'quantity_sold' => $sold,
-                    'price_per_item' => $prod->consignment_price,
-                    'subtotal' => $subtotal,
-                ];
-            }
-
-            $c = Consignment::create([
-                'consignment_number' => 'KNS-'.date('Ym').'-'.str_pad((string) ($idx + 10), 3, '0', STR_PAD_LEFT),
-                'store_id' => $sample['store']->id,
-                'drop_date' => $dropDate,
-                'settlement_date' => $settleDate,
-                'status' => 'completed',
-                'payment_status' => 'paid',
-                'total_sold_amount' => $totalGross,
-                'total_commission' => 0,
-                'total_net_received' => $totalGross,
-                'amount_paid' => $totalGross,
-                'notes' => 'Tagihan konsinyasi selesai',
-            ]);
-
-            $totalCogs = 0;
-            foreach ($itemsData as $row) {
-                $row['consignment_id'] = $c->id;
-                $ci = ConsignmentItem::create($row);
-                $unitCost = (float) $ci->product->material_cost;
-                $totalCogs += ($ci->quantity_sold * $unitCost);
-            }
-
-            CashTransaction::create([
-                'account_id' => $kasTunai->id,
-                'type' => 'income',
-                'category' => 'Setoran Konsinyasi',
-                'amount' => $totalGross,
-                'transaction_date' => $settleDate,
-                'description' => "Setoran hasil titipan dari {$sample['store']->name} (#{$c->consignment_number})",
-                'consignment_id' => $c->id,
-            ]);
-
-            // Auto Journal Akuntansi
-            AccountingService::recordConsignmentSettlement($c, $totalGross, $totalGross, $totalCogs, 0);
-        }
-
-        // Biaya Operasional Sampel
-        $expenseSamples = [
-            ['days_ago' => 50, 'amount' => 650000, 'category' => 'Belanja Bahan Baku', 'desc' => 'Beli Wijen & Kacang Tanah karungan'],
-            ['days_ago' => 35, 'amount' => 520000, 'category' => 'Belanja Bahan Baku', 'desc' => 'Beli Gula Pasir & Susu Bubuk'],
-            ['days_ago' => 20, 'amount' => 450000, 'category' => 'Belanja Bahan Baku', 'desc' => 'Beli Tepung & Gula Pasir untuk produksi mingguan'],
-            ['days_ago' => 12, 'amount' => 320000, 'category' => 'Belanja Kemasan', 'desc' => 'Beli Plastik standing pouch & stiker label Halala'],
-            ['days_ago' => 5,  'amount' => 150000, 'category' => 'Operasional & Bensin', 'desc' => 'Bensin motor operasional keliling jemput tagihan'],
-        ];
-
-        foreach ($expenseSamples as $idx => $exp) {
-            $tx = CashTransaction::create([
-                'account_id' => $kasTunai->id,
-                'type' => 'expense',
-                'category' => $exp['category'],
-                'amount' => $exp['amount'],
-                'transaction_date' => Carbon::now()->subDays($exp['days_ago'])->toDateString(),
-                'description' => $exp['desc'],
-            ]);
-
-            AccountingService::recordCashTransaction($tx);
-        }
-
-        // 8. Sample Barcode Toko Mitra
-        StoreProductBarcode::firstOrCreate([
-            'store_id' => $toko2->id,
-            'product_id' => $merryWijen->id,
-        ], [
-            'barcode' => '201948281023',
-            'barcode_type' => 'CODE128',
-            'store_sku' => 'PLU-8821',
-            'custom_product_name' => 'MERRY WIJEN 200GR',
-            'custom_price' => 16000,
-            'notes' => 'Barcode kasir Minimarket Rezeki',
-        ]);
-
-        StoreProductBarcode::firstOrCreate([
-            'store_id' => $toko2->id,
-            'product_id' => $bumbuPecel->id,
-        ], [
-            'barcode' => '201948281024',
-            'barcode_type' => 'CODE128',
-            'store_sku' => 'PLU-8822',
-            'custom_product_name' => 'BUMBU PECEL KHAS 250G',
-            'custom_price' => 19000,
-            'notes' => 'Barcode kasir Minimarket Rezeki',
-        ]);
-
-        StoreProductBarcode::firstOrCreate([
-            'store_id' => $toko2->id,
             'product_id' => $tingTingSusu->id,
-        ], [
-            'barcode' => '201948281025',
-            'barcode_type' => 'CODE128',
-            'store_sku' => 'PLU-8823',
-            'custom_product_name' => 'TING-TING SUSU HALALA',
-            'custom_price' => 13500,
-            'notes' => 'Barcode kasir Minimarket Rezeki',
+            'quantity_dropped' => 100,
+            'price_per_item' => 12500,
+            'quantity_remaining' => null,
+            'quantity_returned' => 0,
+            'quantity_sold' => 0,
+            'subtotal' => 0,
         ]);
 
-        StoreProductBarcode::firstOrCreate([
-            'store_id' => $toko4->id,
-            'product_id' => $merryWijen->id,
-        ], [
-            'barcode' => '899720194001',
-            'barcode_type' => 'CODE128',
-            'store_sku' => 'OLH-01',
-            'custom_product_name' => 'Merry Wijen Super Oleh-oleh',
-            'custom_price' => 17500,
-            'notes' => 'Barcode Toko Oleh-Oleh Asli',
+        $consignment2 = Consignment::create([
+            'consignment_number' => 'KNS-'.date('Ym').'-002',
+            'store_id' => $toko2->id,
+            'drop_date' => Carbon::now()->subDay()->toDateString(),
+            'status' => 'active',
+            'payment_status' => 'unpaid',
+            'total_sold_amount' => 0,
+            'total_commission' => 0,
+            'total_net_received' => 0,
+            'amount_paid' => 0,
+            'notes' => 'Pengiriman pertama 100 pouch Ting Ting Susu',
         ]);
+
+        ConsignmentItem::create([
+            'consignment_id' => $consignment2->id,
+            'product_id' => $tingTingSusu->id,
+            'quantity_dropped' => 100,
+            'price_per_item' => 12500,
+            'quantity_remaining' => null,
+            'quantity_returned' => 0,
+            'quantity_sold' => 0,
+            'subtotal' => 0,
+        ]);
+
+        // 10. Jurnal Akuntansi Berpasangan Otomatis
+        // A. Jurnal Setoran Modal Awal
+        AccountingService::postEntry(
+            date: Carbon::now()->subDays(5)->toDateString(),
+            notes: 'Penyetoran Modal Awal Usaha Pemilik',
+            items: [
+                ['account_code' => '1-1001', 'debit' => 2500000, 'credit' => 0, 'memo' => 'Penerimaan Kas Tunai Usaha'],
+                ['account_code' => '3-1000', 'debit' => 0, 'credit' => 2500000, 'memo' => 'Setoran Modal Pemilik'],
+            ],
+            referenceType: 'initial_capital',
+            referenceId: 1
+        );
+
+        // B. Jurnal Pembelian Bahan Baku
+        AccountingService::postEntry(
+            date: Carbon::now()->subDays(4)->toDateString(),
+            notes: 'Pembelian Bahan Baku & Kemasan Produksi 200 Pouch',
+            items: [
+                ['account_code' => '1-1300', 'debit' => 1627000, 'credit' => 0, 'memo' => 'Persediaan Bahan Baku (Kacang, Susu, Gula, Pouch)'],
+                ['account_code' => '1-1001', 'debit' => 0, 'credit' => 1627000, 'memo' => 'Pengeluaran Kas Tunai untuk Belanja Bahan'],
+            ],
+            referenceType: 'material_purchase',
+            referenceId: 1
+        );
+
+        // C. Jurnal Pemakaian Bahan & Penyelesaian Produksi 200 Pouch
+        AccountingService::postEntry(
+            date: $prodDate,
+            notes: 'Penyelesaian Produksi 200 Pouch Ting Ting Susu (HPP: Rp 8.135/pouch)',
+            items: [
+                ['account_code' => '1-1400', 'debit' => 1627000, 'credit' => 0, 'memo' => 'Persediaan Produk Jadi Siap Jual (200 Pouch)'],
+                ['account_code' => '1-1300', 'debit' => 0, 'credit' => 1627000, 'memo' => 'Pemakaian Bahan Baku untuk Produksi'],
+            ],
+            referenceType: 'production',
+            referenceId: 1
+        );
     }
 }
