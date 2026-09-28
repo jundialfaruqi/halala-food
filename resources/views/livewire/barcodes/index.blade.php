@@ -64,7 +64,7 @@
                 <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <div class="relative flex-1">
                         <x-icon name="search"
-                            class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+                            class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-lg z-10 pointer-events-none" />
                         <input type="text" wire:model.live.debounce.300ms="search"
                             placeholder="Cari kode barcode, nama produk, toko, atau SKU..."
                             class="input input-md input-bordered w-full pl-10 text-sm sm:text-base rounded-xl focus:border-slate-900" />

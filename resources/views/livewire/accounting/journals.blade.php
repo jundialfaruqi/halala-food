@@ -39,7 +39,7 @@
     <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <!-- Pencarian -->
         <div class="relative flex-1 max-w-md">
-            <x-icon name="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+            <x-icon name="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-lg z-10 pointer-events-none" />
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Cari nomor jurnal, akun, atau keterangan..."
