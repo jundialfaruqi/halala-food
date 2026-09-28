@@ -104,17 +104,12 @@ class Index extends Component
 
     public function mount(): void
     {
-        $firstBarcode = StoreProductBarcode::first();
-        if ($firstBarcode) {
-            $this->selectedBarcodeId = $firstBarcode->id;
-            $this->selectedStoreId = $firstBarcode->store_id;
-        }
-
+        $this->ensureSelectedBarcode();
         $this->applyPaperTemplate('a4_3x8');
 
         if (empty($this->batchRows)) {
             $this->batchRows[] = [
-                'barcode_id' => $firstBarcode ? $firstBarcode->id : '',
+                'barcode_id' => $this->selectedBarcodeId ?: '',
                 'qty' => 12,
             ];
         }
@@ -133,6 +128,51 @@ class Index extends Component
     public function updatingProductFilter(): void
     {
         $this->resetPage();
+    }
+
+    public function updatedActiveTab(string $tab): void
+    {
+        if ($tab === 'print') {
+            $this->ensureSelectedBarcode();
+        }
+    }
+
+    public function updatedSelectedBarcodeId(?int $val): void
+    {
+        if ($val) {
+            $item = StoreProductBarcode::find($val);
+            if ($item) {
+                $this->selectedStoreId = $item->store_id;
+            }
+        }
+    }
+
+    public function updatedSelectedStoreId(?int $val): void
+    {
+        if ($val && $this->printMode === 'single') {
+            $barcodeInStore = StoreProductBarcode::where('store_id', $val)->first();
+            if ($barcodeInStore) {
+                $this->selectedBarcodeId = $barcodeInStore->id;
+            }
+        }
+    }
+
+    public function ensureSelectedBarcode(): void
+    {
+        if (! $this->selectedBarcodeId || ! StoreProductBarcode::where('id', $this->selectedBarcodeId)->exists()) {
+            $firstBarcode = StoreProductBarcode::first();
+            if ($firstBarcode) {
+                $this->selectedBarcodeId = $firstBarcode->id;
+                $this->selectedStoreId = $firstBarcode->store_id;
+            }
+        }
+
+        if (! $this->selectedStoreId || ! Store::where('id', $this->selectedStoreId)->exists()) {
+            $firstStore = Store::whereHas('barcodes')->first() ?? Store::first();
+            if ($firstStore) {
+                $this->selectedStoreId = $firstStore->id;
+            }
+        }
     }
 
     public function openCreateModal(?int $storeId = null, ?int $productId = null): void
@@ -191,7 +231,7 @@ class Index extends Component
             'barcode.required' => 'Kode barcode wajib diisi sesuai dari toko.',
         ]);
 
-        StoreProductBarcode::updateOrCreate(
+        $saved = StoreProductBarcode::updateOrCreate(
             ['id' => $this->editingId],
             [
                 'store_id' => $this->store_id,
@@ -204,6 +244,18 @@ class Index extends Component
                 'notes' => $this->notes ?: null,
             ]
         );
+
+        $this->selectedBarcodeId = $saved->id;
+        $this->selectedStoreId = $saved->store_id;
+
+        if (empty($this->batchRows) || empty($this->batchRows[0]['barcode_id'])) {
+            $this->batchRows = [
+                [
+                    'barcode_id' => $saved->id,
+                    'qty' => $this->columns * $this->rows,
+                ],
+            ];
+        }
 
         $this->showModal = false;
         $this->dispatch('toast', message: 'Barcode toko berhasil disimpan.');
@@ -230,6 +282,8 @@ class Index extends Component
         $this->showDeleteModal = false;
         $this->deletingId = null;
         $this->deletingName = '';
+
+        $this->ensureSelectedBarcode();
     }
 
     public function quickPrintBarcode(int $barcodeId): void
@@ -318,9 +372,9 @@ class Index extends Component
 
     public function addBatchRow(): void
     {
-        $firstBarcode = StoreProductBarcode::first();
+        $this->ensureSelectedBarcode();
         $this->batchRows[] = [
-            'barcode_id' => $firstBarcode ? $firstBarcode->id : '',
+            'barcode_id' => $this->selectedBarcodeId ?: '',
             'qty' => 12,
         ];
     }
@@ -338,6 +392,8 @@ class Index extends Component
      */
     public function getPrintableLabelsProperty(): array
     {
+        $this->ensureSelectedBarcode();
+
         $labels = [];
 
         if ($this->printMode === 'single' && $this->selectedBarcodeId) {

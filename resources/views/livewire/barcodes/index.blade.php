@@ -246,11 +246,13 @@
                                     Produk</label>
                                 <select wire:model.live="selectedBarcodeId"
                                     class="select select-bordered select-sm w-full font-medium text-sm">
-                                    @foreach ($allBarcodes as $b)
+                                    @forelse ($allBarcodes as $b)
                                         <option value="{{ $b->id }}">
                                             {{ $b->store->name }} — {{ $b->display_name }} ({{ $b->barcode }})
                                         </option>
-                                    @endforeach
+                                    @empty
+                                        <option value="">Belum ada barcode toko</option>
+                                    @endforelse
                                 </select>
                             </div>
                             <div>
@@ -272,9 +274,11 @@
                                 <label class="block text-xs font-bold text-slate-800 mb-1">Pilih Toko Mitra</label>
                                 <select wire:model.live="selectedStoreId"
                                     class="select select-bordered select-sm w-full font-medium text-sm">
-                                    @foreach ($stores as $st)
+                                    @forelse ($stores as $st)
                                         <option value="{{ $st->id }}">{{ $st->name }}</option>
-                                    @endforeach
+                                    @empty
+                                        <option value="">Belum ada toko</option>
+                                    @endforelse
                                 </select>
                             </div>
                             <p class="text-xs text-slate-500">

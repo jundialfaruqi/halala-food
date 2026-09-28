@@ -58,6 +58,43 @@ test('store barcode can be created via livewire component', function () {
     ]);
 });
 
+test('newly created barcode is automatically selected in print studio preview without page reload', function () {
+    $store = Store::create([
+        'name' => 'Toko Barokah Test',
+        'route' => 'Rute Timur',
+    ]);
+    $product = Product::create([
+        'name' => 'Merry Wijen Test',
+        'unit' => 'bungkus',
+        'retail_price' => 15000,
+    ]);
+
+    // Component starts with no barcodes in database
+    $component = Livewire::test(Index::class);
+    expect($component->get('selectedBarcodeId'))->toBeNull();
+
+    // User adds new barcode
+    $component->call('openCreateModal', $store->id, $product->id)
+        ->set('barcode', '201948281023')
+        ->set('barcode_type', 'CODE128')
+        ->set('custom_product_name', 'MERRY WIJEN 200GR')
+        ->set('custom_price', 16000)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $newBarcode = StoreProductBarcode::where('barcode', '201948281023')->first();
+    expect($newBarcode)->not->toBeNull();
+    expect($component->get('selectedBarcodeId'))->toEqual($newBarcode->id);
+
+    // Switch to print tab directly without reloading page
+    $component->set('activeTab', 'print');
+
+    // Printable labels must not be empty and contain the newly created barcode
+    $printableLabels = $component->get('printableLabels');
+    expect($printableLabels)->not->toBeEmpty();
+    expect($printableLabels[0]['item']->barcode)->toEqual('201948281023');
+});
+
 test('barcode print page and standalone export can be accessed', function () {
     $store = Store::create([
         'name' => 'Toko Barokah Test',
