@@ -24,52 +24,39 @@
         </div>
     </div>
 
-    <!-- Tab Pilihan Laporan & Filter Periode (Hidden on Print) -->
-    <div class="no-print bg-white p-5 rounded-xl border border-slate-200 flex flex-row justify-between items-center gap-4 overflow-x-auto flex-nowrap">
+    <!-- Apple-style Segmented Tab Switcher & Filter Periode (Telanjang / Tanpa Card Pembungkus) -->
+    <div class="no-print flex items-center justify-between flex-wrap gap-4">
         <!-- Tab Navigasi Laporan -->
-        <div class="flex items-center gap-2 shrink-0 flex-nowrap">
+        <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
             <button type="button"
                     wire:click="setTab('income_statement')"
-                    class="btn btn-md {{ $activeTab === 'income_statement' ? 'bg-slate-900 hover:bg-black text-white border-slate-900 font-bold' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl text-base px-4 h-11 transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
-                @if($activeTab === 'income_statement')
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
+                    class="px-5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 {{ $activeTab === 'income_statement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <x-icon name="chart-bar" class="text-lg" />
                 <span>Laporan Laba Rugi</span>
             </button>
             <button type="button"
                     wire:click="setTab('balance_sheet')"
-                    class="btn btn-md {{ $activeTab === 'balance_sheet' ? 'bg-slate-900 hover:bg-black text-white border-slate-900 font-bold' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl text-base px-4 h-11 transition-all flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
-                @if($activeTab === 'balance_sheet')
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
+                    class="px-5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 {{ $activeTab === 'balance_sheet' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <x-icon name="scale" class="text-lg" />
                 <span>Neraca Keuangan</span>
             </button>
         </div>
 
         <!-- Filter Periode Laporan -->
-        <div class="flex items-center gap-2 shrink-0 flex-nowrap">
+        <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
             <button type="button"
                     wire:click="setPeriod('this_month')"
-                    class="btn btn-md {{ $periodPreset === 'this_month' ? 'bg-slate-900 hover:bg-black text-white border-slate-900 font-bold' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl text-base px-4 h-11 transition-all flex items-center gap-2 whitespace-nowrap shrink-0">
-                @if($periodPreset === 'this_month')
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
+                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Bulan Ini</span>
             </button>
             <button type="button"
                     wire:click="setPeriod('this_year')"
-                    class="btn btn-md {{ $periodPreset === 'this_year' ? 'bg-slate-900 hover:bg-black text-white border-slate-900 font-bold' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl text-base px-4 h-11 transition-all flex items-center gap-2 whitespace-nowrap shrink-0">
-                @if($periodPreset === 'this_year')
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
+                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Tahun Ini</span>
             </button>
             <button type="button"
                     wire:click="setPeriod('all')"
-                    class="btn btn-md {{ $periodPreset === 'all' ? 'bg-slate-900 hover:bg-black text-white border-slate-900 font-bold' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl text-base px-4 h-11 transition-all flex items-center gap-2 whitespace-nowrap shrink-0">
-                @if($periodPreset === 'all')
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
+                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Semua</span>
             </button>
         </div>
