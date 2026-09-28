@@ -309,12 +309,46 @@
                                             <span>Harga Beli per 1 Kemasan di Pasar</span>
                                         </label>
                                         <p class="text-xs text-slate-600 pl-8">Harga per bungkus sesuai nota belanja</p>
-                                        <div class="pl-8">
+                                        <div class="pl-8" x-data="{
+                                            displayValue: '',
+                                            rawAmount: @entangle('calc_price_per_package').live,
+                                            formatCurrency(val) {
+                                                if (val === null || val === undefined || val === '') return '';
+                                                let numStr = String(val).replace(/\D/g, '');
+                                                if (!numStr) return '';
+                                                return new Intl.NumberFormat('id-ID').format(numStr);
+                                            },
+                                            updateValue(e) {
+                                                let digits = e.target.value.replace(/\D/g, '');
+                                                this.rawAmount = digits ? parseFloat(digits) : null;
+                                                this.displayValue = digits ? new Intl.NumberFormat('id-ID').format(digits) : '';
+                                            },
+                                            init() {
+                                                if (this.rawAmount) this.displayValue = this.formatCurrency(this.rawAmount);
+                                                $watch('rawAmount', (val) => {
+                                                    if (val === null || val === undefined || val === '' || val == 0) {
+                                                        if (this.displayValue !== '' && (val === null || val === undefined || val === '')) {
+                                                            this.displayValue = '';
+                                                        }
+                                                    } else {
+                                                        let formatted = this.formatCurrency(val);
+                                                        if (this.displayValue !== formatted) {
+                                                            this.displayValue = formatted;
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }">
                                             <div class="flex items-center w-full rounded-xl border border-slate-300 focus-within:border-slate-900 overflow-hidden bg-white h-11 shadow-2xs">
                                                 <span class="bg-slate-100 text-slate-900 font-bold text-sm sm:text-base px-3.5 h-full flex items-center border-r border-slate-300 select-none shrink-0">
                                                     Rp
                                                 </span>
-                                                <input type="number" step="any" min="0" wire:model.live="calc_price_per_package" placeholder="Contoh: 45000"
+                                                <input 
+                                                    type="text" 
+                                                    inputmode="numeric"
+                                                    x-model="displayValue" 
+                                                    @input="updateValue($event)"
+                                                    placeholder="Contoh: 45.000"
                                                     class="w-full font-mono font-bold text-base text-slate-900 px-3.5 h-full bg-transparent outline-none focus:outline-none" />
                                             </div>
                                         </div>
