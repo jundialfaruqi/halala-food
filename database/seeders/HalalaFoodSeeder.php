@@ -6,8 +6,8 @@ use App\Models\Account;
 use App\Models\CashTransaction;
 use App\Models\Consignment;
 use App\Models\ConsignmentItem;
-use App\Models\Production;
 use App\Models\Product;
+use App\Models\Production;
 use App\Models\ProductRecipe;
 use App\Models\RawMaterial;
 use App\Models\Store;
@@ -24,21 +24,21 @@ class HalalaFoodSeeder extends Seeder
         $kasTunai = Account::create([
             'name' => 'Kas Tunai Usaha (Kasir / Hasil Tagihan)',
             'type' => 'business',
-            'balance' => 873000,
+            'balance' => 831000, // Rp 2.500.000 (Modal) - Rp 1.669.000 (Belanja Bahan)
             'description' => 'Uang tunai operasional harian dan hasil jemput tagihan toko',
         ]);
 
         $bcaUsaha = Account::create([
             'name' => 'BCA Rekening Usaha',
             'type' => 'business',
-            'balance' => 2000000,
+            'balance' => 0,
             'description' => 'Rekening bank utama modal usaha dan simpanan laba',
         ]);
 
         $kasPribadi = Account::create([
             'name' => 'Kas Kebutuhan Pribadi / Keluarga',
             'type' => 'personal',
-            'balance' => 1500000,
+            'balance' => 0,
             'description' => 'Dana rumah tangga dan keperluan pribadi keluarga',
         ]);
 
@@ -65,61 +65,61 @@ class HalalaFoodSeeder extends Seeder
             'notes' => 'Rak khusus oleh-oleh makanan khas. Jadwal cek tagihan tiap hari Minggu.',
         ]);
 
-        // 3. Master Bahan Baku Kemasan Riil Pasar (Total Modal Belanja Rp 1.627.000)
+        // 3. Master Bahan Baku Satuan Manusiawi (gram & pcs) - Total Belanja Rp 1.669.000 (Harga Riil Pasar 2026)
         $kacang = RawMaterial::create([
             'name' => 'Kacang Tanah Sangrai',
-            'unit' => 'bungkus',
-            'stock' => 14.0,
-            'min_stock' => 3.0,
-            'cost_per_unit' => 33000, // Bungkus 1 kg
+            'unit' => 'gram',
+            'stock' => 0.0, // Dibeli 14.000 gram, habis terpakai produksi 200 pouch
+            'min_stock' => 1000.0,
+            'cost_per_unit' => 45.0, // Rp 45 / gram (Rp 45.000 / bungkus 1kg)
         ]);
 
         $susu = RawMaterial::create([
             'name' => 'Susu Bubuk Full Cream',
-            'unit' => 'box',
-            'stock' => 15.0,
-            'min_stock' => 3.0,
-            'cost_per_unit' => 38000, // Box 400 gram
+            'unit' => 'gram',
+            'stock' => 0.0, // Dibeli 6.000 gram, habis terpakai produksi 200 pouch
+            'min_stock' => 1000.0,
+            'cost_per_unit' => 90.0, // Rp 90 / gram (Rp 90.000 / bungkus 1kg)
         ]);
 
         $gula = RawMaterial::create([
             'name' => 'Gula Pasir Kristal',
-            'unit' => 'bungkus',
-            'stock' => 8.0,
-            'min_stock' => 2.0,
-            'cost_per_unit' => 17500, // Bungkus 1 kg
+            'unit' => 'gram',
+            'stock' => 0.0, // Dibeli 8.000 gram, habis terpakai produksi 200 pouch
+            'min_stock' => 1000.0,
+            'cost_per_unit' => 18.0, // Rp 18 / gram (Rp 18.000 / bungkus 1kg)
         ]);
 
         $mentega = RawMaterial::create([
             'name' => 'Mentega / Margarin',
-            'unit' => 'bungkus',
-            'stock' => 10.0,
-            'min_stock' => 2.0,
-            'cost_per_unit' => 9500, // Bungkus 200 gram
+            'unit' => 'gram',
+            'stock' => 0.0, // Dibeli 2.000 gram, habis terpakai produksi 200 pouch
+            'min_stock' => 500.0,
+            'cost_per_unit' => 47.5, // Rp 47,5 / gram (Rp 9.500 / bungkus 200g)
         ]);
 
         $pouch = RawMaterial::create([
             'name' => 'Standing Pouch Klip (150g)',
-            'unit' => 'pak',
-            'stock' => 4.0,
-            'min_stock' => 1.0,
-            'cost_per_unit' => 45000, // Pak isi 50 pcs
+            'unit' => 'pcs',
+            'stock' => 0.0, // Dibeli 200 pcs, habis terpakai kemas 200 pouch
+            'min_stock' => 50.0,
+            'cost_per_unit' => 700.0, // Rp 700 / pcs (Rp 35.000 / pak 50 pcs)
         ]);
 
         $stiker = RawMaterial::create([
             'name' => 'Stiker Label Kemasan Halala',
-            'unit' => 'lembar',
-            'stock' => 5.0,
-            'min_stock' => 1.0,
-            'cost_per_unit' => 18000, // Lembar A3 isi 40 stiker
+            'unit' => 'pcs',
+            'stock' => 0.0, // Dibeli 200 pcs, habis terpakai label 200 pouch
+            'min_stock' => 50.0,
+            'cost_per_unit' => 300.0, // Rp 300 / pcs (Rp 12.000 / lembar A3 40 pcs)
         ]);
 
         $wrap = RawMaterial::create([
             'name' => 'Plastik Seal Satuan (Dalam)',
-            'unit' => 'pak',
-            'stock' => 2.0,
-            'min_stock' => 1.0,
-            'cost_per_unit' => 45000, // Pak isi 1.000 lembar
+            'unit' => 'pcs',
+            'stock' => 0.0, // Dibeli 2.000 pcs, habis terpakai 2.000 butir ting-ting
+            'min_stock' => 500.0,
+            'cost_per_unit' => 30.0, // Rp 30 / pcs (Rp 30.000 / pak 1.000 pcs)
         ]);
 
         // 4. Master Produk Jadi (Ting Ting Susu 150g isi 10 pcs)
@@ -128,19 +128,20 @@ class HalalaFoodSeeder extends Seeder
             'unit' => 'bungkus',
             'consignment_price' => 12500, // Harga setor titip ke toko
             'retail_price' => 15000, // Harga ecer toko ke pembeli (Toko untung Rp 2.500)
-            'stock_ready' => 200, // Hasil produksi 200 pouch
+            'stock_ready' => 0, // Diproduksi 200 pouch, seluruhnya (200) sudah dititip ke 2 toko mitra
             'description' => 'Camilan manis gurih khas dengan kacang sangrai renyah dan susu gurih, kemasan pouch 150 gram isi 10 butir.',
             'is_active' => true,
         ]);
 
-        // 5. Resep Produk (BOM per 1 Pouch 150g)
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $kacang->id, 'quantity_needed' => 0.0700]); // 70g dari 1 bungkus 1kg
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $susu->id, 'quantity_needed' => 0.0750]); // 30g dari 1 box 400g
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 0.0400]); // 40g dari 1 bungkus 1kg
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $mentega->id, 'quantity_needed' => 0.0500]); // 10g dari 1 bungkus 200g
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $pouch->id, 'quantity_needed' => 0.0200]); // 1 pcs dari 1 pak isi 50
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $stiker->id, 'quantity_needed' => 0.0250]); // 1 stiker dari 1 lembar A3 isi 40
-        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $wrap->id, 'quantity_needed' => 0.0050]); // 10 lembar wrap dari 1 pak isi 1000
+        // 5. Resep Produk Nyata (BOM per 1 Pouch 150g)
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $kacang->id, 'quantity_needed' => 70.0]); // 70 gram @ Rp 45 = Rp 3.150
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $susu->id, 'quantity_needed' => 30.0]); // 30 gram @ Rp 90 = Rp 2.700
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $gula->id, 'quantity_needed' => 40.0]); // 40 gram @ Rp 18 = Rp 720
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $mentega->id, 'quantity_needed' => 10.0]); // 10 gram @ Rp 47.5 = Rp 475
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $pouch->id, 'quantity_needed' => 1.0]); // 1 pcs @ Rp 700 = Rp 700
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $stiker->id, 'quantity_needed' => 1.0]); // 1 pcs @ Rp 300 = Rp 300
+        ProductRecipe::create(['product_id' => $tingTingSusu->id, 'raw_material_id' => $wrap->id, 'quantity_needed' => 10.0]); // 10 pcs @ Rp 30 = Rp 300
+        // Total HPP per 1 Pouch = Rp 8.345
 
         // 6. Catat Riwayat Produksi Batch 200 Pouch
         $prodDate = Carbon::now()->subDays(2)->toDateString();
@@ -190,7 +191,7 @@ class HalalaFoodSeeder extends Seeder
             'account_id' => $kasTunai->id,
             'type' => 'expense',
             'category' => 'Belanja Bahan Baku',
-            'amount' => 1627000,
+            'amount' => 1669000,
             'transaction_date' => Carbon::now()->subDays(4)->toDateString(),
             'description' => 'Pembelian bahan baku (Kacang, Susu, Gula, Mentega) & Kemasan (Pouch, Label, Wrap) untuk 200 pouch',
         ]);
@@ -262,8 +263,8 @@ class HalalaFoodSeeder extends Seeder
             date: Carbon::now()->subDays(4)->toDateString(),
             notes: 'Pembelian Bahan Baku & Kemasan Produksi 200 Pouch',
             items: [
-                ['account_code' => '1-1300', 'debit' => 1627000, 'credit' => 0, 'memo' => 'Persediaan Bahan Baku (Kacang, Susu, Gula, Pouch)'],
-                ['account_code' => '1-1001', 'debit' => 0, 'credit' => 1627000, 'memo' => 'Pengeluaran Kas Tunai untuk Belanja Bahan'],
+                ['account_code' => '1-1300', 'debit' => 1669000, 'credit' => 0, 'memo' => 'Persediaan Bahan Baku (Kacang, Susu, Gula, Pouch)'],
+                ['account_code' => '1-1001', 'debit' => 0, 'credit' => 1669000, 'memo' => 'Pengeluaran Kas Tunai untuk Belanja Bahan'],
             ],
             referenceType: 'material_purchase',
             referenceId: 1
@@ -272,10 +273,10 @@ class HalalaFoodSeeder extends Seeder
         // C. Jurnal Pemakaian Bahan & Penyelesaian Produksi 200 Pouch
         AccountingService::postEntry(
             date: $prodDate,
-            notes: 'Penyelesaian Produksi 200 Pouch Ting Ting Susu (HPP: Rp 8.135/pouch)',
+            notes: 'Penyelesaian Produksi 200 Pouch Ting Ting Susu (HPP: Rp 8.345/pouch)',
             items: [
-                ['account_code' => '1-1400', 'debit' => 1627000, 'credit' => 0, 'memo' => 'Persediaan Produk Jadi Siap Jual (200 Pouch)'],
-                ['account_code' => '1-1300', 'debit' => 0, 'credit' => 1627000, 'memo' => 'Pemakaian Bahan Baku untuk Produksi'],
+                ['account_code' => '1-1400', 'debit' => 1669000, 'credit' => 0, 'memo' => 'Persediaan Produk Jadi Siap Jual (200 Pouch)'],
+                ['account_code' => '1-1300', 'debit' => 0, 'credit' => 1669000, 'memo' => 'Pemakaian Bahan Baku untuk Produksi'],
             ],
             referenceType: 'production',
             referenceId: 1

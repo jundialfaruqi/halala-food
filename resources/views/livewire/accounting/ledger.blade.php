@@ -133,8 +133,22 @@
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             @php
-                                $calcBalance = 0;
+                                $calcBalance = (float) $openingBalance;
                             @endphp
+                            @if($openingBalance != 0)
+                                <tr class="bg-slate-50/60 font-medium italic text-slate-700">
+                                    <td class="py-3 px-4 font-mono text-xs text-slate-500">-</td>
+                                    <td class="py-3 px-4 font-mono text-xs text-slate-500">SALDO-AWAL</td>
+                                    <td class="py-3 px-4 text-slate-700 font-semibold">
+                                        Saldo Awal Sebelum Periode Ini
+                                    </td>
+                                    <td class="py-3 px-4 text-right font-mono text-slate-400">-</td>
+                                    <td class="py-3 px-4 text-right font-mono text-slate-400">-</td>
+                                    <td class="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                                        Rp {{ number_format($openingBalance, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endif
                             @forelse($items as $item)
                                 @php
                                     if ($currentAccount->normal_balance === 'debit') {

@@ -67,12 +67,26 @@ class Ledger extends Component
             $endDate = trim($dates[1] ?? $startDate);
         }
 
+        $openingBalance = 0;
         $items = collect();
         $totalDebit = 0;
         $totalCredit = 0;
         $runningBalance = 0;
 
         if ($currentAccount) {
+            if ($startDate) {
+                $prevQuery = JournalItem::where('chart_of_account_id', $currentAccount->id)
+                    ->whereHas('journalEntry', function ($q) use ($startDate) {
+                        $q->where('entry_date', '<', $startDate);
+                    });
+                $prevDebit = (float) $prevQuery->sum('debit');
+                $prevCredit = (float) $prevQuery->sum('credit');
+
+                $openingBalance = $currentAccount->normal_balance === 'debit'
+                    ? $prevDebit - $prevCredit
+                    : $prevCredit - $prevDebit;
+            }
+
             $query = JournalItem::with('journalEntry')
                 ->where('chart_of_account_id', $currentAccount->id)
                 ->whereHas('journalEntry', function ($q) use ($startDate, $endDate) {
@@ -90,17 +104,18 @@ class Ledger extends Component
             $totalDebit = (float) $items->sum('debit');
             $totalCredit = (float) $items->sum('credit');
 
-            if ($currentAccount->normal_balance === 'debit') {
-                $runningBalance = $totalDebit - $totalCredit;
-            } else {
-                $runningBalance = $totalCredit - $totalDebit;
-            }
+            $periodNet = $currentAccount->normal_balance === 'debit'
+                ? $totalDebit - $totalCredit
+                : $totalCredit - $totalDebit;
+
+            $runningBalance = $openingBalance + $periodNet;
         }
 
         return view('livewire.accounting.ledger', [
             'accounts' => $accounts,
             'currentAccount' => $currentAccount,
             'items' => $items,
+            'openingBalance' => $openingBalance,
             'totalDebit' => $totalDebit,
             'totalCredit' => $totalCredit,
             'runningBalance' => $runningBalance,

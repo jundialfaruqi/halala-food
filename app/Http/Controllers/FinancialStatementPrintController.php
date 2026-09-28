@@ -104,7 +104,9 @@ class FinancialStatementPrintController extends Controller
         $cumulativeExpenses = (float) $balanceSheetAccounts->where('type', 'expense')->sum('balance');
         $cumulativeNetIncome = ($cumulativeRevenues - $cumulativeCogs) - $cumulativeExpenses;
 
-        $totalEquityWithoutIncome = (float) $equityAccounts->sum('balance');
+        $totalEquityWithoutIncome = (float) $equityAccounts->sum(function ($acc) {
+            return $acc->normal_balance === 'debit' ? -$acc->balance : $acc->balance;
+        });
         $totalEquity = $totalEquityWithoutIncome + $cumulativeNetIncome;
         $totalLiabilitiesAndEquity = $totalLiabilities + $totalEquity;
 

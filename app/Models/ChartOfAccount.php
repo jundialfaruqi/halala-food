@@ -36,8 +36,13 @@ class ChartOfAccount extends Model
      */
     public function getBalanceAttribute(): float
     {
-        $totalDebit = (float) $this->journalItems()->sum('debit');
-        $totalCredit = (float) $this->journalItems()->sum('credit');
+        if ($this->relationLoaded('journalItems')) {
+            $totalDebit = (float) $this->journalItems->sum('debit');
+            $totalCredit = (float) $this->journalItems->sum('credit');
+        } else {
+            $totalDebit = (float) $this->journalItems()->sum('debit');
+            $totalCredit = (float) $this->journalItems()->sum('credit');
+        }
 
         if ($this->normal_balance === 'debit') {
             return $totalDebit - $totalCredit;

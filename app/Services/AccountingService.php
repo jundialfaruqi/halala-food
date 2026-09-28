@@ -8,6 +8,7 @@ use App\Models\Consignment;
 use App\Models\JournalEntry;
 use App\Models\Production;
 use Carbon\Carbon;
+use Database\Seeders\AccountingSeeder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -139,7 +140,15 @@ class AccountingService
             $items[] = ['account_code' => $cashCode, 'debit' => 0, 'credit' => $amount, 'memo' => 'Kas Keluar: '.($account?->name ?? 'Kas')];
         } elseif ($transaction->type === 'income') {
             $cat = strtolower($transaction->category);
-            $incomeCode = str_contains($cat, 'toko') || str_contains($cat, 'penjualan') ? '4-1000' : '4-2000';
+            if (str_contains($cat, 'modal') || str_contains($cat, 'investasi') || str_contains($cat, 'ekuitas')) {
+                $incomeCode = '3-1000'; // Modal Usaha Pemilik
+            } elseif (str_contains($cat, 'pinjam') || str_contains($cat, 'utang') || str_contains($cat, 'hutang')) {
+                $incomeCode = '2-1000'; // Hutang Usaha
+            } elseif (str_contains($cat, 'toko') || str_contains($cat, 'penjualan') || str_contains($cat, 'omset') || str_contains($cat, 'konsinyasi')) {
+                $incomeCode = '4-1000'; // Pendapatan Penjualan Konsinyasi
+            } else {
+                $incomeCode = '4-2000'; // Pendapatan Lain-lain
+            }
 
             $items[] = ['account_code' => $cashCode, 'debit' => $amount, 'credit' => 0, 'memo' => 'Kas Masuk: '.($account?->name ?? 'Kas')];
             $items[] = ['account_code' => $incomeCode, 'debit' => 0, 'credit' => $amount, 'memo' => $transaction->category];
@@ -287,9 +296,8 @@ class AccountingService
     public static function ensureChartOfAccountsExist(): void
     {
         if (ChartOfAccount::count() === 0) {
-            $seeder = new \Database\Seeders\AccountingSeeder();
+            $seeder = new AccountingSeeder;
             $seeder->run();
         }
     }
 }
-
