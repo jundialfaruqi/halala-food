@@ -35,18 +35,19 @@
         </div>
     </div>
 
-    <!-- Filter & Pencarian -->
-    <div class="bg-white p-5 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+    <!-- Filter Pencarian & Periode Jurnal (Telanjang / Tanpa Card Pembungkus) -->
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         <!-- Pencarian -->
-        <div class="flex-1 max-w-md">
+        <div class="relative flex-1 max-w-md">
+            <x-icon name="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Cari nomor jurnal, akun, atau keterangan..."
-                   class="input input-bordered w-full text-base rounded-xl h-11 bg-slate-50 focus:bg-white focus:border-slate-900" />
+                   class="input input-md input-bordered w-full pl-10 text-base rounded-xl bg-white border-slate-300 focus:border-slate-900 shadow-2xs" />
         </div>
 
-        <!-- Filter Tanggal Cepat -->
-        <div class="flex flex-wrap items-center gap-2">
+        <!-- Filter Tanggal Cepat (Apple-style Segmented Control) -->
+        <div class="flex items-center gap-3 flex-wrap">
             @php
                 $todayVal = Carbon\Carbon::today()->format('Y-m-d').' - '.Carbon\Carbon::today()->format('Y-m-d');
                 $monthVal = Carbon\Carbon::now()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
@@ -54,33 +55,28 @@
                 $isMonth = $dateRange === $monthVal;
                 $isAll = empty($dateRange);
             @endphp
-            <button type="button"
-                    wire:click="setQuickDate('today')"
-                    class="btn btn-md {{ $isToday ? 'bg-slate-900 hover:bg-black text-white border-slate-900' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl font-bold text-base px-4 h-11 transition-all flex items-center gap-2">
-                @if($isToday)
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
-                <span>Hari Ini</span>
-            </button>
-            <button type="button"
-                    wire:click="setQuickDate('this_month')"
-                    class="btn btn-md {{ $isMonth ? 'bg-slate-900 hover:bg-black text-white border-slate-900' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl font-bold text-base px-4 h-11 transition-all flex items-center gap-2">
-                @if($isMonth)
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
-                <span>Bulan Ini</span>
-            </button>
-            <button type="button"
-                    wire:click="setQuickDate('all')"
-                    class="btn btn-md {{ $isAll ? 'bg-slate-900 hover:bg-black text-white border-slate-900' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl font-bold text-base px-4 h-11 transition-all flex items-center gap-2">
-                @if($isAll)
-                    <x-icon name="check" class="text-lg text-white shrink-0" />
-                @endif
-                <span>Semua</span>
-            </button>
+            <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
+                <button type="button"
+                        wire:click="setQuickDate('today')"
+                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isToday ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    <span>Hari Ini</span>
+                </button>
+                <button type="button"
+                        wire:click="setQuickDate('this_month')"
+                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isMonth ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    <span>Bulan Ini</span>
+                </button>
+                <button type="button"
+                        wire:click="setQuickDate('all')"
+                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isAll ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    <span>Semua</span>
+                </button>
+            </div>
+
             @if(!empty($search) || !empty($dateRange))
-                <button type="button" wire:click="resetFilters" class="btn btn-md btn-ghost text-slate-600 hover:text-slate-900 font-bold text-base h-11 px-3">
-                    Reset
+                <button type="button" wire:click="resetFilters"
+                    class="text-xs font-bold text-rose-600 hover:text-rose-800 underline cursor-pointer px-2 py-1">
+                    Reset Filter
                 </button>
             @endif
         </div>
