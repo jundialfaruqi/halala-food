@@ -270,72 +270,194 @@
     </div>
 
     <!-- Modal Form Transaksi Kas -->
+    <!-- Modal Form Transaksi Kas -->
     @if($showTransactionModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="bg-white w-full max-w-lg rounded-2xl p-6 border border-slate-200 shadow-2xl space-y-5">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-900">
-                        Catat Transaksi Kas
-                    </h3>
-                    <button wire:click="$set('showTransactionModal', false)" class="text-slate-400 hover:text-slate-700 font-bold text-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div class="bg-white w-full max-w-xl max-h-[90vh] flex flex-col rounded-2xl border border-slate-300 shadow-2xl overflow-hidden">
+                <!-- Header Sticky -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50 shrink-0">
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+                            Catat Transaksi Kas
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Catat pemasukan atau pengeluaran kas usaha Anda</p>
+                    </div>
+                    <button wire:click="$set('showTransactionModal', false)" class="text-slate-400 hover:text-slate-700 font-bold text-2xl p-1 leading-none">
                         &times;
                     </button>
                 </div>
 
-                <form wire:submit="prepareTransactionConfirmation" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Tanggal Transaksi <span class="text-red-500">*</span></label>
-                            <input type="date" wire:model="transaction_date" class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
-                            @error('transaction_date') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
+                <!-- Form Body Scrollable -->
+                <form wire:submit="prepareTransactionConfirmation" class="flex flex-col flex-1 overflow-hidden min-h-0">
+                    <div class="p-6 overflow-y-auto space-y-5 flex-1">
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Tanggal Transaksi <span class="text-red-600">*</span>
+                                </label>
+                                <input type="date" wire:model="transaction_date" class="input input-bordered w-full font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                                @error('transaction_date') <span class="text-xs sm:text-sm text-red-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Jenis Transaksi <span class="text-red-600">*</span>
+                                </label>
+                                <select wire:model.live="type" class="select select-bordered w-full font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900">
+                                    <option value="expense">Pengeluaran Usaha</option>
+                                    <option value="income">Pemasukan Usaha</option>
+                                    <option value="prive">Tarik Uang untuk Keluarga (Prive)</option>
+                                    <option value="personal_expense">Pengeluaran Pribadi</option>
+                                </select>
+                                @error('type') <span class="text-xs sm:text-sm text-red-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Jenis Transaksi <span class="text-red-500">*</span></label>
-                            <select wire:model.live="type" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900">
-                                <option value="expense">Pengeluaran Usaha</option>
-                                <option value="income">Pemasukan Usaha</option>
-                                <option value="prive">Tarik Uang untuk Keluarga (Prive)</option>
-                                <option value="personal_expense">Pengeluaran Pribadi</option>
+                            <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                Pilih Rekening / Kas <span class="text-red-600">*</span>
+                            </label>
+                            <select wire:model="account_id" class="select select-bordered w-full font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900">
+                                @foreach($accounts as $acc)
+                                    <option value="{{ $acc->id }}">
+                                        {{ $acc->name }} (Saldo: Rp {{ number_format($acc->balance, 0, ',', '.') }})
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('type') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
+                            @error('account_id') <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Pilihan Kategori Cepat (Ukuran Besar & Sangat Jelas untuk Orang Tua) -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-3">
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-0.5">
+                                    Pilih Kategori Transaksi <span class="text-red-600">*</span>
+                                </label>
+                                <p class="text-xs sm:text-sm text-slate-600">Klik salah satu tombol di bawah:</p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 sm:gap-2.5">
+                                @if($type === 'income')
+                                    <button type="button" wire:click="$set('category', 'Setoran Modal')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Setoran Modal' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">💰</span>
+                                        <span>Setoran Modal</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Pendapatan Penjualan')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Pendapatan Penjualan' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">📦</span>
+                                        <span>Pendapatan Penjualan</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Pelunasan Piutang Toko')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Pelunasan Piutang Toko' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">🏪</span>
+                                        <span>Pelunasan Piutang Toko</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Pinjaman Modal Usaha')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Pinjaman Modal Usaha' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">🏦</span>
+                                        <span>Pinjaman Modal</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Pendapatan Lain-lain')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Pendapatan Lain-lain' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">✨</span>
+                                        <span>Pendapatan Lain-lain</span>
+                                    </button>
+                                @elseif($type === 'expense')
+                                    <button type="button" wire:click="$set('category', 'Belanja Bahan Baku')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Belanja Bahan Baku' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">🥜</span>
+                                        <span>Belanja Bahan Baku</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Beli Kemasan & Stiker')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Beli Kemasan & Stiker' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">🏷️</span>
+                                        <span>Kemasan & Stiker</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Biaya Listrik, Air & Gas')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Biaya Listrik, Air & Gas' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">⚡</span>
+                                        <span>Listrik, Air & Gas</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Bensin & Transportasi')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Bensin & Transportasi' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">🛵</span>
+                                        <span>Bensin & Transport</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Biaya Retur & Basi')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Biaya Retur & Basi' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">⚠️</span>
+                                        <span>Retur & Basi</span>
+                                    </button>
+                                    <button type="button" wire:click="$set('category', 'Operasional Lainnya')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs {{ $category === 'Operasional Lainnya' ? 'bg-slate-900 text-white border-2 border-slate-900 ring-2 ring-slate-900/10' : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300' }}">
+                                        <span class="text-base">📋</span>
+                                        <span>Operasional Lainnya</span>
+                                    </button>
+                                @elseif($type === 'prive')
+                                    <button type="button" wire:click="$set('category', 'Pengambilan Uang Usaha untuk Keluarga (Prive)')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs bg-slate-900 text-white border-2 border-slate-900">
+                                        <span class="text-base">👨‍👩‍👧‍👦</span>
+                                        <span>Uang untuk Keluarga (Prive)</span>
+                                    </button>
+                                @elseif($type === 'personal_expense')
+                                    <button type="button" wire:click="$set('category', 'Kebutuhan Dapur & Belanja Rumah')"
+                                        class="py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition flex items-center gap-2 min-h-11 shadow-2xs bg-slate-900 text-white border-2 border-slate-900">
+                                        <span class="text-base">🛒</span>
+                                        <span>Kebutuhan Dapur & Belanja Rumah</span>
+                                    </button>
+                                @endif
+                            </div>
+
+                            <!-- Input Teks Kategori Terpilih -->
+                            <div class="pt-2">
+                                <label class="block text-xs sm:text-sm font-semibold text-slate-600 mb-1">
+                                    Teks Kategori Terpilih (Bisa Diubah Manual Jika Perlu):
+                                </label>
+                                <input type="text" list="category-suggestions" wire:model="category"
+                                    placeholder="Ketik nama kategori..."
+                                    class="input input-bordered w-full text-base font-bold rounded-xl h-12 border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                            </div>
+
+                            <!-- Datalist Saran -->
+                            <datalist id="category-suggestions">
+                                <option value="Setoran Modal">
+                                <option value="Pendapatan Penjualan">
+                                <option value="Pelunasan Piutang Toko">
+                                <option value="Belanja Bahan Baku">
+                                <option value="Beli Kemasan & Stiker">
+                                <option value="Biaya Listrik, Air & Gas">
+                                <option value="Bensin & Transportasi">
+                                <option value="Biaya Retur & Basi">
+                                <option value="Operasional Lainnya">
+                                <option value="Pengambilan Uang Usaha untuk Keluarga (Prive)">
+                                <option value="Kebutuhan Dapur & Belanja Rumah">
+                            </datalist>
+
+                            @error('category') <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Nominal Uang Transaksi (Live Thousands Formatting) -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                Nominal Uang (Rp) <span class="text-red-600">*</span>
+                            </label>
+                            <x-currency-input model="amount" size="text-xl" />
+                            @error('amount') <span class="text-xs sm:text-sm text-red-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">Keterangan Tambahan</label>
+                            <textarea wire:model="description" rows="2" placeholder="Catatan transaksi (opsional)..." class="textarea textarea-bordered w-full font-medium text-base rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900"></textarea>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Pilih Rekening / Kas <span class="text-red-500">*</span></label>
-                        <select wire:model="account_id" class="select select-bordered w-full text-base rounded-xl focus:border-slate-900">
-                            @foreach($accounts as $acc)
-                                <option value="{{ $acc->id }}">
-                                    {{ $acc->name }} (Saldo: Rp {{ number_format($acc->balance, 0, ',', '.') }})
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('account_id') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Kategori / Pos Pengeluaran <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="category" placeholder="Misal: Beli Bahan Baku, Bensin, Belanja Dapur..." class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
-                        @error('category') <span class="text-xs text-red-600 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Nominal Uang Transaksi (Live Thousands Formatting) -->
-                    <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Nominal Uang (Rp) <span class="text-red-500">*</span></label>
-                        <x-currency-input model="amount" size="text-xl" />
-                        @error('amount') <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Keterangan Tambahan</label>
-                        <textarea wire:model="description" rows="2" placeholder="Catatan transaksi..." class="textarea textarea-bordered w-full text-base rounded-xl focus:border-slate-900"></textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-3 border-t border-slate-200">
-                        <button type="button" wire:click="$set('showTransactionModal', false)" class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-5 border border-slate-300">
+                    <!-- Footer Sticky -->
+                    <div class="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 shrink-0">
+                        <button type="button" wire:click="$set('showTransactionModal', false)" class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-5 border border-slate-300 shadow-2xs">
                             Batal
                         </button>
-                        <button type="submit" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6">
+                        <button type="submit" class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6 shadow-2xs">
                             Review & Simpan Transaksi →
                         </button>
                     </div>

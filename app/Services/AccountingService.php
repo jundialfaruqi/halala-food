@@ -124,15 +124,15 @@ class AccountingService
             $cat = strtolower($transaction->category);
             $expenseCode = '6-1099'; // default beban operasional
 
-            if (str_contains($cat, 'bahan')) {
+            if (str_contains($cat, 'bahan') || str_contains($cat, 'baku') || str_contains($cat, 'kacang') || str_contains($cat, 'gula') || str_contains($cat, 'susu') || str_contains($cat, 'margarin')) {
                 $expenseCode = '1-1300'; // Pembelian bahan baku menambah Persediaan Bahan Baku
-            } elseif (str_contains($cat, 'bensin') || str_contains($cat, 'transport') || str_contains($cat, 'ongkir')) {
+            } elseif (str_contains($cat, 'bensin') || str_contains($cat, 'transport') || str_contains($cat, 'ongkir') || str_contains($cat, 'kurir') || str_contains($cat, 'antar')) {
                 $expenseCode = '6-1001';
-            } elseif (str_contains($cat, 'listrik') || str_contains($cat, 'air') || str_contains($cat, 'gas')) {
+            } elseif (str_contains($cat, 'listrik') || str_contains($cat, 'air') || str_contains($cat, 'gas') || str_contains($cat, 'pln') || str_contains($cat, 'pdam') || str_contains($cat, 'elpiji')) {
                 $expenseCode = '6-1002';
-            } elseif (str_contains($cat, 'kemasan') || str_contains($cat, 'toples') || str_contains($cat, 'plastik') || str_contains($cat, 'label') || str_contains($cat, 'stiker')) {
+            } elseif (str_contains($cat, 'kemasan') || str_contains($cat, 'toples') || str_contains($cat, 'plastik') || str_contains($cat, 'label') || str_contains($cat, 'stiker') || str_contains($cat, 'pouch') || str_contains($cat, 'seal')) {
                 $expenseCode = '6-1003';
-            } elseif (str_contains($cat, 'rusak') || str_contains($cat, 'retur') || str_contains($cat, 'basi') || str_contains($cat, 'kadaluarsa')) {
+            } elseif (str_contains($cat, 'rusak') || str_contains($cat, 'retur') || str_contains($cat, 'basi') || str_contains($cat, 'kadaluarsa') || str_contains($cat, 'reject')) {
                 $expenseCode = '6-1004';
             }
 
@@ -140,11 +140,13 @@ class AccountingService
             $items[] = ['account_code' => $cashCode, 'debit' => 0, 'credit' => $amount, 'memo' => 'Kas Keluar: '.($account?->name ?? 'Kas')];
         } elseif ($transaction->type === 'income') {
             $cat = strtolower($transaction->category);
-            if (str_contains($cat, 'modal') || str_contains($cat, 'investasi') || str_contains($cat, 'ekuitas')) {
+            if (str_contains($cat, 'modal') || str_contains($cat, 'investasi') || str_contains($cat, 'ekuitas') || str_contains($cat, 'setor') || str_contains($cat, 'tabungan') || str_contains($cat, 'mdl')) {
                 $incomeCode = '3-1000'; // Modal Usaha Pemilik
-            } elseif (str_contains($cat, 'pinjam') || str_contains($cat, 'utang') || str_contains($cat, 'hutang')) {
+            } elseif (str_contains($cat, 'piutang') || str_contains($cat, 'pelunasan') || str_contains($cat, 'tagihan')) {
+                $incomeCode = '1-1200'; // Pelunasan Piutang Toko
+            } elseif (str_contains($cat, 'pinjam') || str_contains($cat, 'utang') || str_contains($cat, 'hutang') || str_contains($cat, 'kredit')) {
                 $incomeCode = '2-1000'; // Hutang Usaha
-            } elseif (str_contains($cat, 'toko') || str_contains($cat, 'penjualan') || str_contains($cat, 'omset') || str_contains($cat, 'konsinyasi')) {
+            } elseif (str_contains($cat, 'toko') || str_contains($cat, 'penjualan') || str_contains($cat, 'omset') || str_contains($cat, 'omzet') || str_contains($cat, 'konsinyasi') || str_contains($cat, 'jual') || str_contains($cat, 'laku')) {
                 $incomeCode = '4-1000'; // Pendapatan Penjualan Konsinyasi
             } else {
                 $incomeCode = '4-2000'; // Pendapatan Lain-lain

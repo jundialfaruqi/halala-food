@@ -153,11 +153,11 @@ class Index extends Component
     public function getDefaultCategory(string $type): string
     {
         return match ($type) {
-            'income' => 'Penjualan Tambahan',
-            'expense' => 'Pembelian Bahan Baku',
+            'income' => 'Setoran Modal',
+            'expense' => 'Belanja Bahan Baku',
             'prive' => 'Pengambilan Uang Usaha untuk Keluarga (Prive)',
             'personal_expense' => 'Kebutuhan Dapur & Belanja Rumah',
-            default => 'Operasional',
+            default => 'Operasional Lainnya',
         };
     }
 
