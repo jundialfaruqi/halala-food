@@ -28,21 +28,39 @@ class Index extends Component
     // Material Form
     public string $name = '';
 
-    public string $unit = 'kg';
+    public string $unit = 'gram';
 
-    public float $stock = 0;
+    public ?float $stock = null;
 
-    public float $min_stock = 0;
+    public ?float $min_stock = null;
 
-    public float $cost_per_unit = 0;
+    public ?float $cost_per_unit = null;
 
     // Recipe Form
     public ?int $selectedProductId = null;
 
     public array $recipeRows = [];
 
+    // Helper Kalkulator Pembelian Kemasan / Konversi Satuan Otomatis
+    public bool $showCalculator = false;
+
+    public string $calc_package_type = 'bungkus'; // bungkus, pak, sachet, kaleng, box, botol, lembar
+
+    public ?float $calc_package_count = null; // Jumlah kemasan dibeli (misal: 14 bungkus)
+
+    public ?float $calc_content_per_package = null; // Isi per kemasan (misal: 1000)
+
+    public string $calc_base_unit = 'gram'; // gram, ml, pcs
+
+    public ?float $calc_price_per_package = null; // Harga beli per kemasan (misal: Rp 45.000)
+
     public function openMaterialModal(?RawMaterial $material = null): void
     {
+        $this->showCalculator = false;
+        $this->reset(['calc_package_count', 'calc_content_per_package', 'calc_price_per_package']);
+        $this->calc_package_type = 'bungkus';
+        $this->calc_base_unit = 'gram';
+
         if ($material && $material->exists) {
             $this->materialId = $material->id;
             $this->name = $material->name;
@@ -52,9 +70,41 @@ class Index extends Component
             $this->cost_per_unit = (float) $material->cost_per_unit;
         } else {
             $this->reset(['materialId', 'name', 'unit', 'stock', 'min_stock', 'cost_per_unit']);
-            $this->unit = 'kg';
+            $this->unit = 'gram';
         }
         $this->showMaterialModal = true;
+    }
+
+    public function toggleCalculator(): void
+    {
+        $this->showCalculator = ! $this->showCalculator;
+        if ($this->showCalculator && empty($this->calc_base_unit)) {
+            $this->calc_base_unit = in_array($this->unit, ['gram', 'ml', 'pcs']) ? $this->unit : 'gram';
+        }
+    }
+
+    public function applyCalculator(): void
+    {
+        $packageCount = (float) ($this->calc_package_count ?? 0);
+        $contentPerPackage = (float) ($this->calc_content_per_package ?? 0);
+        $pricePerPackage = (float) ($this->calc_price_per_package ?? 0);
+
+        if ($contentPerPackage > 0) {
+            $this->unit = $this->calc_base_unit ?: 'gram';
+
+            if ($packageCount > 0) {
+                $this->stock = $packageCount * $contentPerPackage;
+            }
+
+            if ($pricePerPackage > 0) {
+                $this->cost_per_unit = round($pricePerPackage / $contentPerPackage, 4);
+            }
+
+            $this->showCalculator = false;
+            $this->dispatch('toast', message: 'Hasil konversi kemasan berhasil diterapkan ke form!');
+        } else {
+            $this->addError('calc_content_per_package', 'Isi per kemasan harus lebih dari 0.');
+        }
     }
 
     public function saveMaterial(): void
@@ -87,9 +137,9 @@ class Index extends Component
             [
                 'name' => $this->name,
                 'unit' => $this->unit,
-                'stock' => $this->stock,
-                'min_stock' => $this->min_stock,
-                'cost_per_unit' => $this->cost_per_unit,
+                'stock' => $this->stock ?? 0,
+                'min_stock' => $this->min_stock ?? 0,
+                'cost_per_unit' => $this->cost_per_unit ?? 0,
             ]
         );
 

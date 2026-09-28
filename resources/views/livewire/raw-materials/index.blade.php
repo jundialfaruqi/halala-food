@@ -204,77 +204,256 @@
 
     <!-- Modal Form Bahan Baku -->
     @if ($showMaterialModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="bg-white w-full max-w-lg rounded-2xl p-6 border border-slate-200 shadow-2xl space-y-5">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-900">
-                        {{ $materialId ? 'Update Bahan Baku' : 'Tambah Bahan Baku Baru' }}
-                    </h3>
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div class="bg-white w-full max-w-xl max-h-[90vh] flex flex-col rounded-2xl border border-slate-300 shadow-2xl overflow-hidden">
+                <!-- Header Sticky -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50 shrink-0">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">
+                            {{ $materialId ? 'Edit Data Bahan Baku' : 'Tambah Bahan Baku Baru' }}
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Isi data bahan baku untuk stok & perhitungan resep</p>
+                    </div>
                     <button wire:click="$set('showMaterialModal', false)"
-                        class="text-slate-400 hover:text-slate-700 font-bold text-xl">
+                        class="text-slate-400 hover:text-slate-700 font-bold text-2xl p-1 leading-none">
                         &times;
                     </button>
                 </div>
 
-                <form wire:submit="saveMaterial" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1">Nama Bahan Baku <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" wire:model="name" placeholder="Misal: Wijen Putih"
-                            class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
-                        @error('name')
-                            <span class="text-xs text-red-600 font-semibold">{{ $message }}</span>
-                        @enderror
+                <!-- Form Bahan Baku Body (Scrollable) -->
+                <form wire:submit="saveMaterial" class="flex flex-col flex-1 overflow-hidden min-h-0">
+                    <div class="p-6 overflow-y-auto space-y-5 flex-1">
+                        
+                        <!-- Nama Bahan Baku -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                Nama Bahan Baku <span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" wire:model="name" placeholder="Misal: Kacang Tanah Sangrai"
+                                class="input input-bordered w-full text-base font-semibold h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                            @error('name')
+                                <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Panel Bantuan Hitung Kemasan Otomatis (Desain Ramah Orang Tua / High Contrast) -->
+                        <div class="bg-slate-100 rounded-2xl p-4 border border-slate-300 space-y-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <h4 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                                        <x-icon name="calculator" class="text-lg text-slate-700" />
+                                        <span>Bantu Hitung Satuan Otomatis</span>
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                                        Gunakan jika membeli per bungkus / pak / sachet di pasar
+                                    </p>
+                                </div>
+                                <button type="button" wire:click="toggleCalculator"
+                                    class="btn btn-sm {{ $showCalculator ? 'bg-slate-900 text-white hover:bg-black' : 'bg-white text-slate-900 hover:bg-slate-200 border-slate-300' }} rounded-xl font-bold px-3.5 shrink-0 shadow-2xs">
+                                    {{ $showCalculator ? 'Tutup' : 'Buka' }}
+                                </button>
+                            </div>
+
+                            <!-- Panel Form Kalkulator Multi-Baris -->
+                            @if($showCalculator)
+                                <div class="pt-3 border-t border-slate-300 space-y-3">
+                                    
+                                    <!-- Baris 1: Jumlah Kemasan -->
+                                    <div class="bg-white p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                                        <label class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">1</span>
+                                            <span>Jumlah Kemasan yang Dibeli</span>
+                                        </label>
+                                        <p class="text-xs text-slate-600 pl-8">Berapa bungkus / pak / sachet yang dibeli?</p>
+                                        <div class="pl-8">
+                                            <div class="flex items-center w-full rounded-xl border border-slate-300 focus-within:border-slate-900 overflow-hidden bg-white h-11 shadow-2xs">
+                                                <input type="number" step="any" min="0" wire:model.live="calc_package_count" placeholder="Contoh: 14"
+                                                    class="w-full font-mono font-bold text-base text-slate-900 px-3.5 h-full bg-transparent outline-none focus:outline-none" />
+                                                <span class="bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm px-3.5 h-full flex items-center border-l border-slate-300 select-none shrink-0">
+                                                    kemasan
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Baris 2: Isi Bersih per Kemasan & Satuan Dasar -->
+                                    <div class="bg-white p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                                        <label class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">2</span>
+                                            <span>Isi Bersih per 1 Kemasan</span>
+                                        </label>
+                                        <p class="text-xs text-slate-600 pl-8">Berapa bobot atau isi dalam 1 bungkusnya?</p>
+                                        <div class="grid grid-cols-12 gap-2 pl-8">
+                                            <div class="col-span-7">
+                                                <input type="number" step="any" min="0" wire:model.live="calc_content_per_package" placeholder="Contoh: 1000"
+                                                    class="input input-bordered w-full font-mono font-bold text-base text-slate-900 rounded-xl h-11 bg-white border-slate-300 focus:border-slate-900" />
+                                            </div>
+                                            <div class="col-span-5">
+                                                <select wire:model.live="calc_base_unit" class="select select-bordered w-full rounded-xl font-bold text-sm h-11 bg-white border-slate-300 text-slate-900 focus:border-slate-900">
+                                                    <option value="gram">gram (g)</option>
+                                                    <option value="pcs">pcs / lbr</option>
+                                                    <option value="ml">ml / cc</option>
+                                                    <option value="kg">kg</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @error('calc_content_per_package')
+                                            <span class="text-xs sm:text-sm text-red-600 font-bold block pl-8">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Baris 3: Harga Beli per Kemasan -->
+                                    <div class="bg-white p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                                        <label class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">3</span>
+                                            <span>Harga Beli per 1 Kemasan di Pasar</span>
+                                        </label>
+                                        <p class="text-xs text-slate-600 pl-8">Harga per bungkus sesuai nota belanja</p>
+                                        <div class="pl-8">
+                                            <div class="flex items-center w-full rounded-xl border border-slate-300 focus-within:border-slate-900 overflow-hidden bg-white h-11 shadow-2xs">
+                                                <span class="bg-slate-100 text-slate-900 font-bold text-sm sm:text-base px-3.5 h-full flex items-center border-r border-slate-300 select-none shrink-0">
+                                                    Rp
+                                                </span>
+                                                <input type="number" step="any" min="0" wire:model.live="calc_price_per_package" placeholder="Contoh: 45000"
+                                                    class="w-full font-mono font-bold text-base text-slate-900 px-3.5 h-full bg-transparent outline-none focus:outline-none" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hasil Perhitungan Jelas & Tulisan Besar -->
+                                    @php
+                                        $cPkgCount = (float)($calc_package_count ?? 0);
+                                        $cContent = (float)($calc_content_per_package ?? 0);
+                                        $cPrice = (float)($calc_price_per_package ?? 0);
+
+                                        $autoStock = $cPkgCount * $cContent;
+                                        $autoCostPerUnit = $cContent > 0 ? round($cPrice / $cContent, 4) : 0;
+                                        $autoTotalSpending = $cPkgCount * $cPrice;
+                                    @endphp
+
+                                    @if($cContent > 0)
+                                        <div class="p-4 bg-white rounded-xl border-2 border-slate-900 space-y-3 shadow-xs">
+                                            <div class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 flex items-center justify-between">
+                                                <span>Hasil Perhitungan:</span>
+                                                <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
+                                                    {{ $cPkgCount }} bungkus &times; {{ number_format($cContent, 0, ',', '.') }} {{ $calc_base_unit }}
+                                                </span>
+                                            </div>
+
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                                    <span class="text-xs sm:text-sm font-semibold text-slate-600 block">Total Stok:</span>
+                                                    <span class="font-mono text-lg sm:text-xl font-black text-slate-900 block mt-0.5">
+                                                        {{ number_format($autoStock, 0, ',', '.') }} <span class="text-sm font-bold text-slate-700">{{ $calc_base_unit }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-right">
+                                                    <span class="text-xs sm:text-sm font-semibold text-slate-600 block">Harga Modal / Satuan:</span>
+                                                    <span class="font-mono text-lg sm:text-xl font-black text-slate-900 block mt-0.5">
+                                                        Rp {{ number_format($autoCostPerUnit, 2, ',', '.') }} <span class="text-xs font-normal text-slate-600">/ {{ $calc_base_unit }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            @if($autoTotalSpending > 0)
+                                                <div class="flex justify-between items-center bg-slate-100 px-3.5 py-2 rounded-xl text-xs sm:text-sm">
+                                                    <span class="text-slate-700 font-semibold">Total Uang Belanja (Nota):</span>
+                                                    <span class="font-mono font-bold text-slate-900 text-base">Rp {{ number_format($autoTotalSpending, 0, ',', '.') }}</span>
+                                                </div>
+                                            @endif
+
+                                            <button type="button" wire:click="applyCalculator"
+                                                class="btn bg-slate-900 hover:bg-black text-white font-bold w-full rounded-xl h-11 text-sm sm:text-base gap-2 shadow-xs">
+                                                <x-icon name="check" class="text-lg" />
+                                                <span>Gunakan Hasil Ini ke Form</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Baris Input Satuan & Stok -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Satuan Resep <span class="text-red-600">*</span>
+                                </label>
+                                <input type="text" wire:model="unit" placeholder="gram / pcs / ml"
+                                    class="input input-bordered w-full font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                                
+                                <!-- Pilihan Satuan Preset Cepat -->
+                                <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                                    <span class="text-xs text-slate-500 font-medium">Pilihan:</span>
+                                    <button type="button" wire:click="$set('unit', 'gram')"
+                                        class="btn btn-xs {{ $unit === 'gram' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200' }} rounded-lg font-bold">gram</button>
+                                    <button type="button" wire:click="$set('unit', 'pcs')"
+                                        class="btn btn-xs {{ $unit === 'pcs' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200' }} rounded-lg font-bold">pcs</button>
+                                    <button type="button" wire:click="$set('unit', 'ml')"
+                                        class="btn btn-xs {{ $unit === 'ml' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200' }} rounded-lg font-bold">ml</button>
+                                    <button type="button" wire:click="$set('unit', 'kg')"
+                                        class="btn btn-xs {{ $unit === 'kg' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200' }} rounded-lg font-bold">kg</button>
+                                </div>
+                                @error('unit')
+                                    <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Stok Saat Ini <span class="text-red-600">*</span>
+                                </label>
+                                <input type="number" step="any" min="0" wire:model="stock"
+                                    class="input input-bordered w-full font-mono font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                                <span class="text-xs text-slate-600 mt-1 block">Dalam satuan <strong>{{ $unit ?: 'unit' }}</strong></span>
+                                @error('stock')
+                                    <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Baris Input Batas Minimal Stok & Harga Beli Satuan -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Batas Minimal Stok <span class="text-red-600">*</span>
+                                </label>
+                                <input type="number" step="any" min="0" wire:model="min_stock"
+                                    placeholder="Contoh: 1000"
+                                    class="input input-bordered w-full font-mono font-bold text-base h-12 rounded-xl border-slate-300 focus:border-slate-900 bg-white text-slate-900" />
+                                <span class="text-xs text-slate-600 mt-1 block">Peringatan jika stok menipis</span>
+                                @error('min_stock')
+                                    <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm sm:text-base font-bold text-slate-900 mb-1.5">
+                                    Harga Beli per Satuan (Rp)
+                                </label>
+                                <div class="flex items-center w-full rounded-xl border border-slate-300 focus-within:border-slate-900 overflow-hidden bg-white h-12 shadow-2xs">
+                                    <span class="bg-slate-100 text-slate-900 font-bold text-base px-4 h-full flex items-center border-r border-slate-300 select-none shrink-0">
+                                        Rp
+                                    </span>
+                                    <input type="number" step="any" min="0" wire:model="cost_per_unit" placeholder="0"
+                                        class="w-full font-mono font-bold text-base text-slate-900 px-3.5 h-full bg-transparent outline-none focus:outline-none" />
+                                </div>
+                                <span class="text-xs text-slate-600 mt-1 block">Biaya modal per 1 <strong>{{ $unit ?: 'satuan' }}</strong></span>
+                                @error('cost_per_unit')
+                                    <span class="text-xs sm:text-sm text-red-600 font-bold block mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Satuan <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" wire:model="unit" placeholder="kg / gram / pcs / liter"
-                                class="input input-bordered w-full text-base rounded-xl focus:border-slate-900" />
-                            @error('unit')
-                                <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Stok Saat Ini <span
-                                    class="text-red-500">*</span></label>
-                            <input type="number" step="0.01" wire:model="stock"
-                                class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
-                            @error('stock')
-                                <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Batas Minimal Stok</label>
-                            <input type="number" step="0.01" wire:model="min_stock"
-                                placeholder="Peringatan jika < batas"
-                                class="input input-bordered w-full font-mono font-bold text-base rounded-xl focus:border-slate-900" />
-                            @error('min_stock')
-                                <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-800 mb-1">Estimasi Harga Beli / Satuan
-                                (Rp)</label>
-                            <x-currency-input model="cost_per_unit" />
-                            @error('cost_per_unit')
-                                <span class="text-xs text-red-600 font-semibold mt-1 block">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-3 border-t border-slate-200">
+                    <!-- Footer Sticky -->
+                    <div class="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 shrink-0">
                         <button type="button" wire:click="$set('showMaterialModal', false)"
-                            class="btn btn-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl px-5 border border-slate-300">
+                            class="btn btn-md bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl px-5 border border-slate-300 shadow-2xs">
                             Batal
                         </button>
                         <button type="submit"
-                            class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6">
+                            class="btn btn-md bg-slate-900 hover:bg-black text-white font-bold rounded-xl px-6 shadow-2xs">
                             Simpan Bahan
                         </button>
                     </div>
