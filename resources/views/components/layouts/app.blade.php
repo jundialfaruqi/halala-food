@@ -19,7 +19,9 @@
         }
 
         @media print {
-            html, body {
+
+            html,
+            body {
                 background: #ffffff !important;
                 background-color: #ffffff !important;
                 color: #000000 !important;
@@ -33,11 +35,23 @@
                 print-color-adjust: exact !important;
             }
 
-            aside, header, footer, nav, .no-print, .toast, .navbar {
+            aside,
+            header,
+            footer,
+            nav,
+            .no-print,
+            .toast,
+            .navbar {
                 display: none !important;
             }
 
-            .h-screen, .h-full, .overflow-y-auto, .overflow-x-hidden, .overflow-hidden, .min-h-0, .flex-1 {
+            .h-screen,
+            .h-full,
+            .overflow-y-auto,
+            .overflow-x-hidden,
+            .overflow-hidden,
+            .min-h-0,
+            .flex-1 {
                 height: auto !important;
                 min-height: 0 !important;
                 overflow: visible !important;
@@ -84,20 +98,20 @@
                 this.sidebarOpen = localStorage.getItem('hf_sidebar_open') !== 'false';
             }
         }
-    }" 
-    @resize.window="handleResize()"
-    @keydown.window.ctrl.b.prevent="toggleSidebar()"
+    }" @resize.window="handleResize()" @keydown.window.ctrl.b.prevent="toggleSidebar()"
     @keydown.window.cmd.b.prevent="toggleSidebar()">
     <!-- Global DaisyUI Toast Notifications -->
     <x-toast />
 
-    <div class="h-screen flex bg-slate-100/70 overflow-hidden print:h-auto print:overflow-visible print:bg-white print:block">
+    <div
+        class="h-screen flex bg-slate-100/70 overflow-hidden print:h-auto print:overflow-visible print:bg-white print:block">
         <!-- Backdrop for Mobile Drawer -->
         <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-out duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
             x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0" @click="sidebarOpen = false"
-            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden no-print print:hidden" style="display: none;"></div>
+            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden no-print print:hidden"
+            style="display: none;"></div>
 
         <!-- Apple-style Clean Sidebar (Collapsible & Fixed/Static on Desktop) -->
         <aside
@@ -132,9 +146,8 @@
                     </div>
 
                     <!-- Sidebar Navigation Menu (Scrolls independently if screen height is short) -->
-                    <nav class="py-4 space-y-6 overflow-y-auto flex-1"
-                        x-data="{
-                            init() {
+                    <nav class="py-4 space-y-6 overflow-y-auto flex-1" x-data="{
+                        init() {
                                 const saved = sessionStorage.getItem('sidebar_scroll_pos');
                                 if (saved !== null) {
                                     this.$el.scrollTop = parseInt(saved, 10);
@@ -149,7 +162,7 @@
                             saveScroll() {
                                 sessionStorage.setItem('sidebar_scroll_pos', this.$el.scrollTop);
                             }
-                        }"
+                    }"
                         @scroll.passive="saveScroll()">
                         <!-- Group 1: Utama & Penjualan -->
                         <div>
@@ -277,14 +290,15 @@
                 <div class="p-6 border-t border-slate-200/80 shrink-0">
                     <div class="text-sm text-slate-500">
                         <p class="font-bold text-slate-800">Usaha Makanan Keluarga</p>
-                        <p class="text-xs text-slate-400 mt-0.5">Versi 1.0 • Offline Ready</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Created with ❤️ - By Jundi Al faruqi</p>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content Area (Isolated Scroll Container) -->
-        <div class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0 print:h-auto print:overflow-visible print:block">
+        <div
+            class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden min-w-0 print:h-auto print:overflow-visible print:block">
             <!-- Apple-style Clean Topbar -->
             <header
                 class="navbar sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 lg:px-8 h-18 shrink-0 transition-all no-print print:hidden">
@@ -313,7 +327,7 @@
                             <p class="text-xs text-slate-500">Usaha Keluarga</p>
                         </div>
                         <div
-                            class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm select-none shadow-xs">
+                            class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm select-none shadow-xs">
                             HF
                         </div>
                     </div>
@@ -321,12 +335,14 @@
             </header>
 
             <!-- Main Page View Content -->
-            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full">
+            <main
+                class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full">
                 {{ $slot }}
             </main>
 
             <!-- Minimal Footer -->
-            <footer class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80 shrink-0 no-print print:hidden">
+            <footer
+                class="p-6 text-center text-sm text-slate-400 border-t border-slate-200/80 shrink-0 no-print print:hidden">
                 &copy; {{ date('Y') }} {{ config('app.name', 'Halala Food') }} • Sistem Pembukuan & Inventori
                 Konsinyasi
             </footer>
