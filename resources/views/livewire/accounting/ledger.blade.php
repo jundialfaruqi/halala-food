@@ -44,12 +44,12 @@
             </div>
         </div>
     @else
-        <!-- Pemilihan Akun & Filter -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <!-- Pemilihan Akun & Filter Periode (Telanjang / Tanpa Card Pembungkus) -->
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
             <!-- Pilih Akun -->
-            <div>
-                <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Akun Perkiraan:</label>
-                <select wire:model.live="selectedAccountId" class="select select-bordered w-full text-base font-bold rounded-xl h-12 bg-slate-50 focus:bg-white focus:border-slate-900">
+            <div class="flex-1 max-w-lg">
+                <select wire:model.live="selectedAccountId"
+                        class="select select-md select-bordered w-full text-base font-bold rounded-xl bg-white border-slate-300 focus:border-slate-900 shadow-2xs">
                     @foreach($accounts as $acc)
                         <option value="{{ $acc->id }}">
                             {{ $acc->code }} - {{ $acc->name }} ({{ strtoupper($acc->type) }})
@@ -58,28 +58,32 @@
                 </select>
             </div>
 
-            <!-- Filter Periode Cepat -->
-            <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 pt-2 md:pt-6">
+            <!-- Filter Periode Cepat (Apple-style Segmented Control) -->
+            <div class="flex items-center gap-3 flex-wrap">
                 @php
-                    $isMonth = !empty($dateRange);
+                    $monthVal = Carbon\Carbon::now()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
+                    $yearVal = Carbon\Carbon::now()->startOfYear()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfYear()->format('Y-m-d');
+                    $isMonth = $dateRange === $monthVal;
+                    $isYear = $dateRange === $yearVal;
                     $isAll = empty($dateRange);
                 @endphp
-                <button type="button"
-                        wire:click="setQuickDate('this_month')"
-                        class="btn btn-md {{ $isMonth ? 'bg-slate-900 hover:bg-black text-white border-slate-900' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl font-bold text-base px-4 h-11 transition-all flex items-center gap-2">
-                    @if($isMonth)
-                        <x-icon name="check" class="text-lg text-white shrink-0" />
-                    @endif
-                    <span>Bulan Ini</span>
-                </button>
-                <button type="button"
-                        wire:click="setQuickDate('all')"
-                        class="btn btn-md {{ $isAll ? 'bg-slate-900 hover:bg-black text-white border-slate-900' : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' }} rounded-xl font-bold text-base px-4 h-11 transition-all flex items-center gap-2">
-                    @if($isAll)
-                        <x-icon name="check" class="text-lg text-white shrink-0" />
-                    @endif
-                    <span>Semua Periode</span>
-                </button>
+                <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
+                    <button type="button"
+                            wire:click="setQuickDate('this_month')"
+                            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isMonth ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        <span>Bulan Ini</span>
+                    </button>
+                    <button type="button"
+                            wire:click="setQuickDate('this_year')"
+                            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isYear ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        <span>Tahun Ini</span>
+                    </button>
+                    <button type="button"
+                            wire:click="setQuickDate('all')"
+                            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isAll ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        <span>Semua</span>
+                    </button>
+                </div>
             </div>
         </div>
 

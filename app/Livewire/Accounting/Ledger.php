@@ -42,6 +42,10 @@ class Ledger extends Component
             $start = Carbon::now()->startOfMonth()->format('Y-m-d');
             $end = Carbon::now()->endOfMonth()->format('Y-m-d');
             $this->dateRange = $start.' - '.$end;
+        } elseif ($period === 'this_year') {
+            $start = Carbon::now()->startOfYear()->format('Y-m-d');
+            $end = Carbon::now()->endOfYear()->format('Y-m-d');
+            $this->dateRange = $start.' - '.$end;
         } elseif ($period === 'all') {
             $this->dateRange = '';
         }
