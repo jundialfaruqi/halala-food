@@ -11,7 +11,7 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
-#[Title('Buku Besar Akuntansi')]
+#[Title('Buku Besar')]
 class Ledger extends Component
 {
     #[Url]

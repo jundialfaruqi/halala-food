@@ -3,7 +3,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
-                Buku Besar Akuntansi
+                Buku Besar
             </h1>
             <p class="text-base text-slate-600 mt-1">
                 Rincian mutasi debet, kredit, dan saldo akhir per akun perkiraan.
