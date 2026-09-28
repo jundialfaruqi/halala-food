@@ -16,7 +16,7 @@ class FinancialStatements extends Component
     public string $activeTab = 'income_statement'; // 'income_statement' or 'balance_sheet'
 
     #[Url]
-    public string $periodPreset = 'this_month'; // 'this_month', 'this_year', 'all'
+    public string $periodPreset = 'this_month'; // 'this_month', 'last_month', 'this_year', 'all'
 
     public function setTab(string $tab): void
     {
@@ -25,7 +25,7 @@ class FinancialStatements extends Component
 
     public function setPeriod(string $preset): void
     {
-        $this->periodPreset = in_array($preset, ['this_month', 'this_year', 'all']) ? $preset : 'this_month';
+        $this->periodPreset = in_array($preset, ['this_month', 'last_month', 'this_year', 'all']) ? $preset : 'this_month';
     }
 
     public function render(): View
@@ -36,6 +36,9 @@ class FinancialStatements extends Component
         if ($this->periodPreset === 'this_month') {
             $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
             $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+        } elseif ($this->periodPreset === 'last_month') {
+            $startDate = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+            $endDate = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
         } elseif ($this->periodPreset === 'this_year') {
             $startDate = Carbon::now()->startOfYear()->format('Y-m-d');
             $endDate = Carbon::now()->endOfYear()->format('Y-m-d');

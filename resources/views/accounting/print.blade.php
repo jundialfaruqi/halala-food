@@ -48,7 +48,7 @@
                     {{ $activeTab === 'income_statement' ? 'Laporan Laba Rugi' : 'Neraca Keuangan' }}
                 </p>
                 <p class="text-xs text-slate-500 font-mono">
-                    Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini' : ($periodPreset === 'this_year' ? 'Tahun Ini' : 'Seluruh Periode') }}
+                    Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini' : ($periodPreset === 'last_month' ? 'Bulan Lalu' : ($periodPreset === 'this_year' ? 'Tahun Ini' : 'Seluruh Periode')) }}
                 </p>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 <p class="text-xs uppercase tracking-widest text-slate-500 font-bold mt-0.5">Usaha Makanan & Oleh-Oleh Keluarga</p>
                 <h2 class="text-lg sm:text-xl font-bold text-slate-800 mt-2">LAPORAN LABA RUGI</h2>
                 <p class="text-sm font-semibold text-slate-600 mt-0.5">
-                    Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini (' . Carbon\Carbon::now()->translatedFormat('F Y') . ')' : ($periodPreset === 'this_year' ? 'Tahun ' . Carbon\Carbon::now()->format('Y') : 'Seluruh Periode Berjalan') }}
+                    Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini (' . Carbon\Carbon::now()->translatedFormat('F Y') . ')' : ($periodPreset === 'last_month' ? 'Bulan Lalu (' . Carbon\Carbon::now()->subMonth()->translatedFormat('F Y') . ')' : ($periodPreset === 'this_year' ? 'Tahun ' . Carbon\Carbon::now()->format('Y') : 'Seluruh Periode Berjalan')) }}
                 </p>
             </div>
 

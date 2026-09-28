@@ -51,24 +51,38 @@
             @php
                 $todayVal = Carbon\Carbon::today()->format('Y-m-d').' - '.Carbon\Carbon::today()->format('Y-m-d');
                 $monthVal = Carbon\Carbon::now()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
+                $lastMonthVal = Carbon\Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
+                $yearVal = Carbon\Carbon::now()->startOfYear()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfYear()->format('Y-m-d');
                 $isToday = $dateRange === $todayVal;
                 $isMonth = $dateRange === $monthVal;
+                $isLastMonth = $dateRange === $lastMonthVal;
+                $isYear = $dateRange === $yearVal;
                 $isAll = empty($dateRange);
             @endphp
-            <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
+            <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs flex-wrap">
                 <button type="button"
                         wire:click="setQuickDate('today')"
-                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isToday ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isToday ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     <span>Hari Ini</span>
                 </button>
                 <button type="button"
                         wire:click="setQuickDate('this_month')"
-                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isMonth ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isMonth ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     <span>Bulan Ini</span>
                 </button>
                 <button type="button"
+                        wire:click="setQuickDate('last_month')"
+                        class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isLastMonth ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    <span>Bulan Lalu</span>
+                </button>
+                <button type="button"
+                        wire:click="setQuickDate('this_year')"
+                        class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isYear ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    <span>Tahun Ini</span>
+                </button>
+                <button type="button"
                         wire:click="setQuickDate('all')"
-                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isAll ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                        class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $isAll ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                     <span>Semua</span>
                 </button>
             </div>

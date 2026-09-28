@@ -43,20 +43,25 @@
         </div>
 
         <!-- Filter Periode Laporan -->
-        <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
+        <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs flex-wrap">
             <button type="button"
                     wire:click="setPeriod('this_month')"
-                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Bulan Ini</span>
             </button>
             <button type="button"
+                    wire:click="setPeriod('last_month')"
+                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'last_month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                <span>Bulan Lalu</span>
+            </button>
+            <button type="button"
                     wire:click="setPeriod('this_year')"
-                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'this_year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Tahun Ini</span>
             </button>
             <button type="button"
                     wire:click="setPeriod('all')"
-                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
+                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 {{ $periodPreset === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900' }}">
                 <span>Semua</span>
             </button>
         </div>
@@ -73,7 +78,7 @@
                     <p class="text-xs uppercase tracking-widest text-slate-500 font-bold mt-0.5">Usaha Makanan & Oleh-Oleh Keluarga</p>
                     <p class="text-lg sm:text-xl font-bold text-slate-800 mt-2">LAPORAN LABA RUGI</p>
                     <p class="text-sm font-semibold text-slate-600 mt-0.5">
-                        Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini (' . Carbon\Carbon::now()->translatedFormat('F Y') . ')' : ($periodPreset === 'this_year' ? 'Tahun ' . Carbon\Carbon::now()->format('Y') : 'Seluruh Periode Berjalan') }}
+                        Periode: {{ $periodPreset === 'this_month' ? 'Bulan Ini (' . Carbon\Carbon::now()->translatedFormat('F Y') . ')' : ($periodPreset === 'last_month' ? 'Bulan Lalu (' . Carbon\Carbon::now()->subMonth()->translatedFormat('F Y') . ')' : ($periodPreset === 'this_year' ? 'Tahun ' . Carbon\Carbon::now()->format('Y') : 'Seluruh Periode Berjalan')) }}
                     </p>
                 </div>
 

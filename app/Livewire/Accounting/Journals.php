@@ -47,6 +47,14 @@ class Journals extends Component
             $start = Carbon::now()->startOfMonth()->format('Y-m-d');
             $end = Carbon::now()->endOfMonth()->format('Y-m-d');
             $this->dateRange = $start.' - '.$end;
+        } elseif ($period === 'last_month') {
+            $start = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+            $end = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
+            $this->dateRange = $start.' - '.$end;
+        } elseif ($period === 'this_year') {
+            $start = Carbon::now()->startOfYear()->format('Y-m-d');
+            $end = Carbon::now()->endOfYear()->format('Y-m-d');
+            $this->dateRange = $start.' - '.$end;
         } elseif ($period === 'all') {
             $this->dateRange = '';
         }

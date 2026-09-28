@@ -51,7 +51,7 @@ class FinancialStatementPrintController extends Controller
         $tab = in_array($tab, ['income_statement', 'balance_sheet']) ? $tab : 'income_statement';
 
         $period = $request->query('period', 'this_month');
-        $period = in_array($period, ['this_month', 'this_year', 'all']) ? $period : 'this_month';
+        $period = in_array($period, ['this_month', 'last_month', 'this_year', 'all']) ? $period : 'this_month';
 
         $startDate = null;
         $endDate = null;
@@ -59,6 +59,9 @@ class FinancialStatementPrintController extends Controller
         if ($period === 'this_month') {
             $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
             $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+        } elseif ($period === 'last_month') {
+            $startDate = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+            $endDate = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
         } elseif ($period === 'this_year') {
             $startDate = Carbon::now()->startOfYear()->format('Y-m-d');
             $endDate = Carbon::now()->endOfYear()->format('Y-m-d');

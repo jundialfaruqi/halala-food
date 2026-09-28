@@ -16,9 +16,12 @@ class FinancialStatementPdfService
         $tab = $data['activeTab'] ?? 'income_statement';
         $preset = $data['periodPreset'] ?? 'this_month';
 
-        $periodText = $preset === 'this_month'
-            ? 'Bulan Ini ('.Carbon::now()->translatedFormat('F Y').')'
-            : ($preset === 'this_year' ? 'Tahun '.Carbon::now()->format('Y') : 'Seluruh Periode Berjalan');
+        $periodText = match ($preset) {
+            'this_month' => 'Bulan Ini ('.Carbon::now()->translatedFormat('F Y').')',
+            'last_month' => 'Bulan Lalu ('.Carbon::now()->subMonth()->translatedFormat('F Y').')',
+            'this_year' => 'Tahun '.Carbon::now()->format('Y'),
+            default => 'Seluruh Periode Berjalan',
+        };
 
         $stream = "q\n";
 

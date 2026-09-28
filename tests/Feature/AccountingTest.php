@@ -194,18 +194,27 @@ test('consignment settlement automatically records balanced revenue, cogs, inven
     expect((float) $journal->total_credit)->toBe(96000.0);
 });
 
-test('accounting screens render successfully with clear data', function () {
+test('accounting screens render successfully with clear data and quick filters', function () {
     Livewire::test(Journals::class)
         ->assertStatus(200)
-        ->assertSee('Jurnal Umum');
+        ->assertSee('Jurnal Umum')
+        ->call('setQuickDate', 'last_month')
+        ->assertSet('dateRange', Carbon\Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d'))
+        ->call('setQuickDate', 'this_year')
+        ->assertSet('dateRange', Carbon\Carbon::now()->startOfYear()->format('Y-m-d').' - '.Carbon\Carbon::now()->endOfYear()->format('Y-m-d'));
 
     Livewire::test(Ledger::class)
         ->assertStatus(200)
-        ->assertSee('Buku Besar');
+        ->assertSee('Buku Besar')
+        ->call('setQuickDate', 'last_month')
+        ->assertSet('dateRange', Carbon\Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d').' - '.Carbon\Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d'));
 
     Livewire::test(FinancialStatements::class)
         ->assertStatus(200)
         ->assertSee('Laporan Laba Rugi')
+        ->call('setPeriod', 'last_month')
+        ->assertSet('periodPreset', 'last_month')
+        ->assertSee('Bulan Lalu')
         ->set('activeTab', 'balance_sheet')
         ->assertSee('NERACA KEUANGAN (BALANCE SHEET)');
 });
